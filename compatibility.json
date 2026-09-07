@@ -1,0 +1,15 @@
+{
+  "patch_version": "1.0.0",
+  "implementation_revision": "r3",
+  "platform": "windows-x64",
+  "telegram_version": "7.2.5",
+  "upstream_commit": "2f41383dddd338fe17fd4711afd02688c418fd47",
+  "upstream_release": "https://github.com/telegramdesktop/tdesktop/releases/tag/v7.2.5",
+  "input_filename": "Telegram.exe",
+  "input_sha256": "24b0715d9b74374c1d70c9f9537f631d45c51d08a520f3a9a8b9e5df92ad169b",
+  "verified_output_sha256": "894b04982521932a159397872604e0c96c9bd0bd8d48643f4a245899ea0a29c0",
+  "modified_executable_authenticode": "unsigned",
+  "unknown_versions": "refuse; adaptation required",
+  "telegram_executable_distributed": false,
+  "account_data_required": false
+}

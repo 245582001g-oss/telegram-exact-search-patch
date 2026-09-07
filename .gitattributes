@@ -1,0 +1,12 @@
+* text=auto
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+*.ps1 text eol=crlf
+# Keep the verified build inputs byte-identical to r3.
+src/payload.c -text
+src/blacklist.h -text
+src/menu.h -text
+src/hooks.S -text
+src/hooks.json -text

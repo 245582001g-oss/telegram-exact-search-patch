@@ -1,0 +1,36 @@
+# Build products and local dependencies
+/build/
+/.venv/
+/work/
+__pycache__/
+*.py[cod]
+*.exe
+*.dll
+*.o
+*.obj
+*.zip
+*.tar.gz
+
+# Never publish local Telegram state or credentials
+tdata/
+*.session
+*.session-journal
+exact-search-blacklist*
+*.bak
+*.lock
+*.tmp
+.env
+.env.*
+api_id*
+api_hash*
+installation.json
+maintainer-state/
+*-report.json
+compiler-log.json
+test-data/
+
+# Editor and OS metadata
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini

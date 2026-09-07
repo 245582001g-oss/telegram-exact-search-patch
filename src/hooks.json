@@ -1,0 +1,9 @@
+[
+  {"site_rva": "0x1600665", "target_export": "PatchMessages", "expected_target_rva": "0x158c1f0"},
+  {"site_rva": "0x16010e4", "target_export": "PatchPeers", "expected_target_rva": "0x158c930"},
+  {"site_rva": "0x158879b", "target_export": "PatchLocalBridge", "expected_target_rva": "0x1570520"},
+  {"site_rva": "0x15875de", "target_export": "PatchApplyWordsBridge", "expected_target_rva": "0x3a37c10"},
+  {"site_rva": "0x15882f7", "target_export": "PatchRefreshWordsBridge", "expected_target_rva": "0x3a37c10"},
+  {"site_rva": "0x15861ab", "target_export": "PatchMenuBridge", "expected_target_rva": "0x58c9fc0"},
+  {"kind": "literal5", "site_rva": "0x15fdcac", "expected_bytes": "ba84030000", "replacement_bytes": "ba2c010000", "reason": "Input search debounce 900 ms to 300 ms; native cache, cancellation and pagination unchanged."}
+]
