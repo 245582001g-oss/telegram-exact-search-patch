@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-为 **Telegram Desktop 7.2.7 · Windows x64** 提供精确文字筛选、多关键词组合、同文广告屏蔽与搜索响应优化。**支持中文、英文及其他语言，也支持中英等多语言混合输入。** 当前工具版本：**v1.2.0**，搜索补丁仍为已验证的 **r4**。
+为 **Telegram Desktop 7.2.7 · Windows x64** 提供精确文字筛选、多关键词组合、同文广告屏蔽与搜索响应优化。**支持中文、英文及其他语言，也支持中英等多语言混合输入。** 当前工具版本：**v1.2.1**，搜索补丁仍为已验证的 **r4**。
 
 Exact text filtering, multi-keyword AND search, and identical-content blocking for Telegram Desktop. Supports Chinese, English, and other languages through case-sensitive literal matching.
 
@@ -165,7 +165,7 @@ r4 已验证补丁版 SHA-256：
 
 ### 普通用户：安装一次外置管理器
 
-1. 打开 [v1.2.0 发布页](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.2.0)，下载并解压 `telegram-exact-search-patch-v1.2.0-installer.zip`。
+1. 打开 [v1.2.1 发布页](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.2.1)，下载并解压 `telegram-exact-search-patch-v1.2.1-installer.zip`。
 2. 双击 `Install.cmd`，在文件选择框中选择实际使用的 `Telegram.exe`。
 3. 管理器安装到 `%LOCALAPPDATA%\TelegramExactSearchPatch`，并创建当前用户的登录启动项；不需要管理员权限、Python 或编译器。
 4. 若 Telegram 正在运行，请从托盘正常退出。管理器将在退出后应用已适配补丁，之后正常启动 Telegram 即可。
@@ -182,7 +182,7 @@ r4 已验证补丁版 SHA-256：
 
 ### 1. 下载并解压源码
 
-打开[发布页](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.2.0)，下载源码 ZIP 并解压。也可以在[仓库首页](https://github.com/245582001g-oss/telegram-exact-search-patch)选择 **Code → Download ZIP**，获取含最新说明的源码。
+打开[发布页](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.2.1)，下载源码 ZIP 并解压。也可以在[仓库首页](https://github.com/245582001g-oss/telegram-exact-search-patch)选择 **Code → Download ZIP**，获取含最新说明的源码。
 
 打开包含 `README.md`、`src`、`tools` 的目录。以下示例假定该目录是 `C:\TelegramSearchPatch`；你的目录可以不同，请替换为自己的实际路径。
 
@@ -283,7 +283,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\Start-PatchedTelegram.
 
 ## 如何卸载或恢复原版
 
-如果安装了 v1.2.0 自动恢复管理器，请**先停止或卸载管理器，再恢复原版**，否则它会在下一次检查时重新应用补丁。卸载命令见[管理器说明](docs/update-persistence.md#停止或卸载)。卸载管理器会移除自己的登录启动项，保留当前 Telegram 程序；恢复官方程序是下面的独立步骤。
+如果安装了 v1.2.1 自动恢复管理器，请**先停止或卸载管理器，再恢复原版**，否则它会在下一次检查时重新应用补丁。卸载命令见[管理器说明](docs/update-persistence.md#停止或卸载)。卸载管理器会移除自己的登录启动项，保留当前 Telegram 程序；恢复官方程序是下面的独立步骤。
 
 **卸载本补丁，就是把经过校验的官方原版 `Telegram.exe` 恢复回去；不需要卸载 Telegram。** 只删除下载的源码文件夹不会取消已经安装到程序中的补丁。
 

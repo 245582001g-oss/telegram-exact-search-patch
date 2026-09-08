@@ -1,4 +1,4 @@
-# Telegram 精确搜索补丁安装器 v1.2.0
+# Telegram 精确搜索补丁安装器 v1.2.1
 
 适用于指定官方 Telegram Desktop 7.2.7 Windows x64，精确搜索程序为 r4。
 

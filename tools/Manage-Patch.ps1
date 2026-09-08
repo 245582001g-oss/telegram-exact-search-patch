@@ -3,12 +3,13 @@
 param(
     [ValidateSet('Check','Repair','Launch','Watch','Stop','Uninstall')]
     [string] $Mode = 'Check',
-    [string] $Root = (Split-Path -Parent $PSScriptRoot),
+    [string] $Root = '',
     [ValidateRange(10,3600)] [int] $IntervalSeconds = 60
 )
 
 try {
     . (Join-Path $PSScriptRoot 'Patch.Manager.ps1')
+    if ([string]::IsNullOrWhiteSpace($Root)) { $Root=Split-Path -Parent $PSScriptRoot }
     $Root=[IO.Path]::GetFullPath($Root).TrimEnd('\')
     $null=Read-ManagerConfig $Root
     if ($Mode -eq 'Stop') {

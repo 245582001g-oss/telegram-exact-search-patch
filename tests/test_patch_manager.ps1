@@ -527,6 +527,45 @@ $alias=Join-Path $boundary.Root 'app alias'
 Expect-ManagerFailure { Install-ManagerRuntime -SourceRoot $installSource -TelegramExe $boundary.Exe -InstallDirectory (Join-Path $alias 'nested-manager') } 'Directory aliases cannot bypass the application/runtime boundary'
 Assert-ManagerCheck (-not (Test-Path -LiteralPath (Join-Path $boundary.App 'nested-manager'))) 'Rejected alias does not create a runtime in the real application directory'
 
+# Exercise the published entry point in a fresh native PowerShell process. A
+# dot-sourced helper test does not reproduce parameter-default evaluation under
+# powershell.exe -File. Keep the wrapper byte-for-byte unchanged and omit -Root.
+$fixture=Initialize-ManagerFixture 'native wrapper default root'
+[void](New-Item -ItemType Directory -Path (Join-Path $fixture.Runtime 'tools'))
+[void](New-Item -ItemType Directory -Path (Join-Path $fixture.Runtime 'bundles'))
+foreach ($name in @('Manage-Patch.ps1','Patch.Manager.ps1','Patch.Bundle.ps1')) {
+    Copy-Item -LiteralPath (Join-Path $repository ('tools\'+$name)) -Destination (Join-Path $fixture.Runtime ('tools\'+$name))
+}
+Save-FixtureJson (Join-Path $fixture.Runtime 'cache\catalog.json') $catalog
+Copy-Item -LiteralPath $bundlePath -Destination (Join-Path $fixture.Runtime ('bundles\'+$profile.asset_name))
+# Check explicitly refreshes the catalog. Override only the copied helper's
+# downloader to make that attempt fail locally, then use its real cache fallback.
+$networkBlock=@'
+
+function Receive-ManagerFile {
+    param([string] $Url, [string] $Destination, [long] $MaximumBytes)
+    [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'fixture-network-blocked.txt'),'No HTTP request was made.')
+    throw 'Fixture-only network blockade.'
+}
+'@
+[IO.File]::AppendAllText((Join-Path $fixture.Runtime 'tools\Patch.Manager.ps1'),$networkBlock,[Text.UTF8Encoding]::new($false))
+$wrapperPath=Join-Path $fixture.Runtime 'tools\Manage-Patch.ps1'
+Assert-ManagerCheck ((Get-FixtureHash $wrapperPath) -ceq (Get-FixtureHash (Join-Path $repository 'tools\Manage-Patch.ps1'))) 'Native wrapper regression uses the unmodified published entry point'
+$targetBefore=Get-FixtureHash $fixture.Exe
+$markerBefore=Get-FixtureHash $fixture.Marker
+$nativePowerShell=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+$wrapperOutput=@(& $nativePowerShell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $wrapperPath -Mode Check 2>&1)
+$wrapperExit=$LASTEXITCODE
+if ($wrapperExit -ne 0) { throw ('Native wrapper Check failed: '+($wrapperOutput -join [Environment]::NewLine)) }
+$wrapperState=($wrapperOutput -join [Environment]::NewLine) | ConvertFrom-Json
+Assert-ManagerCheck ($wrapperState.status -ceq 'ReadyToRepair' -and $wrapperState.hash -ceq $profile.input_sha256) 'Native PowerShell -File Check resolves its runtime root when Root is omitted'
+$savedState=Get-Content -LiteralPath (Join-Path $fixture.Runtime 'state.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+Assert-ManagerCheck ($savedState.status -ceq 'ReadyToRepair' -and $savedState.hash -ceq $wrapperState.hash -and
+    (Test-Path -LiteralPath (Join-Path $fixture.Runtime 'tools\fixture-network-blocked.txt'))) 'Native wrapper writes state in its own fixture root and handles a blocked refresh through cached metadata'
+Assert-ManagerCheck ((Get-FixtureHash $fixture.Exe) -ceq $targetBefore -and (Get-FixtureHash $fixture.Marker) -ceq $markerBefore -and
+    -not (Test-Path -LiteralPath ($fixture.Exe+'.before-chinese-search.7.2.7.bak')) -and
+    -not (Test-Path -LiteralPath ($fixture.Exe+'.chinese-search.lock'))) 'Native Check leaves the synthetic application and account marker unchanged without starting or repairing it'
+
 $report=[ordered]@{checks_passed=$checks.Count;checks=@($checks);uses_real_account_data=$false;
     real_telegram_started=$false;real_processes_stopped=$false;real_network_used=$false;
     real_startup_modified=$false;scope='Synthetic app/catalog/bundle files and mocked external effects.'}

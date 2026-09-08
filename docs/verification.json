@@ -33,7 +33,7 @@
   "regression_uses_account_data": false,
   "real_install_performed": true,
   "scope": "Static ABI review, compiled synthetic regression, isolated management tests, verified real install and user-confirmed global literal search. Future official update recovery has not yet occurred.",
-  "patch_tools_version": "1.2.0",
+  "patch_tools_version": "1.2.1",
   "real_ui_evidence": {
     "source": "user confirmation after verified installation and launch",
     "query": "好人",
@@ -50,7 +50,7 @@
   "bundle_bytes": 7338,
   "bundle_sha256": "dab78abe33ce24b4bf80c0ea2ef41e233a5e0f9a313b7b83d3222b8819c78422",
   "real_bundle_reconstruction": "matched verified output SHA256 with Windows PowerShell 5.1",
-  "isolated_manager_checks": 88,
+  "isolated_manager_checks": 92,
   "real_manager_installed": true,
   "real_manager_checks": [
     "current-user startup shortcut created",
