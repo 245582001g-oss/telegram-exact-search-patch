@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-为 **Telegram Desktop 7.2.5 · Windows x64** 提供精确文字筛选、多关键词组合、同文广告屏蔽与搜索响应优化。**支持中文、英文及其他语言，也支持中英等多语言混合输入。** 当前补丁版本：**v1.0.0（r3）**。
+为 **Telegram Desktop 7.2.7 · Windows x64** 提供精确文字筛选、多关键词组合、同文广告屏蔽与搜索响应优化。**支持中文、英文及其他语言，也支持中英等多语言混合输入。** 当前补丁版本：**v1.1.0（r4）**。
 
 Exact text filtering, multi-keyword AND search, and identical-content blocking for Telegram Desktop. Supports Chinese, English, and other languages through case-sensitive literal matching.
 
@@ -140,33 +140,33 @@ Exact text filtering, multi-keyword AND search, and identical-content blocking f
 
 ## 支持范围
 
-- 仅支持 **Windows x64，Telegram Desktop 7.2.5** 的指定可执行文件；同版本号但哈希不同也会拒绝构建。
+- 仅支持 **Windows x64，Telegram Desktop 7.2.7** 的指定可执行文件；同版本号但哈希不同也会拒绝构建。
 - 精确匹配作用于左上角全局搜索；内容黑名单也过滤聊天内消息搜索。
 - 沿用 Telegram 的异步网络请求、取消、缓存与分页机制。补丁只过滤 Telegram 返回的候选，不能保证找到服务器未返回的内容，也没有建立完整历史索引。
-- 自动更新可能覆盖补丁。遇到新版必须重新适配；工具会拒绝未知版本，不会将新版降级。
+- 自动更新会替换 EXE。新增[外置启动器](docs/update-persistence.md)，可在启动前恢复已适配版本；未知新版仍需适配，不会降级。
 - 生成的修改版 EXE 不再具有官方 Authenticode 签名。
 
 适用原版 `Telegram.exe` 的 SHA-256：
 
 ```text
-24b0715d9b74374c1d70c9f9537f631d45c51d08a520f3a9a8b9e5df92ad169b
+16a234e303ecbafde90e0f5ee27e13a40595453f33896fa340d9cb186df60397
 ```
 
-r3 已验证补丁版 SHA-256：
+r4 已验证补丁版 SHA-256：
 
 ```text
-894b04982521932a159397872604e0c96c9bd0bd8d48643f4a245899ea0a29c0
+6c41e516fafdc94a17dd4aa42df504264941f3d2c90a173211ba956fe1985301
 ```
 
-上游版本、源代码基线与下载入口见 [兼容性清单](compatibility.json) 和 [Telegram 官方 v7.2.5 发布页](https://github.com/telegramdesktop/tdesktop/releases/tag/v7.2.5)。以实际 EXE 哈希为准。不要为了本补丁覆盖正在使用的更高版本。
+上游版本、源代码基线与下载入口见 [兼容性清单](compatibility.json) 和 [Telegram 官方 v7.2.7 发布页](https://github.com/telegramdesktop/tdesktop/releases/tag/v7.2.7)。以实际 EXE 哈希为准。不要为了本补丁覆盖正在使用的更高版本。
 
 ## 如何安装
 
-**目前发布的是源码及工具包。安装流程为：下载解压 → 准备环境 → 核对原版 → 构建补丁 → 退出 Telegram → 安装 → 自行启动验证。** 已在使用同一个 r3 补丁的用户，无须为了这次说明文档更新重新安装。
+**目前发布的是源码及工具包。安装流程为：下载解压 → 准备环境 → 核对原版 → 构建补丁 → 退出 Telegram → 安装 → 自行启动验证。** 本次为 Telegram 7.2.7 的新版适配；7.2.5 用户请使用历史 v1.0.0 发布包。
 
 ### 1. 下载并解压源码
 
-打开[发布页](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.0.0)，下载源码 ZIP 并解压。也可以在[仓库首页](https://github.com/245582001g-oss/telegram-exact-search-patch)选择 **Code → Download ZIP**，获取含最新说明的源码。
+打开[发布页](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.1.0)，下载源码 ZIP 并解压。也可以在[仓库首页](https://github.com/245582001g-oss/telegram-exact-search-patch)选择 **Code → Download ZIP**，获取含最新说明的源码。
 
 打开包含 `README.md`、`src`、`tools` 的目录。以下示例假定该目录是 `C:\TelegramSearchPatch`；你的目录可以不同，请替换为自己的实际路径。
 
@@ -179,7 +179,7 @@ r3 已验证补丁版 SHA-256：
 | [WinLibs MinGW-w64 GCC](https://winlibs.com/) | Windows x64 编译器；已验证 GCC 16.1.0 / UCRT / POSIX / SEH r2，详细版本见[验证说明](docs/verification.md) |
 | 官方 `Telegram.exe` | 必须符合前面的版本及 SHA-256；不是安装包 `tsetup` 的哈希 |
 
-编译器版本会影响生成文件，安装工具只接受已验证的 r3 产物哈希。若换编译器后哈希不同，需要另行核验构建，不能改掉安装器的哈希检查来直接安装。
+编译器版本会影响生成文件，安装工具只接受已验证的 r4 产物哈希。若换编译器后哈希不同，需要另行核验构建，不能改掉安装器的哈希检查来直接安装。
 
 打开 PowerShell，进入源码目录，安装 Python 依赖：
 
@@ -204,10 +204,10 @@ Get-FileHash -LiteralPath 'C:\TelegramPortable\Telegram.exe' -Algorithm SHA256
 结果必须是：
 
 ```text
-24b0715d9b74374c1d70c9f9537f631d45c51d08a520f3a9a8b9e5df92ad169b
+16a234e303ecbafde90e0f5ee27e13a40595453f33896fa340d9cb186df60397
 ```
 
-字母大小写不影响哈希比较。哈希不同就不属于这次支持的原版文件，即使界面显示 7.2.5 也不能套用。Telegram 已升级时，不要用旧版补丁或旧版备份覆盖新版。
+字母大小写不影响哈希比较。哈希不同就不属于这次支持的原版文件，即使界面显示 7.2.7 也不能套用。Telegram 已升级时，不要用旧版补丁或旧版备份覆盖新版。
 
 ### 4. 构建补丁版文件
 
@@ -230,7 +230,7 @@ Get-FileHash -LiteralPath 'C:\TelegramPortable\Telegram.exe' -Algorithm SHA256
 Get-FileHash -LiteralPath 'build\Telegram.exact.exe' -Algorithm SHA256
 ```
 
-已验证 r3 的结果为 `894b04982521932a159397872604e0c96c9bd0bd8d48643f4a245899ea0a29c0`。构建失败或哈希不符时，先解决构建问题，再进入安装步骤。
+已验证 r4 的结果为 `6c41e516fafdc94a17dd4aa42df504264941f3d2c90a173211ba956fe1985301`。构建失败或哈希不符时，先解决构建问题，再进入安装步骤。
 
 ### 5. 退出 Telegram 并安装
 
@@ -243,7 +243,7 @@ $patchedExe = (Resolve-Path 'build\Telegram.exact.exe').Path
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\Install-Patch.ps1 -TelegramExe 'C:\TelegramPortable\Telegram.exe' -PatchedExe $patchedExe
 ```
 
-看到 `Installed and SHA256 verified` 表示安装与哈希校验成功。脚本在原程序旁保存 **`Telegram.exe.before-chinese-search.bak`**，再原子替换程序；已有备份只校验，不覆盖。请保留备份及 `tools` 中的恢复工具，以便卸载补丁。
+看到 `Installed and SHA256 verified` 表示安装与哈希校验成功。脚本在原程序旁保存 **`Telegram.exe.before-chinese-search.7.2.7.bak`**，再原子替换程序；已有备份只校验，不覆盖。请保留备份、完整 `tools` 目录及其上一级的 `compatibility.json`，以便卸载补丁。不同 Telegram 版本分别备份，旧版备份不覆盖。
 
 遇到进程仍运行、原版或产物哈希不同、备份异常、目录不可写等情况，脚本会报错。按错误原因处理，不要绕过版本检查。
 
@@ -251,9 +251,19 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\Install-Patch.ps1 -Tel
 
 用原来的快捷方式启动 Telegram，在左上角全局搜索试试 `美丽`、`Python 教程` 或你知道已经存在的消息片段，再体验消息结果右键菜单。
 
-没有结果时，先用确定存在的单个词测试，注意大小写与服务端返回范围；不能只凭一个搜索词没结果就判断补丁未安装。需要核对时，再对安装目录的 `Telegram.exe` 运行 `Get-FileHash`，应为上面的 r3 哈希。
+没有结果时，先用确定存在的单个词测试，注意大小写与服务端返回范围；不能只凭一个搜索词没结果就判断补丁未安装。需要核对时，再对安装目录的 `Telegram.exe` 运行 `Get-FileHash`，应为上面的 r4 哈希。
 
-安装不修改 `tdata`，不启用后台维护，也不会自动启动程序。
+安装脚本不修改 `tdata`，不启用后台维护，也不会自动启动程序。
+
+### 7. 使用独立启动入口
+
+将补丁源码和构建文件留在 Telegram 安装目录之外，以后可以运行：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\Start-PatchedTelegram.ps1 -TelegramExe 'C:\TelegramPortable\Telegram.exe' -PatchedExe $patchedExe
+```
+
+此入口核对 EXE；已支持原版被覆盖后可重新应用补丁再启动。未知新版会保留原文件、停止启动并提示适配。它不会阻止 Telegram 更新，也不会自动安装后台服务。更新器直接重启会绕过它；完整研究结论、限制和使用说明见[升级后保留补丁](docs/update-persistence.md)。
 
 ## 如何卸载或恢复原版
 
@@ -261,7 +271,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\Install-Patch.ps1 -Tel
 
 ### 1. 完全退出 Telegram
 
-从托盘退出所有 Telegram 实例，然后进入保留的源码目录。确保 `tools\Restore-Patch.ps1` 和 `tools\Patch.Common.ps1` 都在，目标程序旁还保留 `Telegram.exe.before-chinese-search.bak`。
+从托盘退出所有 Telegram 实例，然后进入保留的源码目录。确保完整 `tools` 目录及其上一级的 `compatibility.json` 都在，目标程序旁还保留 `Telegram.exe.before-chinese-search.7.2.7.bak`。
 
 ### 2. 运行恢复脚本
 
@@ -270,7 +280,7 @@ Set-Location 'C:\TelegramSearchPatch'
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\Restore-Patch.ps1 -TelegramExe 'C:\TelegramPortable\Telegram.exe'
 ```
 
-看到 `Original restored and SHA256 verified` 表示恢复成功。脚本会先核对当前程序为已知 r3 补丁版、备份为支持的官方原版，再恢复；聊天数据和黑名单规则不参与替换。
+看到 `Original restored and SHA256 verified` 表示恢复成功。脚本会先核对当前程序为已知 r4 补丁版、备份为支持的官方原版，再恢复；聊天数据和黑名单规则不参与替换。
 
 ### 3. 核对并启动
 
@@ -278,21 +288,21 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\Restore-Patch.ps1 -Tel
 Get-FileHash -LiteralPath 'C:\TelegramPortable\Telegram.exe' -Algorithm SHA256
 ```
 
-恢复后的哈希应为 `24b0715d9b74374c1d70c9f9537f631d45c51d08a520f3a9a8b9e5df92ad169b`。之后自行启动 Telegram，即恢复原版搜索行为。
+恢复后的哈希应为 `16a234e303ecbafde90e0f5ee27e13a40595453f33896fa340d9cb186df60397`。之后自行启动 Telegram，即恢复原版搜索行为。
 
 ### 4. 按需清理补丁文件
 
 恢复成功后，原版 Telegram 不会加载本补丁的黑名单。想保留以后重新使用的规则，可以保留文件；想移除规则，可以在 Telegram 及管理脚本均退出时，删除程序旁的 `exact-search-blacklist.v1.bin` 及其 `.lock` 文件。
 
-不再需要构建和恢复工具时，可删除本补丁的源码/构建目录。确认官方原版已恢复后，也可按需移除 `Telegram.exe.before-chinese-search.bak` 和空的 `Telegram.exe.chinese-search.lock`。这些文件名沿用首版命名，项目更名不会改变它们。
+不再需要构建和恢复工具时，可删除本补丁的源码/构建目录。确认官方原版已恢复后，也可按需移除 `Telegram.exe.before-chinese-search.7.2.7.bak` 和空的 `Telegram.exe.chinese-search.lock`。恢复备份名自 v1.1.0 起包含 Telegram 版本号，旧版备份保持原样。
 
 **`tdata` 是 Telegram 的账号与本地数据目录，不属于补丁清理项，不要在卸载补丁时删除。**
 
 ### 备份丢失、已经更新或恢复报错
 
 - **缺少或损坏原版备份**：恢复脚本会拒绝操作。需要从 [Telegram 官方下载页](https://desktop.telegram.org/)取得适合自己的官方客户端，按实际安装方式恢复官方程序，并保留原有数据。
-- **Telegram 已自动更新**：当前 EXE 的版本与哈希可能已经不同。不要强行恢复旧的 7.2.5 备份；新版程序是否还有补丁，应以其实际文件哈希和适配情况判断。
-- **只丢失了源码/工具目录**：可以重新下载本项目，保留完整 `tools` 目录后重试恢复。原版备份仍须存在于 Telegram 程序旁。
+- **Telegram 已自动更新**：当前 EXE 的版本与哈希可能已经不同。不要强行恢复不同版本的备份；新版程序是否还有补丁，应以其实际文件哈希和适配情况判断。
+- **只丢失了源码/工具目录**：请下载与已安装补丁匹配的发布版本，保留完整 `tools` 目录和 `compatibility.json` 后重试恢复。原版备份仍须存在于 Telegram 程序旁。
 - **文件被占用或没有写权限**：先退出 Telegram 和正在运行的补丁管理脚本，确认目录及权限后再试。
 
 ## 黑名单
@@ -324,7 +334,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\Manage-Blacklist.ps1 -
 | 可以用 `OR`、减号排除词或星号吗？ | 补丁不会将它们作为特殊运算符；它们会参与字面匹配。 |
 | 会自动删除广告或拉黑发广告的人吗？ | 不会。主动屏蔽后只隐藏原文相同的搜索结果，不删除消息，也不拉黑账号。 |
 | 所有重复内容会自动去重吗？ | 不会。只有已手动加入内容黑名单的原文会被隐藏。 |
-| 手机、Mac、Linux 可以安装吗？ | 当前发布仅适配兼容性清单中的 Windows x64 7.2.5，不适用于其他平台。 |
+| 手机、Mac、Linux 可以安装吗？ | 当前发布仅适配兼容性清单中的 Windows x64 7.2.7，不适用于其他平台。 |
 | Telegram 更新后补丁还在吗？ | 更新可能替换 EXE，需要按新版重新核验和适配；本项目不保证跨版本自动生效。 |
 | 需要把账号密码或验证码交给补丁吗？ | 不需要。构建和安装工具不需要登录账号，也不需要 API 凭据。 |
 | 删除源码 ZIP 或源码目录就算卸载吗？ | 不算。已安装的修改在 Telegram.exe 中，须先按上面的步骤恢复官方原版。 |
@@ -341,13 +351,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\Manage-Blacklist.ps1 -
 如果已经安装补丁，目标 `Telegram.exe` 已不是原版，测试参数应改为安装器保留的备份：
 
 ```powershell
-.\.venv\Scripts\python.exe tests\test_menu_payload.py --build-dir build --original 'C:\TelegramPortable\Telegram.exe.before-chinese-search.bak'
+.\.venv\Scripts\python.exe tests\test_menu_payload.py --build-dir build --original 'C:\TelegramPortable\Telegram.exe.before-chinese-search.7.2.7.bak'
 ```
 
 回归测试在 Unicorn 模拟器中执行编译后的补丁，使用合成 Qt/WinAPI 对象及内存文件系统，不访问真实账号或聊天数据。它不等同于完整 Telegram UI 测试。详细覆盖与限制见 [验证说明](docs/verification.md)。
 
-本次使用说明还针对现有 r3 编译产物核对了 **73 个多语言及搜索语法正反例，在两个 ASLR 基址下均通过**，并对照消息、联系人及聊天内搜索的作用范围。补丁程序本身未因文档更新而改变。
+多语言回归已纳入仓库：`tests/test_language_examples.py --build-dir build`。另运行 `powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_install_tools.ps1` 检查安装、版本备份、恢复和外置启动器。测试使用隔离的合成文件，不修改真实 Telegram。
+
+`tests/test_build_rejection.py` 检查兼容性清单与构建器一致，并确认未知输入在编译或写入输出之前被拒绝。本版尚未完成补丁版客户端的真实界面验证，安装后请检查搜索、右键屏蔽、撤销和重启。
 
 ## 许可证
 
-本项目原创补丁代码、脚本和文档采用 [MIT License](LICENSE)。Telegram Desktop 本体采用 [GPL-3.0 及上游附加条款](https://github.com/telegramdesktop/tdesktop/tree/v7.2.5)，本项目的 MIT 许可不改变 Telegram 及其依赖的许可。组合后的客户端不能作为纯 MIT 软件分发，详见 [NOTICE](NOTICE.md)。
+本项目原创补丁代码、脚本和文档采用 [MIT License](LICENSE)。Telegram Desktop 本体采用 [GPL-3.0 及上游附加条款](https://github.com/telegramdesktop/tdesktop/tree/v7.2.7)，本项目的 MIT 许可不改变 Telegram 及其依赖的许可。组合后的客户端不能作为纯 MIT 软件分发，详见 [NOTICE](NOTICE.md)。

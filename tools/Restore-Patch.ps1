@@ -5,9 +5,10 @@ Restore the supported original Telegram.exe from its verified local backup.
 .DESCRIPTION
 Requires the exact supported patched executable and original backup hashes.
 Exit Telegram yourself first. The script never stops or starts a process.
-The original backup must be Telegram.exe.before-chinese-search.bak beside the
+The original backup must be Telegram.exe.before-chinese-search.<version>.bak beside the
 explicitly selected Telegram.exe. Only the executable is replaced atomically;
-the backup, chats, tdata, and blacklist are retained. Keep Patch.Common.ps1 beside this script.
+the backup, chats, tdata, and blacklist are retained. Keep Patch.Common.ps1 beside this
+script and compatibility.json in its parent directory. Older backups are never selected.
 .EXAMPLE
 .\Restore-Patch.ps1 -TelegramExe 'D:\Telegram\Telegram.exe'
 #>
@@ -20,7 +21,7 @@ param(
 try {
     . (Join-Path $PSScriptRoot 'Patch.Common.ps1')
     $target = Resolve-PatchFilePath $TelegramExe 'Telegram.exe'
-    $backup = Resolve-PatchFilePath ($target + '.before-chinese-search.bak')
+    $backup = Resolve-PatchFilePath (Get-PatchBackupPath $target)
     Assert-PatchHash $target $PatchedSha256
     Assert-PatchHash $backup $OriginalSha256
     Assert-TelegramStopped

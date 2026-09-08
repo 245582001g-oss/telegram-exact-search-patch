@@ -17,9 +17,10 @@ import pefile
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_OUTPUT = HERE.parent / 'build'
-EXPECTED_SHA256 = '24b0715d9b74374c1d70c9f9537f631d45c51d08a520f3a9a8b9e5df92ad169b'
+TELEGRAM_VERSION = '7.2.7'
+EXPECTED_SHA256 = '16a234e303ecbafde90e0f5ee27e13a40595453f33896fa340d9cb186df60397'
 IMAGE_BASE = 0x140000000
-ORIGINAL_IMAGE_SIZE = 0xE343000
+ORIGINAL_IMAGE_SIZE = 0xE3F5000
 PAYLOAD_RVA = ORIGINAL_IMAGE_SIZE
 EXCEPTION = pefile.DIRECTORY_ENTRY['IMAGE_DIRECTORY_ENTRY_EXCEPTION']
 SECURITY = pefile.DIRECTORY_ENTRY['IMAGE_DIRECTORY_ENTRY_SECURITY']
@@ -356,6 +357,7 @@ def build_patch(input_path: Path, output: Path, gcc: Path):
         require(native_image_validation.get('sec_image_created'),
             f'Windows rejected output SEC_IMAGE: {native_image_validation}')
     report = {
+        'telegram_version':TELEGRAM_VERSION,
         'input':str(input_path),'input_sha256':EXPECTED_SHA256,'output':str(target),
         'output_sha256':digest(result),'payload':str(payload_path),'payload_sha256':digest(payload_raw),
         'image_base':hex(IMAGE_BASE),'original_image_size':hex(ORIGINAL_IMAGE_SIZE),
@@ -385,7 +387,7 @@ def build_patch(input_path: Path, output: Path, gcc: Path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--input',type=Path,required=True,
-                        help='Original unmodified Telegram Desktop 7.2.5 x64 EXE (read-only)')
+                        help=f'Original unmodified Telegram Desktop {TELEGRAM_VERSION} x64 EXE (read-only)')
     parser.add_argument('--output-dir',type=Path,default=DEFAULT_OUTPUT,
                         help='Separate output directory (default: repository/build)')
     parser.add_argument('--gcc',

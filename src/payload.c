@@ -1,4 +1,4 @@
-/* Local exact-search patch, bound to Telegram Desktop 7.2.5 SHA-256 in hooks.json.
+/* Local exact-search patch, bound to Telegram Desktop 7.2.7 SHA-256 in build_patch.py.
  * No new network code, imports, or credential access. The optional content
  * blacklist persists only UTF-16 lengths and SHA-256 hashes beside this EXE.
  * All original
@@ -70,7 +70,7 @@ static int active(void *inner) {
 }
 static int message_matches(void *item, Text query) {
     typedef const void *(*OriginalText)(void *);
-    return item && all_keywords(text(FN(0x1bd5550,OriginalText)(item)),query);
+    return item && all_keywords(text(FN(0x1c88390,OriginalText)(item)),query);
 }
 static int username_matches(const void *name, Text query) {
     Text value=text(name);
@@ -86,7 +86,7 @@ static int username_matches(const void *name, Text query) {
 static int peer_matches(void *peer, Text query) {
     typedef const void *(*Name)(void *);
     if (!peer) return 0;
-    if (contains(text(FN(0x13ed3f0,Name)(peer)),query)) return 1;
+    if (contains(text(FN(0x149b950,Name)(peer)),query)) return 1;
     unsigned int kind=AT(peer,0xe,u8);
     unsigned int offset=(kind==0) ? 0x1d8 : (kind==2 ? 0x228 : 0);
     if (offset) {
@@ -120,10 +120,10 @@ EXPORT void PatchMessages(void *inner, PtrVector *items, void *inject,
             filtering=1;
             void **out=items->begin;
             for (void **p=items->begin; p!=items->end; ++p) {
-                if (!bl_contains(&blocked,text(FN(0x1bd5550,OriginalText)(*p)))) *out++=*p;
+                if (!bl_contains(&blocked,text(FN(0x1c88390,OriginalText)(*p)))) *out++=*p;
             }
             items->end=out;
-            if (inject && bl_contains(&blocked,text(FN(0x1bd5550,OriginalText)(inject)))) inject=0;
+            if (inject && bl_contains(&blocked,text(FN(0x1c88390,OriginalText)(inject)))) inject=0;
         }
         bl_close(&blocked);
     }
@@ -131,7 +131,7 @@ EXPORT void PatchMessages(void *inner, PtrVector *items, void *inject,
         full_count=(int)(items->end-items->begin)
             + ((type&4) ? 0 : (int)((AT(inner,0x3d0,uptr)-AT(inner,0x3c8,uptr))/8));
     }
-    FN(0x158c1f0,Receive)(inner,items,inject,type,full_count);
+    FN(0x163a810,Receive)(inner,items,inject,type,full_count);
     if (filtering) {
         AT(inner,0x3e0,int)=(int)((AT(inner,0x3d0,uptr)-AT(inner,0x3c8,uptr))/8);
         AT(inner,0x3e4,int)=0;
@@ -162,17 +162,17 @@ EXPORT void PatchPeers(void *inner, void *result) {
             }
             out+=0x30;
         }
-        for (u8 *p=out; p!=end; p+=0x30) FN(0x522b50,Destroy)(p);
+        for (u8 *p=out; p!=end; p+=0x30) FN(0x5c0750,Destroy)(p);
         AT(result,0x40,u8 *)=out;
     }
-    FN(0x158c930,Receive)(inner,result);
+    FN(0x163af50,Receive)(inner,result);
 }
 static int entry_matches(void *entry, Text query) {
     typedef const void *(*Name)(void *);
     Name get_name=AT(AT(entry,0,void *),0x48,Name);
     if (contains(text(get_name(entry)),query)) return 1;
-    if ((AT(entry,0xfc,unsigned int)&2)!=0) {
-        void *peer=AT(entry,0x2b8,void *);
+    if ((AT(entry,0x104,unsigned int)&2)!=0) {
+        void *peer=AT(entry,0x2d8,void *);
         /* Reuse aliases without conflating separate peer names. */
         unsigned int kind=AT(peer,0xe,u8);
         unsigned int offset=(kind==0) ? 0x1d8 : (kind==2 ? 0x228 : 0);
@@ -187,13 +187,13 @@ static int entry_matches(void *entry, Text query) {
 EXPORT PtrVector *PatchLocal(void *list, PtrVector *result, void *words, void *inner) {
     typedef PtrVector *(*Filtered)(void *,PtrVector *,void *);
     typedef void *(*Allocate)(uptr);
-    if (!active(inner)) return FN(0x1570520,Filtered)(list,result,words);
+    if (!active(inner)) return FN(0x161eb20,Filtered)(list,result,words);
     Text query=text((u8 *)inner+0x618);
     void **begin=AT(list,0x30,void **), **end=AT(list,0x38,void **);
     uptr count=0;
     for (void **p=begin; p!=end; ++p)
         if (entry_matches(AT(*p,0x60,void *),query)) ++count;
-    result->begin=(void **)FN(0x405a00,Allocate)(count*8);
+    result->begin=(void **)FN(0x4a3690,Allocate)(count*8);
     result->end=result->begin;
     result->capacity=result->begin+count;
     for (void **p=begin; p!=end; ++p)
@@ -204,9 +204,9 @@ EXPORT void *PatchWords(void *out, const void *query, int flags, void *inner) {
     typedef void *(*Prepare)(void *,const void *,int);
     typedef void *(*EmptyList)(void *);
     typedef void (*Append)(void *,const void *);
-    if (!active(inner)) return FN(0x3a37c10,Prepare)(out,query,flags);
-    FN(0x695050,EmptyList)(out);
-    FN(0x694f70,Append)(out,query);
+    if (!active(inner)) return FN(0x3afad60,Prepare)(out,query,flags);
+    FN(0x7331a0,EmptyList)(out);
+    FN(0x7330c0,Append)(out,query);
     return out;
 }
 #include "menu.h"

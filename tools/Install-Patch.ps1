@@ -5,9 +5,10 @@ Install the exact supported Chinese search build into an explicitly selected Tel
 .DESCRIPTION
 Requires the supported original Telegram.exe and the exact patched build hashes.
 Exit Telegram yourself first. The script never stops or starts a process.
-Creates or verifies Telegram.exe.before-chinese-search.bak beside Telegram.exe,
+Creates or verifies Telegram.exe.before-chinese-search.<version>.bak beside Telegram.exe,
 then replaces only the executable atomically. Chats, tdata, and blacklists are untouched.
-Keep Patch.Common.ps1 beside this script. Backups are never overwritten.
+Keep Patch.Common.ps1 beside this script and compatibility.json in its parent directory.
+Backups are never overwritten; backups from older versions are retained separately.
 .EXAMPLE
 .\Install-Patch.ps1 -TelegramExe 'D:\Telegram\Telegram.exe' -PatchedExe 'D:\Build\Telegram.exe'
 #>
@@ -30,7 +31,7 @@ try {
     try {
         $lockHandle = Open-PatchLock $target
         Assert-PatchHash $target $OriginalSha256
-        $backup = $target + '.before-chinese-search.bak'
+        $backup = Get-PatchBackupPath $target
         if (Test-Path -LiteralPath $backup) {
             $backup = Resolve-PatchFilePath $backup
             Assert-PatchHash $backup $OriginalSha256

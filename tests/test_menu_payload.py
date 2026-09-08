@@ -60,24 +60,24 @@ class Machine(old.Machine):
         self.research_calls=[]
         self.receive_loading=[]
         self.crypto_hash_calls=0
-        self.native(0x1bd5550,self.original_text)
-        self.native(0x5cda52c,self.native_alloc)
-        self.native(0x5ac71a0,self.native_free)
-        self.native(0x405a00,self.native_alloc)
-        self.native(0x5883280,self.construct_qstring)
-        self.native(0x406b90,self.destroy_qstring)
-        self.native(0x53cf580,self.construct_action)
-        self.native(0x58cc5d0,self.connect)
-        self.native(0x58c9fc0,self.connection_dtor)
-        self.native(0x3bd9950,self.add_action)
-        self.native(0x1583120,lambda a:self.mouse_calls.append(('searched',a[:2])))
-        self.native(0x15830b0,lambda a:self.mouse_calls.append(('preview',a[:2])))
-        self.native(0x158f3e0,lambda a:self.mouse_calls.append(('clear',a[:2])))
-        self.native(0x158d170,lambda a:self.refresh_calls.append(a[:2]))
-        self.native(0x459e00,self.research)
-        self.native(0x158c1f0,self.receive)
-        self.map(base+0x8e15fa0,8)
-        self.u.mem_write(base+0x8e15fa0,struct.pack('<II',1,0))
+        self.native(0x1c88390,self.original_text)
+        self.native(0x5d6e61c,self.native_alloc)
+        self.native(0x5b5b2c0,self.native_free)
+        self.native(0x4a3690,self.native_alloc)
+        self.native(0x5917620,self.construct_qstring)
+        self.native(0x4a4820,self.destroy_qstring)
+        self.native(0x5466720,self.construct_action)
+        self.native(0x5960740,self.connect)
+        self.native(0x595e130,self.connection_dtor)
+        self.native(0x3c95c80,self.add_action)
+        self.native(0x1631740,lambda a:self.mouse_calls.append(('searched',a[:2])))
+        self.native(0x16316d0,lambda a:self.mouse_calls.append(('preview',a[:2])))
+        self.native(0x163da10,lambda a:self.mouse_calls.append(('clear',a[:2])))
+        self.native(0x163b7a0,lambda a:self.refresh_calls.append(a[:2]))
+        self.native(0x4f7a90,self.research)
+        self.native(0x163a810,self.receive)
+        self.map(base+0x8ecd4d0,8)
+        self.u.mem_write(base+0x8ecd4d0,struct.pack('<II',1,0))
         self.install_windows()
         self.u.hook_add(UC_HOOK_MEM_READ,self.guard_dead_rows)
 
@@ -155,11 +155,11 @@ class Machine(old.Machine):
         return a[0]
 
     def connect(self,a):
-        assert self.get(a[2])==self.base+0x53d1540,('signal',a)
+        assert self.get(a[2])==self.base+0x5468760,('signal',a)
         assert a[4]==0 and (a[6]&0xffffffff)==2,('functor/queued arguments',a)
-        assert a[7]==self.base+0x8e15fa0
+        assert a[7]==self.base+0x8ecd4d0
         assert bytes(self.u.mem_read(a[7],8))==struct.pack('<II',1,0)
-        assert a[8]==self.base+0x64432e0
+        assert a[8]==self.base+0x64ec2c0
         slot=a[5]
         assert self.i32(slot)==1
         assert self.get(slot+8)==self.exports['BlacklistSlotImpl']
@@ -188,8 +188,8 @@ class Machine(old.Machine):
 
     def research(self,a):
         assert bytes(self.u.mem_read(a[1],1))==b'\1'
-        assert bytes(self.u.mem_read(a[0]-0x858+0xa39,1))==b'\1'
-        self.research_calls.append(a[0]-0x858)
+        assert bytes(self.u.mem_read(a[0]-0x860+0xa41,1))==b'\1'
+        self.research_calls.append(a[0]-0x860)
 
     def receive(self,a):
         # Native searchReceived consumes the by-value pointer vector. Model its
@@ -212,14 +212,14 @@ class Machine(old.Machine):
             row=self.alloc(0x88);self.put(row+0x60,item);self.put(row+0x70,index);rows.append(row)
         self.vector(rows,inner+offset)
         self.u32(inner+(0x3e4 if kind&1 else 0x3b0 if to_preview else 0x3e0),count)
-        self.u.mem_write(inner+0xa38,self.receive_loading.pop(0) if self.receive_loading else b'\0\0')
+        self.u.mem_write(inner+0xa40,self.receive_loading.pop(0) if self.receive_loading else b'\0\0')
         pointer=self.get(vector)
         if pointer in self.native_live:
             assert self.native_live[pointer]==self.get(vector+16)-pointer
             self.native_free([pointer,self.native_live[pointer]])
 
     def install_windows(self):
-        self.iat(0x5f524a0,'GetProcessHeap',lambda a:0x4444)
+        self.iat(0x5fec348,'GetProcessHeap',lambda a:0x4444)
         def heap_alloc(a):
             assert a[0]==0x4444 and a[1]==8
             p=self.alloc(a[2]);self.heap_live[p]=a[2];return p
@@ -227,16 +227,16 @@ class Machine(old.Machine):
             assert a[0]==0x4444 and a[1]==0
             assert a[2] in self.heap_live,('heap double free',hex(a[2]))
             del self.heap_live[a[2]];return 1
-        self.iat(0x5f52940,'HeapAlloc',heap_alloc)
-        self.iat(0x5f524a8,'HeapFree',heap_free)
+        self.iat(0x5fec3c8,'HeapAlloc',heap_alloc)
+        self.iat(0x5fec350,'HeapFree',heap_free)
         def module_name(a):
             encoded=self.module_path.encode('utf-16-le')+b'\0\0'
             assert a[2]>len(encoded)//2
             self.u.mem_write(a[1],encoded);return len(encoded)//2-1
-        self.iat(0x5f52118,'GetModuleFileNameW',module_name)
-        self.iat(0x5f52078,'GetLastError',lambda a:self.last_error)
-        self.iat(0x5f52100,'GetCurrentProcessId',lambda a:12345)
-        self.iat(0x5f52220,'GetTickCount64',lambda a:987654321)
+        self.iat(0x5fec118,'GetModuleFileNameW',module_name)
+        self.iat(0x5fec078,'GetLastError',lambda a:self.last_error)
+        self.iat(0x5fec100,'GetCurrentProcessId',lambda a:12345)
+        self.iat(0x5fec220,'GetTickCount64',lambda a:987654321)
         def create(a):
             path=self.wide(a[0]);mode=a[4]&0xffffffff
             self.file_creates.append((path,a[1]&0xffffffff,a[2]&0xffffffff,mode))
@@ -250,33 +250,33 @@ class Machine(old.Machine):
             if mode in (1,4):self.files.setdefault(path,b'')
             handle=self.next_handle;self.next_handle+=1
             self.handles[handle]={'path':path,'position':0,'access':a[1]};return handle
-        self.iat(0x5f52098,'CreateFileW',create)
+        self.iat(0x5fec098,'CreateFileW',create)
         def read(a):
             f=self.handles[a[0]];raw=self.files[f['path']]
             data=raw[f['position']:f['position']+a[2]]
             if data:self.u.mem_write(a[1],data)
             f['position']+=len(data);self.u32(a[3],len(data));return 1
-        self.iat(0x5f521e0,'ReadFile',read)
+        self.iat(0x5fec1e0,'ReadFile',read)
         def write(a):
             f=self.handles[a[0]];raw=self.files[f['path']]
             chunk=bytes(self.u.mem_read(a[1],a[2]));at=f['position']
             self.files[f['path']]=raw[:at]+chunk+raw[at+len(chunk):]
             f['position']+=len(chunk);self.u32(a[3],len(chunk));return 1
-        self.iat(0x5f520a0,'WriteFile',write)
+        self.iat(0x5fec0a0,'WriteFile',write)
         def close(a):assert a[0] in self.handles;del self.handles[a[0]];return 1
-        self.iat(0x5f520a8,'CloseHandle',close)
+        self.iat(0x5fec0a8,'CloseHandle',close)
         def size(a):self.put(a[1],len(self.files[self.handles[a[0]]['path']]));return 1
-        self.iat(0x5f52068,'GetFileSizeEx',size)
-        self.iat(0x5f52288,'FlushFileBuffers',lambda a:1)
+        self.iat(0x5fec038,'GetFileSizeEx',size)
+        self.iat(0x5fec288,'FlushFileBuffers',lambda a:1)
         def move(a):
             assert a[2]==9
             self.files[self.wide(a[1])]=self.files.pop(self.wide(a[0]));return 1
-        self.iat(0x5f52280,'MoveFileExW',move)
+        self.iat(0x5fec280,'MoveFileExW',move)
         def delete(a):self.files.pop(self.wide(a[0]),None);return 1
-        self.iat(0x5f52080,'DeleteFileW',delete)
+        self.iat(0x5fec080,'DeleteFileW',delete)
         def load(a):assert self.wide(a[0]).lower()=='bcrypt.dll' and a[2]==0x800;return 0x5555
-        self.iat(0x5f52398,'LoadLibraryExW',load)
-        self.iat(0x5f521c8,'FreeLibrary',lambda a:1)
+        self.iat(0x5fec428,'LoadLibraryExW',load)
+        self.iat(0x5fec1c8,'FreeLibrary',lambda a:1)
         def crypto_open(a):assert self.wide(a[1])=='SHA256';self.put(a[0],0x6666);return 0
         def crypto_hash(a):
             self.crypto_hash_calls+=1
@@ -298,8 +298,8 @@ class Machine(old.Machine):
         names['GetFinalPathNameByHandleW']=self.stub('final_path',final_path)
         self.dynamic_names=names
         modules={'user32.dll':0x7777,'kernel32.dll':0x8888}
-        self.iat(0x5f52148,'GetModuleHandleW',lambda a:modules.get(self.wide(a[0]).lower(),0))
-        self.iat(0x5f521c0,'GetProcAddress',lambda a:names.get(self.narrow(a[1]),0))
+        self.iat(0x5fec148,'GetModuleHandleW',lambda a:modules.get(self.wide(a[0]).lower(),0))
+        self.iat(0x5fec1c0,'GetProcAddress',lambda a:names.get(self.narrow(a[1]),0))
 
     def seed_blacklist(self,values):
         self.files[self.db_path]=b'TGEXBL1\0'+struct.pack('<II',1,len(values))+b''.join(
@@ -382,10 +382,10 @@ class Machine(old.Machine):
             return trace('MoveFileExW',[src,dst,flags],move(src,dst,flags))
         def call_delete(a):
             filename=path(a[0]);return trace('DeleteFileW',[filename],delete(filename))
-        for rva,name,fn in [(0x5f52098,'CreateFileW',call_create),(0x5f521e0,'ReadFile',call_read),
-            (0x5f520a0,'WriteFile',call_write),(0x5f520a8,'CloseHandle',call_close),
-            (0x5f52068,'GetFileSizeEx',call_size),(0x5f52288,'FlushFileBuffers',call_flush),
-            (0x5f52280,'MoveFileExW',call_move),(0x5f52080,'DeleteFileW',call_delete)]:self.iat(rva,name,fn)
+        for rva,name,fn in [(0x5fec098,'CreateFileW',call_create),(0x5fec1e0,'ReadFile',call_read),
+            (0x5fec0a0,'WriteFile',call_write),(0x5fec0a8,'CloseHandle',call_close),
+            (0x5fec038,'GetFileSizeEx',call_size),(0x5fec288,'FlushFileBuffers',call_flush),
+            (0x5fec280,'MoveFileExW',call_move),(0x5fec080,'DeleteFileW',call_delete)]:self.iat(rva,name,fn)
 
     def guard_dead_rows(self,u,access,address,size,value,data):
         for lo,hi in self.dead_rows:
@@ -419,14 +419,14 @@ class Machine(old.Machine):
         inner=self.inner('内容');self.u32(inner+0x4b0,1)
         control=self.alloc(8);self.u32(control+4,1)
         popup=self.alloc(0x350);menu=self.alloc(0x400)
-        self.put(inner+0xa40,control);self.put(inner+0xa48,popup);self.put(popup+0x1b0,menu)
+        self.put(inner+0xa48,control);self.put(inner+0xa50,popup);self.put(popup+0x1b0,menu)
         history=self.alloc(0x400);other_history=self.alloc(0x400)
         selected,selected_row=self.message(value,history,101)
         decoy,decoy_row=self.message('另一条相同编号内容',other_history,101)
         sibling,sibling_row=self.message('同一聊天其他内容',history,102)
         self.vector([decoy_row,selected_row] if target_preview else [sibling_row],inner+0x398)
         self.vector([sibling_row] if target_preview else [decoy_row,selected_row],inner+0x3c8)
-        self.put(inner+0x6a0,history);self.put(inner+0x6a8,123456);self.put(inner+0x6b0,101)
+        self.put(inner+0x6a8,history);self.put(inner+0x6b0,123456);self.put(inner+0x6b8,101)
         connection=self.alloc(8)
         return inner,connection,selected,value
 
@@ -454,7 +454,7 @@ def suite(m):
         assert not m.heap_live and not m.handles,'menu open leaked temporary DB resources'
         # A compare dispatch must have no storage/UI effect and a last-ref destroy
         # must free each native slot exactly once without touching its source row.
-        m.u.mem_write(inner+0x6a0,bytes(24))
+        m.u.mem_write(inner+0x6a8,bytes(24))
         compare=m.alloc(1);m.u.mem_write(compare,b'\0')
         m.call('BlacklistSlotImpl',2,slot,0,0,compare)
         assert bytes(m.u.mem_read(compare,1))==b'\0'
@@ -491,9 +491,9 @@ def suite(m):
         slot=next(c['slot'] for c in m.connections if c['label']=='屏蔽相同内容')
         # Emulate original popup destruction before queued invocation. Block only
         # the captured whole-text hash, regardless of this cleared mutable row.
-        m.u.mem_write(inner+0x6a0,bytes(24))
+        m.u.mem_write(inner+0x6a8,bytes(24))
         m.put(inner+0x1d0,all_old_rows[0]);m.u.mem_write(inner+0x1da,b'\1')
-        m.u.mem_write(inner+0xa38,b'\1\1')
+        m.u.mem_write(inner+0xa40,b'\1\1')
         receive_start=len(m.receive_calls);mouse_start=len(m.mouse_calls)
         m.call('BlacklistSlotImpl',1,slot,inner,0,0)
         key=(len(value.encode('utf-16-le'))//2,hashlib.sha256(value.encode('utf-16-le')).digest())
@@ -502,7 +502,7 @@ def suite(m):
         assert m.row_items(inner,0x398)==([preview_keep] if preview else [])
         assert m.i32(inner+0x3e0)==len(expected_normal) and m.i32(inner+0x3e4)==0
         assert m.i32(inner+0x3b0)==int(preview)
-        assert bytes(m.u.mem_read(inner+0xa38,2))==b'\1\1'
+        assert bytes(m.u.mem_read(inner+0xa40,2))==b'\1\1'
         assert m.get(inner+0x1d0)==0 and bytes(m.u.mem_read(inner+0x1da,1))==b'\0'
         assert [x[0] for x in m.mouse_calls[mouse_start:]]==['searched','preview','clear']
         assert [x[3] for x in m.receive_calls[receive_start:]]==([4,6] if preview else [4])
@@ -517,10 +517,10 @@ def suite(m):
     passed.append('native replacement rebuilds new FakeRows/indexes, consumes snapshot buffers, old-row poison guard, counts/mouse/loading preserved')
     inner,handle,item,value=m.menu_scene()
     m.u.mem_write(inner+0x621,b'\1')
-    m.u.mem_write(inner+0xa38,b'\0\0')
+    m.u.mem_write(inner+0xa40,b'\0\0')
     m.receive_loading=[b'\1\0',b'\0\0']
     m.call('RefreshBlocked',inner)
-    assert bytes(m.u.mem_read(inner+0xa38,2))==b'\1\0'
+    assert bytes(m.u.mem_read(inner+0xa40,2))==b'\1\0'
     assert not m.receive_loading and not m.heap_live and not m.handles
     passed.append('loading flag raised during first native rebuild survives second rebuild clearing it')
 
@@ -531,13 +531,13 @@ def suite(m):
     m.call(bridge,handle,extra={UC_X86_REG_RSI:inner})
     undo=next(c['slot'] for c in m.connections if c['label']=='撤销上次屏蔽')
     assert m.i32(undo+24)==2 and bytes(m.u.mem_read(undo+32,36))==bytes(36)
-    m.u.mem_write(inner+0x6a0,bytes(24))
+    m.u.mem_write(inner+0x6a8,bytes(24))
     re_start=len(m.research_calls)
     m.call('BlacklistSlotImpl',1,undo,inner,0,0)
     assert m.saved_keys()==[] and m.research_calls[re_start:]==[inner]
     assert not m.heap_live and not m.handles
     m.destroy_connections()
-    passed.append('Undo label/operation snapshot removes latest record and invokes native instant repeat-search with inner+0x858')
+    passed.append('Undo label/operation snapshot removes latest record and invokes native instant repeat-search with inner+0x860')
 
     # A persisted record is applied to a later independent search/page and its
     # injected item, including scoped searches where literal-global is inactive.
@@ -575,10 +575,10 @@ def suite(m):
         m.actions.clear();m.connections.clear()
         inner,handle,item,value=m.menu_scene(value='' if kind=='empty_text' else '内容')
         if kind=='unfiltered':m.u32(inner+0x4b0,0)
-        if kind=='missing_popup':m.put(inner+0xa48,0)
-        if kind=='missing_id':m.put(inner+0x6b0,0)
-        if kind=='missing_history':m.put(inner+0x6a0,0)
-        if kind=='missing_item':m.put(inner+0x6b0,9000)
+        if kind=='missing_popup':m.put(inner+0xa50,0)
+        if kind=='missing_id':m.put(inner+0x6b8,0)
+        if kind=='missing_history':m.put(inner+0x6a8,0)
+        if kind=='missing_item':m.put(inner+0x6b8,9000)
         m.call(bridge,handle,extra={UC_X86_REG_RSI:inner})
         assert not m.actions and handle in m.connection_dtors
         assert not m.heap_live and not m.handles
@@ -677,14 +677,14 @@ def suite(m):
 
 def timer_patch_suite(m,original):
     with old.pefile.PE(str(original),fast_load=True) as old_pe:
-        original_bytes=old_pe.get_data(0x15fdca6,0x13)
+        original_bytes=old_pe.get_data(0x16ac306,0x13)
     with old.pefile.PE(str(BUILD/'Telegram.exact.exe'),fast_load=True) as new_pe:
-        patched_bytes=new_pe.get_data(0x15fdca6,0x13)
+        patched_bytes=new_pe.get_data(0x16ac306,0x13)
     assert original_bytes[6:11]==bytes.fromhex('ba84030000')
     assert patched_bytes[6:11]==bytes.fromhex('ba2c010000')
     assert patched_bytes[:6]==original_bytes[:6] and patched_bytes[11:]==original_bytes[11:]
-    capture=[];m.native(0x39d1450,lambda a:capture.append(a[:4]))
-    address=m.base+0x15fdca2;m.map(address,64)
+    capture=[];m.native(0x3a94250,lambda a:capture.append(a[:4]))
+    address=m.base+0x16ac302;m.map(address,64)
     m.u.mem_write(address,bytes.fromhex('4883ec28')+patched_bytes+bytes.fromhex('4883c428c3'))
     m.exports['TimerPatchBlock']=address
     timer=m.alloc(128);m.call('TimerPatchBlock',timer)

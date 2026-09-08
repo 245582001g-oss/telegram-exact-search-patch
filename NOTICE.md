@@ -5,8 +5,8 @@ this patch project: patch implementation, build and management scripts, tests,
 and documentation. It does not relicense third-party software.
 
 Telegram Desktop is a separate upstream project. The compatibility baseline is
-[v7.2.5, commit 2f41383dddd338fe17fd4711afd02688c418fd47](https://github.com/telegramdesktop/tdesktop/tree/2f41383dddd338fe17fd4711afd02688c418fd47).
-Its [license](https://github.com/telegramdesktop/tdesktop/blob/v7.2.5/LICENSE)
+[v7.2.7, commit 29873e942b15c4320bf349799542f0cfa95e9049](https://github.com/telegramdesktop/tdesktop/tree/29873e942b15c4320bf349799542f0cfa95e9049).
+Its [license](https://github.com/telegramdesktop/tdesktop/blob/v7.2.7/LICENSE)
 is GNU GPL version 3; see the upstream repository for its OpenSSL exception and
 third-party notices. Telegram names and marks belong to their respective owners.
 This project is not affiliated with or endorsed by Telegram.
@@ -21,7 +21,7 @@ Applying the patch creates a modified Telegram program. The MIT license for our
 contributions does not make that combined program MIT-only. Redistribution of
 the combined executable must respect Telegram's GPL requirements, including
 corresponding source and applicable dependency notices. The official version's
-[full source archive](https://github.com/telegramdesktop/tdesktop/releases/download/v7.2.5/tdesktop-7.2.5-full.tar.gz)
+[full source archive](https://github.com/telegramdesktop/tdesktop/releases/download/v7.2.7/tdesktop-7.2.7-full.tar.gz)
 is available upstream; this source-only release makes no claim to be a complete
 redistribution package for the combined client.
 

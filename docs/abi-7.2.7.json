@@ -1,0 +1,215 @@
+{
+  "old_sha256": "24b0715d9b74374c1d70c9f9537f631d45c51d08a520f3a9a8b9e5df92ad169b",
+  "new_sha256": "16a234e303ecbafde90e0f5ee27e13a40595453f33896fa340d9cb186df60397",
+  "new_image_size": "0xe3f5000",
+  "rva_map": {
+    "0x405a00": "0x4a3690",
+    "0x406b90": "0x4a4820",
+    "0x459e00": "0x4f7a90",
+    "0x522b50": "0x5c0750",
+    "0x694f70": "0x7330c0",
+    "0x695050": "0x7331a0",
+    "0x13ed3f0": "0x149b950",
+    "0x1570520": "0x161eb20",
+    "0x15830b0": "0x16316d0",
+    "0x1583120": "0x1631740",
+    "0x15861ab": "0x16347cb",
+    "0x15875de": "0x1635bfe",
+    "0x15882f7": "0x1636917",
+    "0x158879b": "0x1636dbb",
+    "0x158c1f0": "0x163a810",
+    "0x158c930": "0x163af50",
+    "0x158d170": "0x163b7a0",
+    "0x158f3e0": "0x163da10",
+    "0x15fdca2": "0x16ac302",
+    "0x15fdca6": "0x16ac306",
+    "0x15fdcac": "0x16ac30c",
+    "0x1600665": "0x16aecc5",
+    "0x16010e4": "0x16af744",
+    "0x1bd5550": "0x1c88390",
+    "0x39d1450": "0x3a94250",
+    "0x3a37c10": "0x3afad60",
+    "0x3bd9950": "0x3c95c80",
+    "0x53cf580": "0x5466720",
+    "0x53d1540": "0x5468760",
+    "0x5883280": "0x5917620",
+    "0x58c9fc0": "0x595e130",
+    "0x58cc5d0": "0x5960740",
+    "0x5ac71a0": "0x5b5b2c0",
+    "0x5cda52c": "0x5d6e61c",
+    "0x5f52068": "0x5fec038",
+    "0x5f52078": "0x5fec078",
+    "0x5f52080": "0x5fec080",
+    "0x5f52098": "0x5fec098",
+    "0x5f520a0": "0x5fec0a0",
+    "0x5f520a8": "0x5fec0a8",
+    "0x5f52100": "0x5fec100",
+    "0x5f52118": "0x5fec118",
+    "0x5f52148": "0x5fec148",
+    "0x5f521c0": "0x5fec1c0",
+    "0x5f521c8": "0x5fec1c8",
+    "0x5f521e0": "0x5fec1e0",
+    "0x5f52220": "0x5fec220",
+    "0x5f52280": "0x5fec280",
+    "0x5f52288": "0x5fec288",
+    "0x5f52398": "0x5fec428",
+    "0x5f524a0": "0x5fec348",
+    "0x5f524a8": "0x5fec350",
+    "0x5f52940": "0x5fec3c8",
+    "0x64432e0": "0x64ec2c0",
+    "0x8e15fa0": "0x8ecd4d0"
+  },
+  "field_offsets": {
+    "Entry.flags": {
+      "old": "0xfc",
+      "new": "0x104",
+      "evidence": "receiveMessages old 0x158c35e / new 0x163a97e; flag tests throughout native code"
+    },
+    "History.peer": {
+      "old": "0x2b8",
+      "new": "0x2d8",
+      "evidence": "receiveMessages old 0x158c58f / new 0x163abaf"
+    },
+    "InnerWidget.menuRow.history": {
+      "old": "0x6a0",
+      "new": "0x6a8",
+      "evidence": "showMenu writes whole FullMsgId at old 0x1585e49 / new 0x1634469; menu old/new caller disassembly"
+    },
+    "InnerWidget.menuRow.msgid": {
+      "old": "0x6b0",
+      "new": "0x6b8",
+      "evidence": "showMenu writes qword old [rsi+0x6b0] / new [rsi+0x6b8]"
+    },
+    "InnerWidget.searchRequests": {
+      "old": "0x858",
+      "new": "0x860",
+      "evidence": "old 0x15878ad / new 0x1635ecd LEA RCX, followed by fireSearch CALL"
+    },
+    "InnerWidget.searchLoadingFlags": {
+      "old": "0xa38",
+      "new": "0xa40",
+      "evidence": "old 0x158c23e / new 0x163a85e MOV word ptr [rcx+offset],r13w"
+    },
+    "InnerWidget.searchLoading": {
+      "old": "0xa39",
+      "new": "0xa41",
+      "evidence": "old 0x15878be / new 0x1635ede CMP byte ptr [rsi+offset],0"
+    },
+    "InnerWidget.menu.weakControl": {
+      "old": "0xa40",
+      "new": "0xa48",
+      "evidence": "showMenu checks weak pointer control block; this old field only used by native code"
+    },
+    "InnerWidget.menu.pointer": {
+      "old": "0xa48",
+      "new": "0xa50",
+      "evidence": "old 0x15861c3 / new 0x16347e3 MOV RDX,[RSI+offset]"
+    },
+    "InnerWidget.menuRow.peerId.testFixture": {
+      "old": "0x6a8",
+      "new": "0x6b0",
+      "evidence": "Middle FullMsgId peer component moves with the adjacent history and message ID fields; synthetic fixture must not overwrite history."
+    }
+  },
+  "verified_stable_layout_notes": [
+    "InnerWidget.active folder 0x5e0",
+    "InnerWidget history 0x98",
+    "InnerWidget folder 0xb8",
+    "InnerWidget query 0x618",
+    "InnerWidget state 0x4b0",
+    "InnerWidget preview-mode 0x621",
+    "InnerWidget vectors 0x398/0x3a0/0x3b0/0x3c8/0x3d0/0x3e0/0x3e4",
+    "InnerWidget pressed/mouse 0x1d0/0x1da",
+    "FakeRow item 0x60",
+    "HistoryItem history/id/text 0x10/0x8/0x30",
+    "PopupMenu menu 0x1b0",
+    "QAction object allocation 0x10",
+    "Qt5 QString UTF16 size/data header 4/16",
+    "Qt5 SlotObject header 0/8"
+  ],
+  "hooks": [
+    {
+      "name": "PatchMessages",
+      "old_site": "0x1600665",
+      "new_site": "0x16aecc5",
+      "new_target": "0x163a810",
+      "new_bytes": "e846bbf8ff",
+      "parent_instruction_count": [
+        171,
+        171
+      ],
+      "parent_offset_preserved": true
+    },
+    {
+      "name": "PatchPeers",
+      "old_site": "0x16010e4",
+      "new_site": "0x16af744",
+      "new_target": "0x163af50",
+      "new_bytes": "e807b8f8ff",
+      "parent_instruction_count": [
+        53,
+        53
+      ],
+      "parent_offset_preserved": true
+    },
+    {
+      "name": "PatchLocalBridge",
+      "old_site": "0x158879b",
+      "new_site": "0x1636dbb",
+      "new_target": "0x161eb20",
+      "new_bytes": "e8607dfeff",
+      "parent_instruction_count": [
+        103,
+        103
+      ],
+      "parent_offset_preserved": true
+    },
+    {
+      "name": "PatchApplyWordsBridge",
+      "old_site": "0x15875de",
+      "new_site": "0x1635bfe",
+      "new_target": "0x3afad60",
+      "new_bytes": "e85d514c02",
+      "parent_instruction_count": [
+        757,
+        757
+      ],
+      "parent_offset_preserved": true
+    },
+    {
+      "name": "PatchRefreshWordsBridge",
+      "old_site": "0x15882f7",
+      "new_site": "0x1636917",
+      "new_target": "0x3afad60",
+      "new_bytes": "e844444c02",
+      "parent_instruction_count": [
+        339,
+        339
+      ],
+      "parent_offset_preserved": true
+    },
+    {
+      "name": "PatchMenuBridge",
+      "old_site": "0x15861ab",
+      "new_site": "0x16347cb",
+      "new_target": "0x595e130",
+      "new_bytes": "e860993204",
+      "parent_instruction_count": [
+        296,
+        296
+      ],
+      "parent_offset_preserved": true
+    }
+  ],
+  "ambiguities": [],
+  "resolution_evidence": {
+    "0x459e00": "Two complete byte-pattern-equivalent template instantiations in new binary. Native search call old 0x15878b9 -> new 0x1635ed9 calls 0x4f7a90; the other candidate 0x6db5e0 is excluded by caller identity.",
+    "0x1bd5550": "Unique full 132-byte masked match to 0x1c88390 allowing relocation/RIP displacements plus compiler TLS guard immediate 0xe0 ->0x138. All 31 normalized instructions otherwise identical.",
+    "0x53d1540": "QAction signal function new 0x5468760 has all 11 normalized instructions identical and points to verified QAction staticMetaObject new 0x64ec2c0. Signal index remains 1.",
+    "0x64432e0": "New 0x64ec2c0 metadata resolves string class name QAction; initial 100 bytes of Qt moc metadata exactly equal, pointer fields relocated.",
+    "0x8e15fa0": "New 0x8ecd4d0 resolved from corresponding native QAction::triggered connection old LEA at 0x3b2be4f -> new at 0x3bf06ef. Both contain little-endian int[2]={1,0}.",
+    "iat": "Every slot mapped by identical imported DLL and function name. Offsets move nonuniformly; no constant-shift assumption.",
+    "bridges": "Full caller dumps show local lambda R14, apply RSI, refresh R15, and menu RSI preserved. All callsites use original five-byte direct E8; new targets validated."
+  },
+  "limits": "Read-only binary/static comparison. Does not claim app runtime behavior or network search behavior has been exercised."
+}

@@ -3,8 +3,26 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$OriginalSha256 = '24b0715d9b74374c1d70c9f9537f631d45c51d08a520f3a9a8b9e5df92ad169b'
-$PatchedSha256 = '894b04982521932a159397872604e0c96c9bd0bd8d48643f4a245899ea0a29c0'
+# Use the same release manifest as the builder; refuse missing or malformed data.
+$CompatibilityPath = Join-Path (Split-Path -Parent $PSScriptRoot) 'compatibility.json'
+$Compatibility = Get-Content -LiteralPath $CompatibilityPath -Raw | ConvertFrom-Json
+$TelegramVersion = [string] $Compatibility.telegram_version
+$OriginalSha256 = [string] $Compatibility.input_sha256
+$PatchedSha256 = [string] $Compatibility.verified_output_sha256
+if ($Compatibility.platform -cne 'windows-x64' -or
+    $Compatibility.input_filename -cne 'Telegram.exe' -or
+    $TelegramVersion -notmatch '\A[0-9]+\.[0-9]+\.[0-9]+(?:\.[0-9]+)?\z' -or
+    $OriginalSha256 -notmatch '\A[0-9a-fA-F]{64}\z' -or
+    $PatchedSha256 -notmatch '\A[0-9a-fA-F]{64}\z' -or
+    $OriginalSha256 -ieq $PatchedSha256) {
+    throw 'Invalid compatibility.json: expected one exact Windows x64 release and distinct SHA256 hashes.'
+}
+
+function Get-PatchBackupPath {
+    param([string] $TargetPath)
+    # Never reuse the unversioned backup or a backup from another Telegram release.
+    return $TargetPath + '.before-chinese-search.' + $TelegramVersion + '.bak'
+}
 
 function Resolve-PatchFilePath {
     param([string] $Value, [string] $RequiredName)
@@ -36,6 +54,35 @@ function Assert-TelegramStopped {
     # Refuse while any normal Telegram.exe process exists. Never stop or start it.
     if (@(Get-Process -Name Telegram -ErrorAction SilentlyContinue).Count -gt 0) {
         throw 'Exit Telegram completely (including its tray icon), then run this script again.'
+    }
+    # A junction or other path alias can make the Telegram updater appear elsewhere.
+    # Conservatively refuse every Updater.exe; never infer safety from unequal paths.
+    if (@(Get-Process -Name Updater -ErrorAction SilentlyContinue).Count -gt 0) {
+        throw 'A running Updater process may be the Telegram updater (including a path alias); wait for it to finish or exit it, then retry.'
+    }
+}
+
+function Open-VerifiedPatchReadHandle {
+    param([string] $FilePath, [string] $Expected)
+    $reader = $null
+    $sha256 = $null
+    try {
+        # Hold through process creation so the checked image cannot be rewritten or replaced.
+        $reader = [IO.File]::Open($FilePath, [IO.FileMode]::Open,
+            [IO.FileAccess]::Read, [IO.FileShare]::Read)
+        $sha256 = [Security.Cryptography.SHA256]::Create()
+        $actual = [BitConverter]::ToString($sha256.ComputeHash($reader)).Replace('-', '')
+        if ($actual -ine $Expected) {
+            throw ('SHA256 mismatch; refusing this file: {0}. Expected {1}; got {2}.' -f
+                $FilePath, $Expected, $actual)
+        }
+        $reader.Position = 0
+        return $reader
+    } catch {
+        if ($null -ne $reader) { $reader.Dispose() }
+        throw
+    } finally {
+        if ($null -ne $sha256) { $sha256.Dispose() }
     }
 }
 

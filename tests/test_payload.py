@@ -38,14 +38,14 @@ class Machine:
         self.map(self.stop,0x1000)
         self.handlers={}
         self.events=[]
-        for rva in [0x1bd5550,0x13ed3f0,0x158c1f0,0x158c930,0x522b50,0x1570520,0x405a00,0x1100,
-                    0x3a37c10,0x695050,0x694f70]:
+        for rva in [0x1c88390,0x149b950,0x163a810,0x163af50,0x5c0750,0x161eb20,0x4a3690,0x1100,
+                    0x3afad60,0x7331a0,0x7330c0]:
             self.map(base+rva,1)
         self.u.hook_add(UC_HOOK_CODE,self.hook)
-        self.handlers[base+0x1bd5550]=lambda a:a[0]+0x30
-        self.handlers[base+0x13ed3f0]=lambda a:a[0]+0x100
+        self.handlers[base+0x1c88390]=lambda a:a[0]+0x30
+        self.handlers[base+0x149b950]=lambda a:a[0]+0x100
         self.handlers[base+0x1100]=lambda a:a[0]+0x120
-        self.handlers[base+0x405a00]=lambda a:self.alloc(a[0]) if a[0] else 0
+        self.handlers[base+0x4a3690]=lambda a:self.alloc(a[0]) if a[0] else 0
     def map(self,addr,size):
         for page in range(addr&~4095,(addr+size+4095)&~4095,4096):
             if page not in self.pages:
@@ -88,7 +88,7 @@ class Machine:
     def entry(self,name,peer=None):
         p=self.alloc(0x400);v=self.alloc(0x80);self.put(p,v);self.put(v+0x48,self.base+0x1100)
         self.qstring(name,p+0x120)
-        if peer:self.put(p+0x2b8,peer);self.u.mem_write(p+0xfc,struct.pack('<I',2))
+        if peer:self.put(p+0x2d8,peer);self.u.mem_write(p+0x104,struct.pack('<I',2))
         return p
     def row(self,entry):p=self.alloc(0x100);self.put(p+0x60,entry);return p
     def hook(self,u,addr,size,data):
@@ -138,7 +138,7 @@ def suite(m):
             captured.update(items=m.values(args[1]),inject=args[2],type=args[3]&255,count=args[4]&0xffffffff)
             assert m.get(v)==old_begin and m.get(v+16)==old_cap
             m.vector(captured['items'],inner+0x3c8)
-        m.handlers[m.base+0x158c1f0]=receive
+        m.handlers[m.base+0x163a810]=receive
         m.call('PatchMessages',inner,v,injected,4,999)
         assert captured['items']==([items[1],items[3]] if not scope else items)
         assert captured['inject']==(injected if scope else 0)
@@ -147,7 +147,7 @@ def suite(m):
         if not scope:assert m.i32(inner+0x3e0)==2
     passed.append('message compaction, injected mismatch, scoped passthrough, allocation ownership')
     inner=m.inner('好人');v=m.vector([m.item('好的')]);captured={}
-    m.handlers[m.base+0x158c1f0]=lambda a:captured.update(items=m.values(a[1]),count=a[4])
+    m.handlers[m.base+0x163a810]=lambda a:captured.update(items=m.values(a[1]),count=a[4])
     m.call('PatchMessages',inner,v,0,4,100)
     assert captured=={'items':[],'count':0}
     passed.append('empty filtered message page reaches original receiver')
@@ -162,11 +162,11 @@ def suite(m):
         tokens.append(bytes(m.u.mem_read(sponsored+i*0x30,0x30)))
     m.put(result+0x38,sponsored);m.put(result+0x40,sponsored+0xc0);m.put(result+0x48,sponsored+0xc0)
     destroyed=[];seen={}
-    m.handlers[m.base+0x522b50]=lambda a:destroyed.append(bytes(m.u.mem_read(a[0],0x30)))
+    m.handlers[m.base+0x5c0750]=lambda a:destroyed.append(bytes(m.u.mem_read(a[0],0x30)))
     def peers_receive(a):
         seen['my']=m.values(a[1]+8);seen['peers']=m.values(a[1]+0x20)
         seen['sponsored']=[bytes(m.u.mem_read(p,0x30)) for p in range(m.get(result+0x38),m.get(result+0x40),0x30)]
-    m.handlers[m.base+0x158c930]=peers_receive
+    m.handlers[m.base+0x163af50]=peers_receive
     m.call('PatchPeers',inner,result)
     assert seen['my']==seen['peers']==peers[1:3]
     assert seen['sponsored']==tokens[1:3]
@@ -186,21 +186,21 @@ def suite(m):
         assert m.get(out+8)==m.get(out+16)
     passed.append('local full-list scan, interior match, aliases, original Row pointers, assembly capture bridge')
     inner=m.inner('美丽',0x98);seen={}
-    m.handlers[m.base+0x1570520]=lambda a:seen.update(args=a[:3]) or a[1]
+    m.handlers[m.base+0x161eb20]=lambda a:seen.update(args=a[:3]) or a[1]
     values=[m.alloc(0x80),m.alloc(24),m.alloc(8)]
     assert m.call('PatchLocal',*values,inner)==values[1]
     assert seen['args']==values
     passed.append('local scoped native ABI passthrough')
     for query in ['美 丽','AB',' ab ','!',' ','美丽']:
         inner=m.inner(query);raw=inner+0x618;out=m.alloc(8);seen=[]
-        m.handlers[m.base+0x695050]=lambda a:seen.append(('construct',a[0])) or a[0]
-        m.handlers[m.base+0x694f70]=lambda a:seen.append(('append',a[0],a[1]))
+        m.handlers[m.base+0x7331a0]=lambda a:seen.append(('construct',a[0])) or a[0]
+        m.handlers[m.base+0x7330c0]=lambda a:seen.append(('append',a[0],a[1]))
         for name,reg in [('PatchApplyWordsBridge',UC_X86_REG_RSI),('PatchRefreshWordsBridge',UC_X86_REG_R15)]:
             seen.clear()
             assert m.call(name,out,raw,0,extra={reg:inner})==out
             assert seen==[('construct',out),('append',out,raw)]
     inner=m.inner('');out=m.alloc(8);seen=[]
-    m.handlers[m.base+0x3a37c10]=lambda a:seen.append(a[:3]) or a[0]
+    m.handlers[m.base+0x3afad60]=lambda a:seen.append(a[:3]) or a[0]
     assert m.call('PatchWords',out,inner+0x618,0,inner)==out
     assert seen==[[out,inner+0x618,0]]
     passed.append('query preparation retains whole raw string including punctuation/space/case; empty native fallback')

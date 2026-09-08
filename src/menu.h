@@ -17,8 +17,8 @@ static void operation_error(void) {
     typedef void *(*GetModule)(const u16 *);
     typedef void *(*GetProc)(void *,const char *);
     typedef int (*MessageBox)(void *,const u16 *,const u16 *,unsigned int);
-    GetModule module=AT((void *)base(),0x5f52148,GetModule);
-    GetProc proc=AT((void *)base(),0x5f521c0,GetProc);
+    GetModule module=AT((void *)base(),0x5fec148,GetModule);
+    GetProc proc=AT((void *)base(),0x5fec1c0,GetProc);
     void *user32=module(u"user32.dll");
     if (!user32) return;
     MessageBox message=(MessageBox)proc(user32,"MessageBoxW");
@@ -34,12 +34,12 @@ static PtrVector snapshot_survivors(void *inner,unsigned int vector_offset,Block
     PtrVector result={0,0,0};
     uptr capacity=(uptr)(end-begin);
     if (!capacity) return result;
-    result.begin=(void **)FN(0x405a00,Allocate)(capacity*8);
+    result.begin=(void **)FN(0x4a3690,Allocate)(capacity*8);
     result.end=result.begin;
     result.capacity=result.begin+capacity;
     for (void **p=begin;p!=end;++p) {
         void *item=AT(*p,0x60,void *);
-        if (!bl_contains(blocked,text(FN(0x1bd5550,OriginalText)(item))))
+        if (!bl_contains(blocked,text(FN(0x1c88390,OriginalText)(item))))
             *result.end++=item;
     }
     return result;
@@ -60,24 +60,24 @@ EXPORT void RefreshBlocked(void *inner) {
     PtrVector preview={0,0,0};
     if (preview_mode) preview=snapshot_survivors(inner,0x398,&blocked);
     bl_close(&blocked);
-    u16 loading=AT(inner,0xa38,u16);
-    FN(0x1583120,SetPressed)(inner,-1);
-    FN(0x15830b0,SetPressed)(inner,-1);
-    FN(0x158f3e0,ClearMouse)(inner,1);
+    u16 loading=AT(inner,0xa40,u16);
+    FN(0x1631740,SetPressed)(inner,-1);
+    FN(0x16316d0,SetPressed)(inner,-1);
+    FN(0x163da10,ClearMouse)(inner,1);
     AT(inner,0x1d0,void *)=0;
     AT(inner,0x1da,u8)=0;
-    FN(0x158c1f0,Receive)(inner,&normal,0,4,(int)(normal.end-normal.begin));
-    loading|=AT(inner,0xa38,u16);
+    FN(0x163a810,Receive)(inner,&normal,0,4,(int)(normal.end-normal.begin));
+    loading|=AT(inner,0xa40,u16);
     if (preview_mode) {
-        FN(0x158c1f0,Receive)(inner,&preview,0,6,(int)(preview.end-preview.begin));
-        loading|=AT(inner,0xa38,u16);
+        FN(0x163a810,Receive)(inner,&preview,0,6,(int)(preview.end-preview.begin));
+        loading|=AT(inner,0xa40,u16);
     }
     AT(inner,0x3e0,int)=(int)((AT(inner,0x3d0,uptr)-AT(inner,0x3c8,uptr))/8);
     AT(inner,0x3e4,int)=0;
     AT(inner,0x3b0,int)=(int)((AT(inner,0x3a0,uptr)-AT(inner,0x398,uptr))/8);
     /* No event loop is entered here; keep any pre-existing/new loading flags. */
-    AT(inner,0xa38,u16)|=loading;
-    FN(0x158d170,Refresh)(inner,0);
+    AT(inner,0xa40,u16)|=loading;
+    FN(0x163b7a0,Refresh)(inner,0);
 }
 
 static void repeat_search(void *inner) {
@@ -85,16 +85,16 @@ static void repeat_search(void *inner) {
     typedef void (*Refresh)(void *,unsigned char);
     if (AT(inner,0x4b0,int)!=1) return;
     unsigned char instant=1;
-    AT(inner,0xa39,u8)=1;
-    FN(0x459e00,FireSearch)((u8 *)inner+0x858,&instant);
-    if (AT(inner,0xa39,u8)) FN(0x158d170,Refresh)(inner,0);
+    AT(inner,0xa41,u8)=1;
+    FN(0x4f7a90,FireSearch)((u8 *)inner+0x860,&instant);
+    if (AT(inner,0xa41,u8)) FN(0x163b7a0,Refresh)(inner,0);
 }
 
 EXPORT void BlacklistSlotImpl(int which,BlacklistSlot *slot,void *receiver,void **args,u8 *equal) {
     (void)receiver; (void)args;
     typedef void (*Free)(void *,uptr);
     if (which==0) {
-        FN(0x5ac71a0,Free)(slot,sizeof(*slot));
+        FN(0x5b5b2c0,Free)(slot,sizeof(*slot));
     } else if (which==1) {
         int result=bl_change(slot->operation,&slot->key);
         if (result<0) { operation_error(); return; }
@@ -114,11 +114,11 @@ static void add_blacklist_action(void *menu,void *inner,const u16 *label,int len
     typedef void *(*Connect)(void *,void *,const void *,void *,void *,void *,int,const void *,const void *);
     typedef void *(*AddAction)(void *,void *,void *,void *,void *);
     void *qstring=0;
-    FN(0x5883280,StringCtor)(&qstring,label,length);
-    void *action=FN(0x5cda52c,Allocate)(0x10);
-    FN(0x53cf580,ActionCtor)(action,&qstring,menu);
-    FN(0x406b90,Destroy)(&qstring);
-    BlacklistSlot *slot=(BlacklistSlot *)FN(0x5cda52c,Allocate)(sizeof(BlacklistSlot));
+    FN(0x5917620,StringCtor)(&qstring,label,length);
+    void *action=FN(0x5d6e61c,Allocate)(0x10);
+    FN(0x5466720,ActionCtor)(action,&qstring,menu);
+    FN(0x4a4820,Destroy)(&qstring);
+    BlacklistSlot *slot=(BlacklistSlot *)FN(0x5d6e61c,Allocate)(sizeof(BlacklistSlot));
     slot->reference_count=1;
     slot->padding=0;
     slot->implementation=BlacklistSlotImpl;
@@ -127,19 +127,19 @@ static void add_blacklist_action(void *menu,void *inner,const u16 *label,int len
     slot->reserved=0;
     if (key) slot->key=*key;
     else { slot->key.length=0; for (unsigned int i=0;i<32;++i)slot->key.digest[i]=0; }
-    uptr signal=base()+0x53d1540;
+    uptr signal=base()+0x5468760;
     void *connection=0;
     /* connectImpl owns the initial slot reference on success AND failure. */
-    FN(0x58cc5d0,Connect)(&connection,action,&signal,inner,0,slot,2,
-                        (const void *)(base()+0x8e15fa0),(const void *)(base()+0x64432e0));
-    FN(0x58c9fc0,Destroy)(&connection);
+    FN(0x5960740,Connect)(&connection,action,&signal,inner,0,slot,2,
+                        (const void *)(base()+0x8ecd4d0),(const void *)(base()+0x64ec2c0));
+    FN(0x595e130,Destroy)(&connection);
     void *added=0;
-    FN(0x3bd9950,AddAction)(menu,&added,action,0,0);
+    FN(0x3c95c80,AddAction)(menu,&added,action,0,0);
 }
 
 static void *menu_message(void *inner) {
-    void *history=AT(inner,0x6a0,void *);
-    uptr id=AT(inner,0x6b0,uptr);
+    void *history=AT(inner,0x6a8,void *);
+    uptr id=AT(inner,0x6b8,uptr);
     if (!history || !id) return 0;
     for (unsigned int k=0;k<2;++k) {
         unsigned int offset=k ? 0x398 : 0x3c8;
@@ -155,16 +155,16 @@ static void *menu_message(void *inner) {
 EXPORT void PatchMenu(void *old_connection,void *inner) {
     typedef void (*Destroy)(void *);
     typedef const void *(*OriginalText)(void *);
-    FN(0x58c9fc0,Destroy)(old_connection);
+    FN(0x595e130,Destroy)(old_connection);
     if (AT(inner,0x4b0,int)!=1) return;
-    void *popup=AT(inner,0xa48,void *);
+    void *popup=AT(inner,0xa50,void *);
     void *item=menu_message(inner);
     if (!popup || !item) return;
     void *menu=AT(popup,0x1b0,void *);
     BlockDb blocked;
     bl_open(&blocked);
     BlockKey key;
-    Text value=text(FN(0x1bd5550,OriginalText)(item));
+    Text value=text(FN(0x1c88390,OriginalText)(item));
     int usable=value.size && blocked.valid && bl_key(&blocked,value,&key);
     if (usable) add_blacklist_action(menu,inner,u"屏蔽相同内容",6,1,&key);
     if (blocked.valid && blocked.count)

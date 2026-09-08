@@ -1,16 +1,17 @@
 {
-  "verified_at": "2026-09-07",
-  "input_sha256": "24b0715d9b74374c1d70c9f9537f631d45c51d08a520f3a9a8b9e5df92ad169b",
-  "output_sha256": "894b04982521932a159397872604e0c96c9bd0bd8d48643f4a245899ea0a29c0",
-  "payload_sha256": "fcfb46b7876c78cc0476980d6a40fe2f1c73ac7c91dfd960ce178be4f3561fcf",
+  "verified_at": "2026-09-08",
+  "telegram_version": "7.2.7",
+  "input_sha256": "16a234e303ecbafde90e0f5ee27e13a40595453f33896fa340d9cb186df60397",
+  "output_sha256": "6c41e516fafdc94a17dd4aa42df504264941f3d2c90a173211ba956fe1985301",
+  "payload_sha256": "bfbb7493680ae386c7c22edc244369eac822714156635b4e6b8097b0ae842672",
   "input_unchanged": true,
   "sec_image_created": true,
   "payload_source_sha256": {
-    "payload.c": "8dc14ffb182fbeb049b4f6abb1467ddc9bf8678dd444fb0f9d9b377c1881544d",
+    "payload.c": "3127da63868cc23379b53c0bd195e0ead6955293884bf68dd44869070c8c9d43",
     "hooks.S": "777732721c9aaea6c4103eceb023b20e68baa74760890c6c2507fb69de95ec5d",
-    "hooks.json": "3d1b282629107a9fb4f8f839ce7868134cb6007a90a5e3e4e5db68437371b0c9",
-    "blacklist.h": "116e2e583b34cbc2510092ffffb5ad736ed8441650a58d29a02d1550259e92d9",
-    "menu.h": "e3b477d0cbddd2382cdb00ef82fdb585d97a980535c5ca3993f3be1e5b9fdbeb"
+    "hooks.json": "0c1467c9b565f57ec976507516c7a957a9f589741b3fb4d7a8d3eb980b06c1df",
+    "blacklist.h": "9b5b86bceefb4e3d1f654d8dd3277f6910f3601742be02ec82bff62ea1eb8dc9",
+    "menu.h": "763fd5d7218d8940d9fc18c9492ca87b82b657271bd01e7e499fc2d62eed7012"
   },
   "regression_status": "passed",
   "bases": [
@@ -25,6 +26,11 @@
       "legacy_groups": 7
     }
   ],
+  "language_cases_per_base": 73,
+  "unknown_build_rejection": "passed",
+  "isolated_powershell_checks": 40,
   "real_ui_tested_this_release": false,
-  "account_data_accessed": false
+  "regression_uses_account_data": false,
+  "real_install_performed": false,
+  "scope": "Static native ABI review, compiled x64 synthetic regression, and isolated tools; actual patched GUI/search/restart pending."
 }

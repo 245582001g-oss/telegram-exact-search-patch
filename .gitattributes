@@ -4,7 +4,7 @@
 *.json text eol=lf
 *.txt text eol=lf
 *.ps1 text eol=crlf
-# Keep the verified build inputs byte-identical to r3.
+# Preserve the exact verified build-input bytes across Windows checkouts.
 src/payload.c -text
 src/blacklist.h -text
 src/menu.h -text
