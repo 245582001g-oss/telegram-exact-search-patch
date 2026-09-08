@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "repository": "245582001g-oss/telegram-exact-search-patch",
+  "profiles": [
+    {
+      "telegram_version": "7.2.7",
+      "patch_version": "1.2.0",
+      "patch_revision": "r4",
+      "release_tag": "v1.2.0",
+      "asset_name": "telegram-exact-search-7.2.7-r4.tgpatch",
+      "input_sha256": "16a234e303ecbafde90e0f5ee27e13a40595453f33896fa340d9cb186df60397",
+      "output_sha256": "6c41e516fafdc94a17dd4aa42df504264941f3d2c90a173211ba956fe1985301",
+      "bundle_sha256": "dab78abe33ce24b4bf80c0ea2ef41e233a5e0f9a313b7b83d3222b8819c78422",
+      "input_size": 218562088,
+      "output_size": 222780416,
+      "bundle_size": 7338
+    }
+  ]
+}

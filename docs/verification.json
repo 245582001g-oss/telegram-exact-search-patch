@@ -26,11 +26,36 @@
       "legacy_groups": 7
     }
   ],
-  "language_cases_per_base": 73,
+  "language_cases_per_base": 86,
   "unknown_build_rejection": "passed",
   "isolated_powershell_checks": 40,
-  "real_ui_tested_this_release": false,
+  "real_ui_tested_this_release": true,
   "regression_uses_account_data": false,
-  "real_install_performed": false,
-  "scope": "Static native ABI review, compiled x64 synthetic regression, and isolated tools; actual patched GUI/search/restart pending."
+  "real_install_performed": true,
+  "scope": "Static ABI review, compiled synthetic regression, isolated management tests, verified real install and user-confirmed global literal search. Future official update recovery has not yet occurred.",
+  "patch_tools_version": "1.2.0",
+  "real_ui_evidence": {
+    "source": "user confirmation after verified installation and launch",
+    "query": "好人",
+    "scope": "global search",
+    "result": "only results containing contiguous 好人; no single 好-only results"
+  },
+  "real_ui_not_yet_verified": [
+    "content blocking menu",
+    "undo",
+    "rule persistence after another restart"
+  ],
+  "bundle_builder_tests": 14,
+  "powershell_bundle_checks": 24,
+  "bundle_bytes": 7338,
+  "bundle_sha256": "dab78abe33ce24b4bf80c0ea2ef41e233a5e0f9a313b7b83d3222b8819c78422",
+  "real_bundle_reconstruction": "matched verified output SHA256 with Windows PowerShell 5.1",
+  "isolated_manager_checks": 88,
+  "real_manager_installed": true,
+  "real_manager_checks": [
+    "current-user startup shortcut created",
+    "hidden monitor running",
+    "current exact r4 recognized as Patched"
+  ],
+  "real_manager_future_official_update_observed": false
 }

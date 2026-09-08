@@ -2,17 +2,18 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-为 **Telegram Desktop 7.2.7 · Windows x64** 提供精确文字筛选、多关键词组合、同文广告屏蔽与搜索响应优化。**支持中文、英文及其他语言，也支持中英等多语言混合输入。** 当前补丁版本：**v1.1.0（r4）**。
+为 **Telegram Desktop 7.2.7 · Windows x64** 提供精确文字筛选、多关键词组合、同文广告屏蔽与搜索响应优化。**支持中文、英文及其他语言，也支持中英等多语言混合输入。** 当前工具版本：**v1.2.0**，搜索补丁仍为已验证的 **r4**。
 
 Exact text filtering, multi-keyword AND search, and identical-content blocking for Telegram Desktop. Supports Chinese, English, and other languages through case-sensitive literal matching.
 
 [搜索搭配](#搜索搭配速查) · [多语言规则](#英文与其他语言) · [如何安装](#如何安装) · [如何卸载](#如何卸载或恢复原版) · [常见问题](#常见问题)
 
-这是社区补丁项目，与 Telegram 官方无隶属关系。仓库发布补丁源码和工具；用户在本机对经过哈希校验的官方程序生成补丁版。**不包含 Telegram 完整客户端、账号数据或个人黑名单。**
+这是社区补丁项目，与 Telegram 官方无隶属关系。仓库发布补丁源码、外置安装器及小型差分包；安装器在本机对经过哈希校验的官方程序生成补丁版。**不包含 Telegram 完整客户端、账号数据或个人黑名单。**
 
 ## 快速了解
 
 - **按你输入的文字筛选**：搜 `美丽`，保留包含连续 `美丽` 的消息，排除只有 `美` 或 `美好` 的消息。
+- **搜 `好人` 必须连续包含 `好人`**：保留 `他是好人`、`好人一生平安`；排除 `好天气`、`好的人`、`好 人`。7.2.7 安装后已由用户实测确认。
 - **把条件组合起来搜**：搜 `Python 教程 入门`，要求**同一条消息三个词都包含**。词的顺序不限，也可以分布在消息的不同行。
 - **英文、其他语言和混合文字都能参与匹配**：例如 `remote Python`、`東京 カフェ`、`Python 中文 教程`。它按原文匹配，不会自动翻译搜索词。
 - **手动屏蔽反复出现的同文广告**：右键某条消息搜索结果 → **屏蔽相同内容**，当前及之后的同文结果都会被过滤；支持撤销。
@@ -143,7 +144,7 @@ Exact text filtering, multi-keyword AND search, and identical-content blocking f
 - 仅支持 **Windows x64，Telegram Desktop 7.2.7** 的指定可执行文件；同版本号但哈希不同也会拒绝构建。
 - 精确匹配作用于左上角全局搜索；内容黑名单也过滤聊天内消息搜索。
 - 沿用 Telegram 的异步网络请求、取消、缓存与分页机制。补丁只过滤 Telegram 返回的候选，不能保证找到服务器未返回的内容，也没有建立完整历史索引。
-- 自动更新会替换 EXE。新增[外置启动器](docs/update-persistence.md)，可在启动前恢复已适配版本；未知新版仍需适配，不会降级。
+- 自动更新会替换 EXE。[外置管理器](docs/update-persistence.md)可随用户登录启动，从固定 GitHub 仓库获取适配，并在 Telegram 正常退出后恢复已支持版本；未知新版等待适配，不会降级。
 - 生成的修改版 EXE 不再具有官方 Authenticode 签名。
 
 适用原版 `Telegram.exe` 的 SHA-256：
@@ -162,11 +163,26 @@ r4 已验证补丁版 SHA-256：
 
 ## 如何安装
 
-**目前发布的是源码及工具包。安装流程为：下载解压 → 准备环境 → 核对原版 → 构建补丁 → 退出 Telegram → 安装 → 自行启动验证。** 本次为 Telegram 7.2.7 的新版适配；7.2.5 用户请使用历史 v1.0.0 发布包。
+### 普通用户：安装一次外置管理器
+
+1. 打开 [v1.2.0 发布页](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.2.0)，下载并解压 `telegram-exact-search-patch-v1.2.0-installer.zip`。
+2. 双击 `Install.cmd`，在文件选择框中选择实际使用的 `Telegram.exe`。
+3. 管理器安装到 `%LOCALAPPDATA%\TelegramExactSearchPatch`，并创建当前用户的登录启动项；不需要管理员权限、Python 或编译器。
+4. 若 Telegram 正在运行，请从托盘正常退出。管理器将在退出后应用已适配补丁，之后正常启动 Telegram 即可。
+
+安装器包含当前 7.2.7 的 **7,338 字节**差分包，能够离线重建经过验证的 r4。未来适配从本仓库的版本清单和 Release 下载，传输、原版、补丁包与生成结果都进行检查。管理器本身不自动下载执行新的脚本。
+
+每分钟检查程序是否变化，通常每小时检查远程适配清单；退出后修复可能需等待一个检查周期。Telegram 更新器可能直接重启官方原版，因此更新后第一次运行期间可能暂时仍是原生搜索。**任意未来版本都永久兼容无法保证；新内部布局需要维护者先适配。**
+
+查看状态、立即检查修复、通过管理器启动、停止及卸载的命令见 [管理器说明](docs/update-persistence.md)。7.2.5 用户请使用历史 v1.0.0 发布包。
+
+### 开发者：从源码构建
+
+以下是手动构建及安装流程，普通用户使用上面的安装器即可。
 
 ### 1. 下载并解压源码
 
-打开[发布页](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.1.0)，下载源码 ZIP 并解压。也可以在[仓库首页](https://github.com/245582001g-oss/telegram-exact-search-patch)选择 **Code → Download ZIP**，获取含最新说明的源码。
+打开[发布页](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.2.0)，下载源码 ZIP 并解压。也可以在[仓库首页](https://github.com/245582001g-oss/telegram-exact-search-patch)选择 **Code → Download ZIP**，获取含最新说明的源码。
 
 打开包含 `README.md`、`src`、`tools` 的目录。以下示例假定该目录是 `C:\TelegramSearchPatch`；你的目录可以不同，请替换为自己的实际路径。
 
@@ -267,6 +283,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\Start-PatchedTelegram.
 
 ## 如何卸载或恢复原版
 
+如果安装了 v1.2.0 自动恢复管理器，请**先停止或卸载管理器，再恢复原版**，否则它会在下一次检查时重新应用补丁。卸载命令见[管理器说明](docs/update-persistence.md#停止或卸载)。卸载管理器会移除自己的登录启动项，保留当前 Telegram 程序；恢复官方程序是下面的独立步骤。
+
 **卸载本补丁，就是把经过校验的官方原版 `Telegram.exe` 恢复回去；不需要卸载 Telegram。** 只删除下载的源码文件夹不会取消已经安装到程序中的补丁。
 
 ### 1. 完全退出 Telegram
@@ -358,7 +376,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\Manage-Blacklist.ps1 -
 
 多语言回归已纳入仓库：`tests/test_language_examples.py --build-dir build`。另运行 `powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_install_tools.ps1` 检查安装、版本备份、恢复和外置启动器。测试使用隔离的合成文件，不修改真实 Telegram。
 
-`tests/test_build_rejection.py` 检查兼容性清单与构建器一致，并确认未知输入在编译或写入输出之前被拒绝。本版尚未完成补丁版客户端的真实界面验证，安装后请检查搜索、右键屏蔽、撤销和重启。
+`tests/test_build_rejection.py` 检查兼容性清单与构建器一致，并确认未知输入在编译或写入输出之前被拒绝。7.2.7 已安装并启动，用户实测确认全局搜索 `好人` 只返回连续包含 `好人` 的结果；右键屏蔽、撤销和再次重启后的规则读取尚未在本版逐项实测。完整范围见[验证记录](docs/verification.md)。
 
 ## 许可证
 

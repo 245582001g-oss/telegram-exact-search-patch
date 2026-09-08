@@ -4,6 +4,8 @@ import hashlib
 import json
 import sys
 
+sys.stdout.reconfigure(encoding='utf-8')
+
 import argparse
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--build-dir', type=Path, default=Path(__file__).resolve().parent.parent / 'build')
@@ -19,6 +21,19 @@ fixtures.old.ROOT = BUILD
 
 # group, text, query, expected; these expectations are checked against actual x64.
 CASES = [
+    ('好人完整连续', '好人', '好人', True),
+    ('好人完整连续', '他是个好人', '好人', True),
+    ('好人完整连续', '好人好事', '好人', True),
+    ('好人不拆单字', '好', '好人', False),
+    ('好人不拆单字', '人', '好人', False),
+    ('好人不拆单字', '真好', '好人', False),
+    ('好人顺序连续', '人好', '好人', False),
+    ('好人词内不忽略空格', '好 人', '好人', False),
+    ('好人词内不忽略换行', '好\n人', '好人', False),
+    ('好人词内不忽略标点', '好，人', '好人', False),
+    ('好人词内不忽略其他字', '好的人', '好人', False),
+    ('好人词内不忽略零宽字符', '好\u200b人', '好人', False),
+    ('好人词内不忽略Emoji', '好👍人', '好人', False),
     ('简体中文', '重庆有很多好人', '好人 重庆', True),
     ('简体中文', '好人住在重庆', '重庆 好人', True),
     ('简体中文', '重庆只有风景', '好人 重庆', False),
@@ -102,6 +117,13 @@ before = {p.name: digest(p) for p in paths}
 reports = []
 for base in (0x140000000, 0x7ff400000000):
     machine = fixtures.Machine(base)
+    peer_receive_calls = []
+    # This native receiver is outside the payload. Record the exact forwarded
+    # vectors rather than letting execution continue into empty mapped pages.
+    def receive_peers(args):
+        peer_receive_calls.append((args[0], args[1], machine.values(args[1] + 8),
+                                   machine.values(args[1] + 0x20)))
+    machine.native(0x163af50, receive_peers)
     examples = []
     for group, text, query, expected in CASES:
         actual = bool(machine.call('AllKeywordsMatch', machine.qstring(text), machine.qstring(query)))
@@ -116,6 +138,7 @@ for base in (0x140000000, 0x7ff400000000):
     machine.vector(peers, result + 8)
     machine.vector(peers, result + 0x20)
     machine.call('PatchPeers', inner, result)
+    assert peer_receive_calls[-1][:2] == (inner, result)
     retained = [names[peers.index(peer)] for peer in machine.values(result + 8)]
     assert retained == ['Python 教程'], retained
 
@@ -142,18 +165,70 @@ for base in (0x140000000, 0x7ff400000000):
         assert actual == expected, (scope, actual)
         message_reports.append({'scope_offset': hex(scope), 'retained': actual})
 
+    # User acceptance rule: query 好人 requires those two adjacent characters.
+    # Exercise the exported hooks and their forwarded results, not just a matcher.
+    haoren_candidates = ['好', '人', '真好', '好 人', '好\n人', '人好', '好，人',
+                         '好的人', '好\u200b人', '好👍人', '好人', '他是个好人', '好人好事']
+    haoren_expected = ['好人', '他是个好人', '好人好事']
+    haoren_inner = machine.inner('好人')
+    haoren_peers = [machine.peer(name) for name in haoren_candidates]
+    haoren_result = machine.alloc(0x50)
+    machine.vector(haoren_peers, haoren_result + 8)
+    machine.vector(haoren_peers, haoren_result + 0x20)
+    machine.call('PatchPeers', haoren_inner, haoren_result)
+    assert peer_receive_calls[-1][:2] == (haoren_inner, haoren_result)
+    haoren_peer_results = []
+    for offset in (8, 0x20):
+        actual = [haoren_candidates[haoren_peers.index(peer)]
+                  for peer in machine.values(haoren_result + offset)]
+        assert actual == haoren_expected, ('好人 public peer names', offset, actual)
+        haoren_peer_results.append(actual)
+
+    haoren_listing = machine.alloc(0x80)
+    haoren_rows = [machine.row(machine.entry(name)) for name in haoren_candidates]
+    machine.vector(haoren_rows, haoren_listing + 0x30)
+    haoren_output = machine.alloc(24)
+    machine.call('PatchLocal', haoren_listing, haoren_output, 0, haoren_inner)
+    haoren_local = [haoren_candidates[haoren_rows.index(row)] for row in machine.values(haoren_output)]
+    assert haoren_local == haoren_expected, ('好人 local names', haoren_local)
+
+    haoren_message_results = []
+    for scope in (0, 0x5e0, 0x98, 0xb8):
+        for injected_text in ('好', '好人'):
+            inner = machine.inner('好人', scope)
+            items = [machine.item(name) for name in haoren_candidates]
+            vector = machine.vector(items)
+            injected = machine.item(injected_text)
+            start = len(machine.receive_calls)
+            machine.call('PatchMessages', inner, vector, injected, 4, len(items) + 1)
+            received = machine.receive_calls[start]
+            actual = [haoren_candidates[items.index(item)] for item in received[1]]
+            expected = haoren_expected if scope == 0 else haoren_candidates
+            assert actual == expected, ('好人 messages', scope, actual)
+            expected_inject = injected if scope or injected_text == '好人' else 0
+            assert received[2] == expected_inject, ('好人 injected item', scope, injected_text, received[2])
+            haoren_message_results.append({'scope_offset': hex(scope), 'retained': actual,
+                                           'injected_text': injected_text,
+                                           'injected_retained': received[2] == injected})
+
     reports.append({'base': hex(base), 'all_keywords_cases': examples,
                     'peer_query': 'Python 教程', 'peer_names': names,
                     'peer_retained': retained, 'local_retained': local_retained,
-                    'message_scope_checks': message_reports})
+                    'message_scope_checks': message_reports,
+                    'haoren_contract': {'query': '好人', 'candidates': haoren_candidates,
+                                        'public_peer_lists_retained': haoren_peer_results,
+                                        'local_names_retained': haoren_local,
+                                        'message_scope_checks': haoren_message_results}})
     del machine
 
 after = {p.name: digest(p) for p in paths}
 assert before == after, (before, after)
 report = {'status': 'passed', 'case_count_per_base': len(CASES), 'hashes': before,
           'bases': reports, 'limits': ['Compiled x64 matcher and hooks with synthetic Qt/WinAPI objects only.',
-                                    'Does not verify server retrieval or native UI query preprocessing.']}
+                                    'Does not verify server retrieval or native UI query preprocessing.',
+                                    'Literal query filtering is active for global search only; scoped message results and injections retain native passthrough.']}
 (WORK / 'language-examples-report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
 print(json.dumps({'status': report['status'], 'case_count_per_base': len(CASES), 'bases': [r['base'] for r in reports],
                   'hashes': before, 'peer_retained': reports[0]['peer_retained'],
-                  'message_scope_checks': reports[0]['message_scope_checks']}, ensure_ascii=False, indent=2))
+                  'message_scope_checks': reports[0]['message_scope_checks'],
+                  'haoren_contract': reports[0]['haoren_contract']}, ensure_ascii=False, indent=2))

@@ -25,6 +25,11 @@ api_id*
 api_hash*
 installation.json
 maintainer-state/
+/cache/
+/manager.json
+/state.json
+/last-error.json
+/disabled
 *-report.json
 compiler-log.json
 test-data/
