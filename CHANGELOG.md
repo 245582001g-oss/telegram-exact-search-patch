@@ -1,3 +1,13 @@
+# v1.3.0 — telegram 重庆好人版 7.2.8 + 精确搜索
+
+- Adapt exact search and existing content blocking to official Telegram 7.2.8 x64.
+- Add broadcast-channel blocking by stable typed PeerId, independent of message text/name/username; separate undo and persistent channel rules.
+- Filter channel messages before original-text extraction and hashing; filter global peer/name candidates too.
+- Create Known Documents/Telegram/blacklists on first launch, migrate validated legacy rules only when destination is absent, preserve existing/corrupt data and fail softly when storage is unavailable.
+- Fresh-profile auto-update default off; native settings toggle and saved preference parser retained.
+- Publish a clean full portable client, upstream full source, patch source and data-only difference bundle.
+- Include rule management helper in external runtime; SHA-256 no longer depends on PowerShell module autoloading.
+
 # Changelog
 
 ## v1.2.1 — 2026-09-08

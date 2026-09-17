@@ -1,0 +1,517 @@
+{
+  "old_sha256": "16a234e303ecbafde90e0f5ee27e13a40595453f33896fa340d9cb186df60397",
+  "new_sha256": "4de51db14afe0aace6b38665e1110f0eecb1112c387d44f380236b33d963c13d",
+  "new_image_size": "0xe421000",
+  "rva_map": {
+    "0x4a3690": "0x4a8690",
+    "0x4a4820": "0x4a9820",
+    "0x4f7a90": "0x4fca90",
+    "0x5c0750": "0x5c5750",
+    "0x7330c0": "0x7380c0",
+    "0x7331a0": "0x7381a0",
+    "0x149b950": "0x14a5490",
+    "0x161eb20": "0x1628730",
+    "0x16316d0": "0x163b170",
+    "0x1631740": "0x163b1e0",
+    "0x16347cb": "0x163e26b",
+    "0x1635bfe": "0x163f69e",
+    "0x1636917": "0x16403b7",
+    "0x1636dbb": "0x164085b",
+    "0x163a810": "0x16442b0",
+    "0x163af50": "0x16449f0",
+    "0x163b7a0": "0x1645240",
+    "0x163da10": "0x16474b0",
+    "0x16ac302": "0x16b6022",
+    "0x16ac306": "0x16b6026",
+    "0x16ac30c": "0x16b602c",
+    "0x16aecc5": "0x16b89e5",
+    "0x16af744": "0x16b9464",
+    "0x1c88390": "0x1c95050",
+    "0x3a94250": "0x3aa7050",
+    "0x3afad60": "0x3b0dbc0",
+    "0x3c95c80": "0x3ca8990",
+    "0x5466720": "0x5479ac0",
+    "0x5468760": "0x547bb00",
+    "0x5917620": "0x592a9c0",
+    "0x595e130": "0x59714e0",
+    "0x5960740": "0x5973af0",
+    "0x5b5b2c0": "0x5b6e670",
+    "0x5d6e61c": "0x5d819cc",
+    "0x5fec038": "0x6000038",
+    "0x5fec078": "0x6000070",
+    "0x5fec080": "0x6000078",
+    "0x5fec098": "0x6000090",
+    "0x5fec0a0": "0x6000098",
+    "0x5fec0a8": "0x60000a0",
+    "0x5fec100": "0x60000f8",
+    "0x5fec118": "0x6000110",
+    "0x5fec148": "0x6000140",
+    "0x5fec1c0": "0x60001b8",
+    "0x5fec1c8": "0x60001c0",
+    "0x5fec1e0": "0x60001d8",
+    "0x5fec220": "0x6000218",
+    "0x5fec280": "0x6000278",
+    "0x5fec288": "0x6000280",
+    "0x5fec348": "0x6000350",
+    "0x5fec350": "0x6000358",
+    "0x5fec3c8": "0x60003d0",
+    "0x5fec428": "0x6000430",
+    "0x64ec2c0": "0x65003b0",
+    "0x8ecd4d0": "0x8ee6610"
+  },
+  "function_checks": [
+    {
+      "old": "0x4a3690",
+      "new": "0x4a8690",
+      "old_function": "0x4a3690",
+      "new_function": "0x4a8690",
+      "instruction_counts": [
+        32,
+        32
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x4a4820",
+      "new": "0x4a9820",
+      "old_function": "0x4a4820",
+      "new_function": "0x4a9820",
+      "instruction_counts": [
+        28,
+        28
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x4f7a90",
+      "new": "0x4fca90",
+      "old_function": "0x4f7a90",
+      "new_function": "0x4fca90",
+      "instruction_counts": [
+        235,
+        235
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x5c0750",
+      "new": "0x5c5750",
+      "old_function": "0x5c0750",
+      "new_function": "0x5c5750",
+      "instruction_counts": [
+        26,
+        26
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x7330c0",
+      "new": "0x7380c0",
+      "old_function": "0x7330c0",
+      "new_function": "0x7380c0",
+      "instruction_counts": [
+        57,
+        57
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x7331a0",
+      "new": "0x7381a0",
+      "old_function": "0x7331a0",
+      "new_function": "0x7381a0",
+      "instruction_counts": [
+        34,
+        34
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x149b950",
+      "new": "0x14a5490",
+      "old_function": "0x149b950",
+      "new_function": "0x14a5490",
+      "instruction_counts": [
+        27,
+        27
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x161eb20",
+      "new": "0x1628730",
+      "old_function": "0x161eb20",
+      "new_function": "0x1628730",
+      "instruction_counts": [
+        345,
+        345
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x16316d0",
+      "new": "0x163b170",
+      "old_function": "0x16316d0",
+      "new_function": "0x163b170",
+      "instruction_counts": [
+        30,
+        30
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x1631740",
+      "new": "0x163b1e0",
+      "old_function": "0x1631740",
+      "new_function": "0x163b1e0",
+      "instruction_counts": [
+        30,
+        30
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x16347cb",
+      "new": "0x163e26b",
+      "old_function": "0x16343d0",
+      "new_function": "0x163de70",
+      "instruction_counts": [
+        296,
+        296
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x1635bfe",
+      "new": "0x163f69e",
+      "old_function": "0x16354c0",
+      "new_function": "0x163ef60",
+      "instruction_counts": [
+        757,
+        757
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x1636917",
+      "new": "0x16403b7",
+      "old_function": "0x1636850",
+      "new_function": "0x16402f0",
+      "instruction_counts": [
+        339,
+        339
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x1636dbb",
+      "new": "0x164085b",
+      "old_function": "0x1636d90",
+      "new_function": "0x1640830",
+      "instruction_counts": [
+        103,
+        103
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x163a810",
+      "new": "0x16442b0",
+      "old_function": "0x163a810",
+      "new_function": "0x16442b0",
+      "instruction_counts": [
+        470,
+        470
+      ],
+      "normalized_equal": false,
+      "offset_equal": true
+    },
+    {
+      "old": "0x163af50",
+      "new": "0x16449f0",
+      "old_function": "0x163af50",
+      "new_function": "0x16449f0",
+      "instruction_counts": [
+        455,
+        455
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x163b7a0",
+      "new": "0x1645240",
+      "old_function": "0x163b7a0",
+      "new_function": "0x1645240",
+      "instruction_counts": [
+        214,
+        214
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x163da10",
+      "new": "0x16474b0",
+      "old_function": "0x163da10",
+      "new_function": "0x16474b0",
+      "instruction_counts": [
+        35,
+        35
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x16ac302",
+      "new": "0x16b6022",
+      "old_function": "0x16ac2b0",
+      "new_function": "0x16b5fd0",
+      "instruction_counts": [
+        33,
+        33
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x16aecc5",
+      "new": "0x16b89e5",
+      "old_function": "0x16aeaa0",
+      "new_function": "0x16b87c0",
+      "instruction_counts": [
+        171,
+        171
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x16af744",
+      "new": "0x16b9464",
+      "old_function": "0x16af6a0",
+      "new_function": "0x16b93c0",
+      "instruction_counts": [
+        53,
+        53
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x1c88390",
+      "new": "0x1c95050",
+      "old_function": "0x1c88390",
+      "new_function": "0x1c95050",
+      "instruction_counts": [
+        31,
+        31
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x3a94250",
+      "new": "0x3aa7050",
+      "old_function": "0x3a94250",
+      "new_function": "0x3aa7050",
+      "instruction_counts": [
+        66,
+        66
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x3afad60",
+      "new": "0x3b0dbc0",
+      "old_function": "0x3afad60",
+      "new_function": "0x3b0dbc0",
+      "instruction_counts": [
+        226,
+        226
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x3c95c80",
+      "new": "0x3ca8990",
+      "old_function": "0x3c95c80",
+      "new_function": "0x3ca8990",
+      "instruction_counts": [
+        70,
+        70
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x5466720",
+      "new": "0x5479ac0",
+      "old_function": "0x5466720",
+      "new_function": "0x5479ac0",
+      "instruction_counts": [
+        72,
+        72
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x5468760",
+      "new": "0x547bb00",
+      "old_function": "0x5468760",
+      "new_function": "0x547bb00",
+      "instruction_counts": [
+        11,
+        11
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x5917620",
+      "new": "0x592a9c0",
+      "old_function": "0x5917620",
+      "new_function": "0x592a9c0",
+      "instruction_counts": [
+        68,
+        68
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x595e130",
+      "new": "0x59714e0",
+      "old_function": "0x595e130",
+      "new_function": "0x59714e0",
+      "instruction_counts": [
+        39,
+        39
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x5960740",
+      "new": "0x5973af0",
+      "old_function": "0x5960740",
+      "new_function": "0x5973af0",
+      "instruction_counts": [
+        126,
+        126
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x5b5b2c0",
+      "new": "0x5b6e670",
+      "old_function": "0x5b5b2c0",
+      "new_function": "0x5b6e670",
+      "instruction_counts": [
+        32,
+        32
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    },
+    {
+      "old": "0x5d6e61c",
+      "new": "0x5d819cc",
+      "old_function": "0x5d6e61c",
+      "new_function": "0x5d819cc",
+      "instruction_counts": [
+        21,
+        21
+      ],
+      "normalized_equal": true,
+      "offset_equal": true
+    }
+  ],
+  "hooks": [
+    {
+      "site_rva": "0x16b89e5",
+      "target_export": "PatchMessages",
+      "expected_target_rva": "0x16442b0",
+      "old_site_rva": "0x16aecc5",
+      "original_bytes": "e8c6b8f8ff"
+    },
+    {
+      "site_rva": "0x16b9464",
+      "target_export": "PatchPeers",
+      "expected_target_rva": "0x16449f0",
+      "old_site_rva": "0x16af744",
+      "original_bytes": "e887b5f8ff"
+    },
+    {
+      "site_rva": "0x164085b",
+      "target_export": "PatchLocalBridge",
+      "expected_target_rva": "0x1628730",
+      "old_site_rva": "0x1636dbb",
+      "original_bytes": "e8d07efeff"
+    },
+    {
+      "site_rva": "0x163f69e",
+      "target_export": "PatchApplyWordsBridge",
+      "expected_target_rva": "0x3b0dbc0",
+      "old_site_rva": "0x1635bfe",
+      "original_bytes": "e81de54c02"
+    },
+    {
+      "site_rva": "0x16403b7",
+      "target_export": "PatchRefreshWordsBridge",
+      "expected_target_rva": "0x3b0dbc0",
+      "old_site_rva": "0x1636917",
+      "original_bytes": "e804d84c02"
+    },
+    {
+      "site_rva": "0x163e26b",
+      "target_export": "PatchMenuBridge",
+      "expected_target_rva": "0x59714e0",
+      "old_site_rva": "0x16347cb",
+      "original_bytes": "e870323304"
+    },
+    {
+      "kind": "literal5",
+      "site_rva": "0x16b602c",
+      "expected_bytes": "ba84030000",
+      "replacement_bytes": "ba2c010000",
+      "reason": "Input search debounce 900 ms to 300 ms; native cache, cancellation and pagination unchanged.",
+      "old_site_rva": "0x16ac30c",
+      "original_bytes": "ba84030000"
+    }
+  ],
+  "data_evidence": {
+    "QAction_signal": "0x547bb00",
+    "QAction_metaobject": "0x65003b0",
+    "metadata_first_100_bytes_equal": true,
+    "types": "0x8ee6610",
+    "types_native_reference": "0x3c0354f",
+    "fireSearch_native_reference": "0x163f979"
+  },
+  "limits": "Static binary comparison only; no real client search test.",
+  "layout_evidence": {
+    "function_comparison": "32 complete containing functions checked; 31 identical after call/RIP relocation normalization, one differs only in two assertion source line numbers.",
+    "source_review": "InnerWidget.h contains no field changes; History, HistoryItem, Entry, UserData, ChannelData and Qt structures retain source layouts; lib_ui String uint _version renamed to uint _layoutId without changing type or position.",
+    "field_offsets_changed": false,
+    "QAction_metadata": "100 bytes identical with class name QAction; types array int[2]={1,0}.",
+    "ambiguities": []
+  }
+}

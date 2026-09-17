@@ -1,9 +1,10 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-Inspect, undo, or clear the Chinese search patch local content blacklist.
+Inspect, undo, or clear local content or channel search rules.
 .DESCRIPTION
-Specify the absolute path to your own exact-search-blacklist.v1.bin.
+Defaults to the current user's Documents\Telegram\blacklists directory.
+Use -Kind Channel for channel rules; -Path optionally selects an absolute file.
 Status reports the count; Undo removes the last entry; Clear removes all entries.
 The database stores text lengths and digests, not message text. Search again in
 Telegram after Undo or Clear. This script does not control Telegram processes
@@ -20,12 +21,20 @@ param(
     [ValidateSet('Status', 'Undo', 'Clear')]
     [string] $Action = 'Status',
 
-    [Parameter(Mandatory = $true)]
-    [string] $Path
+    [ValidateSet('Content', 'Channel')]
+    [string] $Kind = 'Content',
+
+    [string] $Path = ''
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+$databaseName = if ($Kind -eq 'Channel') { 'exact-search-channels.v1.bin' } else { 'exact-search-blacklist.v1.bin' }
+if ([string]::IsNullOrWhiteSpace($Path)) {
+    $documents = [Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments)
+    if ([string]::IsNullOrWhiteSpace($documents)) { throw 'Cannot locate the Windows Documents folder.' }
+    $Path = Join-Path (Join-Path $documents 'Telegram\blacklists') $databaseName
+}
 
 function Get-AbsoluteFilePath {
     param([string] $Value)
@@ -64,7 +73,7 @@ function Read-Blacklist {
         if ($reader.ReadByte() -ne -1) {
             throw 'Blacklist size changed during the read; refusing to modify it.'
         }
-        [byte[]] $magic = @(84, 71, 69, 88, 66, 76, 49, 0)
+        [byte[]] $magic = if ($Kind -eq 'Channel') { @(84, 71, 69, 88, 67, 72, 49, 0) } else { @(84, 71, 69, 88, 66, 76, 49, 0) }
         for ($i = 0; $i -lt $magic.Length; $i++) {
             if ($bytes[$i] -ne $magic[$i]) {
                 throw 'Invalid blacklist signature; refusing to modify it.'
@@ -76,6 +85,17 @@ function Read-Blacklist {
             throw 'Invalid blacklist version, count, or size; refusing to modify it.'
         }
         for ($i = 0; $i -lt $count; $i++) {
+            if ($Kind -eq 'Channel') {
+                $at = 16 + $i * 36
+                $id = [System.BitConverter]::ToUInt64($bytes, $at + 4)
+                if ([System.BitConverter]::ToUInt32($bytes, $at) -ne 8 -or
+                    ($id -shr 48) -ne 2 -or ($id -band 281474976710655L) -eq 0) {
+                    throw 'Invalid channel ID; refusing to modify it.'
+                }
+                for ($j = 12; $j -lt 36; $j++) {
+                    if ($bytes[$at + $j] -ne 0) { throw 'Invalid channel record; refusing to modify it.' }
+                }
+            }
             if ([System.BitConverter]::ToUInt32($bytes, 16 + $i * 36) -gt 2147483647) {
                 throw 'Invalid text length in blacklist; refusing to modify it.'
             }
@@ -112,8 +132,8 @@ function Save-BlacklistAtomically {
 
 try {
     $databasePath = Get-AbsoluteFilePath $Path
-    if ([System.IO.Path]::GetFileName($databasePath) -ine 'exact-search-blacklist.v1.bin') {
-        throw 'Path must name your own exact-search-blacklist.v1.bin file.'
+    if ([System.IO.Path]::GetFileName($databasePath) -ine $databaseName) {
+        throw ('Path must name your own ' + $databaseName + ' file.')
     }
     $database = Read-Blacklist $databasePath
     $count = if ($null -eq $database) { 0 } else { $database.Count }

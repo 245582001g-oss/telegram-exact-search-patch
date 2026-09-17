@@ -1,8 +1,9 @@
 """Build a hash-bound local Telegram PE patch; never deploy or modify the input.
 
 The payload is linked at its final RVAs. The original image keeps every section
-RVA and its entry point. An expanded file header creates room for one .exact
-section, with raw-file offsets (including debug data pointers) adjusted.
+RVA. A startup bridge initializes optional rule storage and then jumps to the
+unchanged native entry point. An expanded file header creates room for one
+.exact section, with raw-file offsets (including debug data pointers) adjusted.
 """
 from __future__ import annotations
 import argparse
@@ -17,10 +18,11 @@ import pefile
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_OUTPUT = HERE.parent / 'build'
-TELEGRAM_VERSION = '7.2.7'
-EXPECTED_SHA256 = '16a234e303ecbafde90e0f5ee27e13a40595453f33896fa340d9cb186df60397'
+TELEGRAM_VERSION = '7.2.8'
+EXPECTED_SHA256 = '4de51db14afe0aace6b38665e1110f0eecb1112c387d44f380236b33d963c13d'
 IMAGE_BASE = 0x140000000
-ORIGINAL_IMAGE_SIZE = 0xE3F5000
+ORIGINAL_IMAGE_SIZE = 0xe421000
+ORIGINAL_ENTRYPOINT_RVA = 0x5d828ac
 PAYLOAD_RVA = ORIGINAL_IMAGE_SIZE
 EXCEPTION = pefile.DIRECTORY_ENTRY['IMAGE_DIRECTORY_ENTRY_EXCEPTION']
 SECURITY = pefile.DIRECTORY_ENTRY['IMAGE_DIRECTORY_ENTRY_SECURITY']
@@ -259,19 +261,24 @@ def build_patch(input_path: Path, output: Path, gcc: Path):
     seen_sites = set()
     for hook in hooks:
         site = number(hook['site_rva'])
-        covered = set(range(site,site+5))
+        size = 1 if hook.get('kind') == 'data' else 5
+        covered = set(range(site,site+size))
         require(not seen_sites.intersection(covered),'Overlapping hook sites')
         seen_sites.update(covered)
         offset = pe.get_offset_from_rva(site)
-        previous = original[offset:offset+5]
-        if hook.get('kind') == 'literal5':
+        previous = original[offset:offset+size]
+        if hook.get('kind') in ('literal5', 'data'):
             expected_bytes = bytes.fromhex(hook['expected_bytes'])
             replacement = bytes.fromhex(hook['replacement_bytes'])
-            require(len(expected_bytes)==5 and len(replacement)==5,'Literal patch must preserve 5-byte instruction size')
+            require(len(expected_bytes)==size and len(replacement)==size,'Literal patch size mismatch')
+            if hook['kind'] == 'data':
+                section = pe.get_section_by_rva(site)
+                require(section is not None and not section.Characteristics & 0x20000000,
+                        'Default setting must reside in a non-executable section')
             require(previous==expected_bytes,f'Literal instruction mismatch at {site:#x}')
             mapped = map_offset(offset)
-            result[mapped:mapped+5] = replacement
-            hook_report.append({'site_rva':hex(site),'kind':'literal5','reason':hook['reason'],
+            result[mapped:mapped+size] = replacement
+            hook_report.append({'site_rva':hex(site),'kind':hook['kind'],'reason':hook['reason'],
                 'original_bytes':previous.hex(),'patched_bytes':replacement.hex(),'file_offset':hex(mapped)})
             continue
         require(hook.get('kind','call')=='call','Unsupported hook kind')
@@ -306,6 +313,9 @@ def build_patch(input_path: Path, output: Path, gcc: Path):
     struct.pack_into('<8sIIIIIIHHI',result,header_offset,b'.exact\0\0',virtual_size,
         PAYLOAD_RVA,raw_size,raw_offset,0,0,0,0,permissions)
     new_image_size = align(PAYLOAD_RVA+virtual_size,section_alignment)
+    require(pe.OPTIONAL_HEADER.AddressOfEntryPoint == ORIGINAL_ENTRYPOINT_RVA,'Unexpected native entry point')
+    require('PatchStartupBridge' in exports,'Missing startup bridge')
+    field(pe.OPTIONAL_HEADER,'AddressOfEntryPoint',exports['PatchStartupBridge'],'initialize optional Documents rule storage before native startup')
     field(pe.OPTIONAL_HEADER,'SizeOfImage',new_image_size,'extend image for .exact')
     field(pe.OPTIONAL_HEADER,'SizeOfCode',pe.OPTIONAL_HEADER.SizeOfCode+raw_size,'account for added code section')
     field(pe.OPTIONAL_HEADER,'SizeOfInitializedData',pe.OPTIONAL_HEADER.SizeOfInitializedData+raw_size,'account for added initialized section')
@@ -329,7 +339,8 @@ def build_patch(input_path: Path, output: Path, gcc: Path):
             site = number(hook['site_rva'])
             if s.VirtualAddress <= site < s.VirtualAddress+s.SizeOfRawData:
                 off = site-s.VirtualAddress
-                expected_section[off:off+5] = bytes.fromhex(hook['patched_bytes'])
+                replacement = bytes.fromhex(hook['patched_bytes'])
+                expected_section[off:off+len(replacement)] = replacement
         for d in debug_changes:
             off = d['original_file_offset']-s.PointerToRawData
             if 0 <= off < s.SizeOfRawData:
@@ -338,7 +349,7 @@ def build_patch(input_path: Path, output: Path, gcc: Path):
         require(result[start:start+s.SizeOfRawData] == expected_section,
                 f'Unexpected mutation of original section {s.Name!r}')
     final_pe = pefile.PE(data=result, fast_load=True)
-    require(final_pe.OPTIONAL_HEADER.AddressOfEntryPoint == pe.OPTIONAL_HEADER.AddressOfEntryPoint,'Original entry point changed')
+    require(final_pe.OPTIONAL_HEADER.AddressOfEntryPoint == exports['PatchStartupBridge'],'Startup bridge entry point mismatch')
     require(final_pe.OPTIONAL_HEADER.DllCharacteristics == pe.OPTIONAL_HEADER.DllCharacteristics,'Original ASLR/NX/etc flags changed')
     require(final_pe.verify_checksum(),'Output checksum invalid')
     require(exceptions(final_pe)==combined_functions,'Exception table verification failed')
@@ -377,7 +388,7 @@ def build_patch(input_path: Path, output: Path, gcc: Path):
         'authenticode':'The derived executable is unsigned; original certificate bytes are inert with a cleared SECURITY directory.',
         'original_file_unchanged':True,'original_section_rvas_unchanged':True,
         'original_section_content_verified_except_hook_and_debug_pointer_changes':True,
-        'imports_added':False,'entrypoint_changed':False,'deployed':False,
+        'imports_added':False,'entrypoint_changed':True,'new_entrypoint_rva':hex(exports['PatchStartupBridge']),'deployed':False,
         'native_image_validation':native_image_validation,
         'compiler_commands':compiler_logs,'source_sha256':source_hashes,
         'validation':'PE structure, exact input/callsite hashes, section preservation, checksum, unwind table, ASLR relocation equality, and Windows SEC_IMAGE acceptance without code execution. App runtime behavior is not validated by this builder.'}

@@ -208,7 +208,7 @@ $result = Run-Tool 'Install-Patch.ps1' $target 1 -UpdaterRunning $true
 Assert-Check ($result -match 'Telegram updater' -and (Get-Sha256 $target) -eq $originalHash -and
     -not (Test-Path -LiteralPath ($target + '.chinese-search.lock'))) 'Installer refuses the selected Telegram updater before modifying files'
 $result = Run-Tool 'Install-Patch.ps1' $target 1 -OtherUpdater $true
-Assert-Check ($result -match 'path alias' -and (Get-Sha256 $target) -eq $originalHash -and
+Assert-Check (($result -replace '\s', '') -match 'pathalias' -and (Get-Sha256 $target) -eq $originalHash -and
     -not (Test-Path -LiteralPath ($target + '.chinese-search.lock'))) 'Updater from a different or aliased path is conservatively refused before modifying files'
 $result = Run-Tool 'Install-Patch.ps1' $target 0
 $result = Run-Tool 'Restore-Patch.ps1' $target 1 -UpdaterRunning $true

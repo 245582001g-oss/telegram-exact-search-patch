@@ -1,9 +1,10 @@
 [
-  {"site_rva": "0x16aecc5", "target_export": "PatchMessages", "expected_target_rva": "0x163a810"},
-  {"site_rva": "0x16af744", "target_export": "PatchPeers", "expected_target_rva": "0x163af50"},
-  {"site_rva": "0x1636dbb", "target_export": "PatchLocalBridge", "expected_target_rva": "0x161eb20"},
-  {"site_rva": "0x1635bfe", "target_export": "PatchApplyWordsBridge", "expected_target_rva": "0x3afad60"},
-  {"site_rva": "0x1636917", "target_export": "PatchRefreshWordsBridge", "expected_target_rva": "0x3afad60"},
-  {"site_rva": "0x16347cb", "target_export": "PatchMenuBridge", "expected_target_rva": "0x595e130"},
-  {"kind": "literal5", "site_rva": "0x16ac30c", "expected_bytes": "ba84030000", "replacement_bytes": "ba2c010000", "reason": "Input search debounce 900 ms to 300 ms; native cache, cancellation and pagination unchanged."}
+  {"site_rva": "0x16b89e5", "target_export": "PatchMessages", "expected_target_rva": "0x16442b0"},
+  {"site_rva": "0x16b9464", "target_export": "PatchPeers", "expected_target_rva": "0x16449f0"},
+  {"site_rva": "0x164085b", "target_export": "PatchLocalBridge", "expected_target_rva": "0x1628730"},
+  {"site_rva": "0x163f69e", "target_export": "PatchApplyWordsBridge", "expected_target_rva": "0x3b0dbc0"},
+  {"site_rva": "0x16403b7", "target_export": "PatchRefreshWordsBridge", "expected_target_rva": "0x3b0dbc0"},
+  {"site_rva": "0x163e26b", "target_export": "PatchMenuBridge", "expected_target_rva": "0x59714e0"},
+  {"kind": "literal5", "site_rva": "0x16b602c", "expected_bytes": "ba84030000", "replacement_bytes": "ba2c010000", "reason": "Input search debounce 900 ms to 300 ms; native cache, cancellation and pagination unchanged."},
+  {"kind": "data", "site_rva": "0x8e348c4", "expected_bytes": "01", "replacement_bytes": "00", "reason": "gAutoUpdate default false for a fresh profile; saved preferences and native toggle preserved."}
 ]

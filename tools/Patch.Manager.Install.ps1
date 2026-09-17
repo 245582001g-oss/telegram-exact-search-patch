@@ -150,7 +150,7 @@ function Install-ManagerRuntime {
         throw 'Install the manager into an independent directory outside the source package.'
     }
     $whitelist = @('tools\Manage-Patch.ps1', 'tools\Install-Manager.ps1', 'tools\Patch.Manager.ps1',
-        'tools\Patch.Manager.Install.ps1', 'tools\Patch.Bundle.ps1')
+        'tools\Patch.Manager.Install.ps1', 'tools\Patch.Bundle.ps1', 'tools\Manage-Blacklist.ps1')
     $catalogPath = Join-Path $sourceRootPath 'catalog.json'
     Assert-ManagerRegularFile $catalogPath
     $catalogHandle = [IO.File]::Open($catalogPath, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::Read)

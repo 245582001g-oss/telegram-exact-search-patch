@@ -248,6 +248,20 @@ $state = Invoke-ManagerCycle $fixture.Runtime -Repair -ForceCatalog -ForceHash
 Assert-ManagerCheck ($state.status -ceq 'WaitingForAdapter' -and (Get-FixtureHash $fixture.Exe) -ceq $unknownHash) 'Unknown version remains byte-for-byte unchanged'
 Assert-ManagerCheck ($script:Downloads.Count -eq 1 -and -not (Test-Path -LiteralPath ($fixture.Exe+'.chinese-search.lock')) -and $script:Launches.Count -eq 0) 'Unknown version downloads no bundle, touches no application lock, and is not launched'
 
+$fixture = Initialize-ManagerFixture 'local-adapter-newer-than-remote'
+$unrelated = Clone-FixtureObject $profile
+$unrelated.input_sha256 = Get-FixtureByteHash ([Text.Encoding]::UTF8.GetBytes('unrelated older official image'))
+$unrelated.output_sha256 = Get-FixtureByteHash ([Text.Encoding]::UTF8.GetBytes('unrelated older patched image'))
+$olderRemote = Join-Path $fixtureRoot 'older-remote-catalog.json'
+Save-FixtureJson $olderRemote (New-Catalog @($unrelated))
+$script:CatalogDownload = $olderRemote
+try {
+    $state = Invoke-ManagerCycle $fixture.Runtime -Repair -ForceCatalog -ForceHash
+    Assert-ManagerCheck ($state.status -ceq 'Repaired' -and (Get-FixtureHash $fixture.Exe) -ceq $profile.output_sha256) 'A remote catalog missing the installed local adapter cannot prevent repair'
+    $state = Invoke-ManagerCycle $fixture.Runtime -Repair -ForceCatalog -ForceHash
+    Assert-ManagerCheck ($state.status -ceq 'Patched') 'Local patched output remains recognized after repeated remote refresh'
+} finally { $script:CatalogDownload = $catalogPath }
+
 foreach ($processName in @('Telegram','Updater')) {
     $fixture = Initialize-ManagerFixture ('busy-'+$processName)
     $script:ProcessNames=@($processName)
@@ -444,7 +458,7 @@ function Start-ManagerMonitor {
 $installSource=Join-Path $fixtureRoot 'installer package'
 [void](New-Item -ItemType Directory -Path (Join-Path $installSource 'tools') -Force)
 [void](New-Item -ItemType Directory -Path (Join-Path $installSource 'bundles') -Force)
-foreach ($name in @('Manage-Patch.ps1','Install-Manager.ps1','Patch.Manager.ps1','Patch.Manager.Install.ps1','Patch.Bundle.ps1')) {
+foreach ($name in @('Manage-Patch.ps1','Install-Manager.ps1','Patch.Manager.ps1','Patch.Manager.Install.ps1','Patch.Bundle.ps1','Manage-Blacklist.ps1')) {
     Copy-Item -LiteralPath (Join-Path $repository ('tools\'+$name)) -Destination (Join-Path $installSource ('tools\'+$name))
 }
 Save-FixtureJson (Join-Path $installSource 'catalog.json') $catalog
@@ -460,7 +474,7 @@ $result=Install-ManagerRuntime -SourceRoot $installSource -TelegramExe $fixture.
 Assert-ManagerCheck (-not $result.StartupEnabled -and -not $result.MonitorStarted -and
     -not (Test-Path -LiteralPath $shortcutPath) -and $script:MonitorStarts.Count -eq 0) 'Installation requires separate opt-in for startup and immediate monitor launch'
 Assert-ManagerCheck ((Get-FixtureHash $fixture.Exe) -ceq $targetBefore -and (Get-FixtureHash $fixture.Marker) -ceq $markerBefore) 'Manager installation leaves Telegram and synthetic account marker untouched'
-Assert-ManagerCheck (@(Get-ChildItem -LiteralPath (Join-Path $fixture.Runtime 'tools') -File).Count -eq 5 -and
+Assert-ManagerCheck (@(Get-ChildItem -LiteralPath (Join-Path $fixture.Runtime 'tools') -File).Count -eq 6 -and
     -not (Test-Path -LiteralPath (Join-Path $fixture.Runtime 'private.fixture')) -and
     -not (Test-Path -LiteralPath (Join-Path $fixture.Runtime 'bundles\foreign.fixture'))) 'Runtime installation copies only required local tools and listed bundles'
 Assert-ManagerCheck ((Read-ManagerConfig $fixture.Runtime).telegram_exe -ceq $fixture.Exe -and

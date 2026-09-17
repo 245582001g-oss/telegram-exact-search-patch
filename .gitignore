@@ -16,6 +16,8 @@ tdata/
 *.session
 *.session-journal
 exact-search-blacklist*
+exact-search-channels*
+LOCAL-*.md
 *.bak
 *.lock
 *.tmp

@@ -1,61 +1,2043 @@
 {
-  "verified_at": "2026-09-08",
-  "telegram_version": "7.2.7",
-  "input_sha256": "16a234e303ecbafde90e0f5ee27e13a40595453f33896fa340d9cb186df60397",
-  "output_sha256": "6c41e516fafdc94a17dd4aa42df504264941f3d2c90a173211ba956fe1985301",
-  "payload_sha256": "bfbb7493680ae386c7c22edc244369eac822714156635b4e6b8097b0ae842672",
-  "input_unchanged": true,
-  "sec_image_created": true,
-  "payload_source_sha256": {
-    "payload.c": "3127da63868cc23379b53c0bd195e0ead6955293884bf68dd44869070c8c9d43",
-    "hooks.S": "777732721c9aaea6c4103eceb023b20e68baa74760890c6c2507fb69de95ec5d",
-    "hooks.json": "0c1467c9b565f57ec976507516c7a957a9f589741b3fb4d7a8d3eb980b06c1df",
-    "blacklist.h": "9b5b86bceefb4e3d1f654d8dd3277f6910f3601742be02ec82bff62ea1eb8dc9",
-    "menu.h": "763fd5d7218d8940d9fc18c9492ca87b82b657271bd01e7e499fc2d62eed7012"
-  },
-  "regression_status": "passed",
-  "bases": [
-    {
-      "base": "0x140000000",
-      "feature_groups": 16,
-      "legacy_groups": 7
+  "release": "v1.3.0",
+  "telegram": "7.2.8",
+  "build": {
+    "telegram_version": "7.2.8",
+    "input_sha256": "4de51db14afe0aace6b38665e1110f0eecb1112c387d44f380236b33d963c13d",
+    "output_sha256": "8a5fc166834e3e927547b2ad90c88f3578f65d2bce47cd8a522ec270daa0a0f3",
+    "payload_sha256": "6fd6952e4dbe8532279cb4c73587a315c0222ecc02e2e8f37e4b7c3b400a563b",
+    "image_base": "0x140000000",
+    "original_image_size": "0xe421000",
+    "image_size": "0xe82a000",
+    "original_entrypoint_rva": "0x5d828ac",
+    "new_section": {
+      "name": ".exact",
+      "rva": "0xe421000",
+      "virtual_size": 4228876,
+      "raw_size": 4229120,
+      "raw_offset": "0xd09aa00",
+      "characteristics": "0xe0000060"
     },
-    {
-      "base": "0x7ff400000000",
-      "feature_groups": 16,
-      "legacy_groups": 7
-    }
-  ],
-  "language_cases_per_base": 86,
-  "unknown_build_rejection": "passed",
-  "isolated_powershell_checks": 40,
-  "real_ui_tested_this_release": true,
-  "regression_uses_account_data": false,
-  "real_install_performed": true,
-  "scope": "Static ABI review, compiled synthetic regression, isolated management tests, verified real install and user-confirmed global literal search. Future official update recovery has not yet occurred.",
-  "patch_tools_version": "1.2.1",
-  "real_ui_evidence": {
-    "source": "user confirmation after verified installation and launch",
-    "query": "好人",
-    "scope": "global search",
-    "result": "only results containing contiguous 好人; no single 好-only results"
+    "headers": {
+      "old_size": 1024,
+      "new_size": 1536,
+      "raw_file_shift": 512,
+      "reason": "Original section table ends exactly at first raw section; expand by one file alignment unit."
+    },
+    "exports": {
+      "AllKeywordsMatch": "0xe4228d4",
+      "BlacklistSlotImpl": "0xe4230bc",
+      "ExactContains": "0xe42289c",
+      "InitRuleStore": "0xe422879",
+      "PatchApplyWordsBridge": "0xe4234d9",
+      "PatchLocal": "0xe422d0e",
+      "PatchLocalBridge": "0xe423470",
+      "PatchMenu": "0xe4231f3",
+      "PatchMenuBridge": "0xe4234d1",
+      "PatchMessages": "0xe42290c",
+      "PatchPeers": "0xe422be5",
+      "PatchRefreshWordsBridge": "0xe4234e1",
+      "PatchStartupBridge": "0xe423479",
+      "PatchWords": "0xe422e56",
+      "RefreshBlocked": "0xe422ebf"
+    },
+    "payload_sections": [
+      {
+        "name": ".text",
+        "rva": "0xe421000",
+        "virtual_size": 9456,
+        "raw_size": 9728,
+        "characteristics": "0x60000020"
+      },
+      {
+        "name": ".rdata",
+        "rva": "0xe424000",
+        "virtual_size": 864,
+        "raw_size": 1024,
+        "characteristics": "0x40000040"
+      },
+      {
+        "name": ".pdata",
+        "rva": "0xe425000",
+        "virtual_size": 636,
+        "raw_size": 1024,
+        "characteristics": "0x40000040"
+      },
+      {
+        "name": ".xdata",
+        "rva": "0xe426000",
+        "virtual_size": 576,
+        "raw_size": 1024,
+        "characteristics": "0x40000040"
+      },
+      {
+        "name": ".bss",
+        "rva": "0xe427000",
+        "virtual_size": 2048,
+        "raw_size": 0,
+        "characteristics": "0xc0000080"
+      },
+      {
+        "name": ".edata",
+        "rva": "0xe428000",
+        "virtual_size": 435,
+        "raw_size": 512,
+        "characteristics": "0x40000040"
+      },
+      {
+        "name": ".idata",
+        "rva": "0xe429000",
+        "virtual_size": 24,
+        "raw_size": 512,
+        "characteristics": "0x40000040"
+      }
+    ],
+    "exceptions": {
+      "original_count": 349580,
+      "payload_count": 53,
+      "merged_count": 349633,
+      "rva": "0xe429200",
+      "size": 4195596
+    },
+    "relocations": {
+      "original_nonpadding_count": 618384,
+      "payload_nonpadding_count": 0,
+      "payload_entries": [],
+      "original_directory_retained": true,
+      "rva": "0xe2cc000",
+      "size": 1392796
+    },
+    "hooks": [
+      {
+        "site_rva": "0x16b89e5",
+        "original_target_rva": "0x16442b0",
+        "new_target_rva": "0xe42290c",
+        "target_export": "PatchMessages",
+        "original_bytes": "e8c6b8f8ff",
+        "patched_bytes": "e8229fd60c",
+        "file_offset": "0x16b7fe5"
+      },
+      {
+        "site_rva": "0x16b9464",
+        "original_target_rva": "0x16449f0",
+        "new_target_rva": "0xe422be5",
+        "target_export": "PatchPeers",
+        "original_bytes": "e887b5f8ff",
+        "patched_bytes": "e87c97d60c",
+        "file_offset": "0x16b8a64"
+      },
+      {
+        "site_rva": "0x164085b",
+        "original_target_rva": "0x1628730",
+        "new_target_rva": "0xe423470",
+        "target_export": "PatchLocalBridge",
+        "original_bytes": "e8d07efeff",
+        "patched_bytes": "e8102cde0c",
+        "file_offset": "0x163fe5b"
+      },
+      {
+        "site_rva": "0x163f69e",
+        "original_target_rva": "0x3b0dbc0",
+        "new_target_rva": "0xe4234d9",
+        "target_export": "PatchApplyWordsBridge",
+        "original_bytes": "e81de54c02",
+        "patched_bytes": "e8363ede0c",
+        "file_offset": "0x163ec9e"
+      },
+      {
+        "site_rva": "0x16403b7",
+        "original_target_rva": "0x3b0dbc0",
+        "new_target_rva": "0xe4234e1",
+        "target_export": "PatchRefreshWordsBridge",
+        "original_bytes": "e804d84c02",
+        "patched_bytes": "e82531de0c",
+        "file_offset": "0x163f9b7"
+      },
+      {
+        "site_rva": "0x163e26b",
+        "original_target_rva": "0x59714e0",
+        "new_target_rva": "0xe4234d1",
+        "target_export": "PatchMenuBridge",
+        "original_bytes": "e870323304",
+        "patched_bytes": "e86152de0c",
+        "file_offset": "0x163d86b"
+      },
+      {
+        "site_rva": "0x16b602c",
+        "kind": "literal5",
+        "reason": "Input search debounce 900 ms to 300 ms; native cache, cancellation and pagination unchanged.",
+        "original_bytes": "ba84030000",
+        "patched_bytes": "ba2c010000",
+        "file_offset": "0x16b562c"
+      },
+      {
+        "site_rva": "0x8e348c4",
+        "kind": "data",
+        "reason": "gAutoUpdate default false for a fresh profile; saved preferences and native toggle preserved.",
+        "original_bytes": "01",
+        "patched_bytes": "00",
+        "file_offset": "0x8e336c4"
+      }
+    ],
+    "header_and_debug_changes": [
+      {
+        "file_offset": "0x16e",
+        "size": 2,
+        "before": "0a00",
+        "after": "0b00",
+        "reason": "add .exact section"
+      },
+      {
+        "file_offset": "0x1bc",
+        "size": 4,
+        "before": "00040000",
+        "after": "00060000",
+        "reason": "make room for section header"
+      },
+      {
+        "file_offset": "0x284",
+        "size": 4,
+        "before": "00040000",
+        "after": "00060000",
+        "reason": "header expansion: PointerToRawData"
+      },
+      {
+        "file_offset": "0x2ac",
+        "size": 4,
+        "before": "00f4ff05",
+        "after": "00f6ff05",
+        "reason": "header expansion: PointerToRawData"
+      },
+      {
+        "file_offset": "0x2d4",
+        "size": 4,
+        "before": "006cd708",
+        "after": "006ed708",
+        "reason": "header expansion: PointerToRawData"
+      },
+      {
+        "file_offset": "0x2fc",
+        "size": 4,
+        "before": "00d8b20c",
+        "after": "00dab20c",
+        "reason": "header expansion: PointerToRawData"
+      },
+      {
+        "file_offset": "0x324",
+        "size": 4,
+        "before": "00dcf20c",
+        "after": "00def20c",
+        "reason": "header expansion: PointerToRawData"
+      },
+      {
+        "file_offset": "0x34c",
+        "size": 4,
+        "before": "00e2f20c",
+        "after": "00e4f20c",
+        "reason": "header expansion: PointerToRawData"
+      },
+      {
+        "file_offset": "0x374",
+        "size": 4,
+        "before": "0092f30c",
+        "after": "0094f30c",
+        "reason": "header expansion: PointerToRawData"
+      },
+      {
+        "file_offset": "0x39c",
+        "size": 4,
+        "before": "0096f30c",
+        "after": "0098f30c",
+        "reason": "header expansion: PointerToRawData"
+      },
+      {
+        "file_offset": "0x3c4",
+        "size": 4,
+        "before": "0098f30c",
+        "after": "009af30c",
+        "reason": "header expansion: PointerToRawData"
+      },
+      {
+        "file_offset": "0x3ec",
+        "size": 4,
+        "before": "0038f40c",
+        "after": "003af40c",
+        "reason": "header expansion: PointerToRawData"
+      },
+      {
+        "file_offset": "0x7deb3dc",
+        "size": 4,
+        "before": "c4cb6c08",
+        "after": "c4cd6c08",
+        "reason": "header expansion: debug PointerToRawData"
+      },
+      {
+        "file_offset": "0x7deb3f8",
+        "size": 4,
+        "before": "08cc6c08",
+        "after": "08ce6c08",
+        "reason": "header expansion: debug PointerToRawData"
+      },
+      {
+        "file_offset": "0x7deb414",
+        "size": 4,
+        "before": "1ccc6c08",
+        "after": "1cce6c08",
+        "reason": "header expansion: debug PointerToRawData"
+      },
+      {
+        "file_offset": "0x190",
+        "size": 4,
+        "before": "ac28d805",
+        "after": "7934420e",
+        "reason": "initialize optional Documents rule storage before native startup"
+      },
+      {
+        "file_offset": "0x1b8",
+        "size": 4,
+        "before": "0010420e",
+        "after": "00a0820e",
+        "reason": "extend image for .exact"
+      },
+      {
+        "file_offset": "0x184",
+        "size": 4,
+        "before": "00f0ff05",
+        "after": "00784006",
+        "reason": "account for added code section"
+      },
+      {
+        "file_offset": "0x188",
+        "size": 4,
+        "before": "00bc4108",
+        "after": "00448208",
+        "reason": "account for added initialized section"
+      },
+      {
+        "file_offset": "0x208",
+        "size": 4,
+        "before": "0030eb0d",
+        "after": "0092420e",
+        "reason": "data directory 3 RVA"
+      },
+      {
+        "file_offset": "0x20c",
+        "size": 4,
+        "before": "90024000",
+        "after": "0c054000",
+        "reason": "data directory 3 size"
+      },
+      {
+        "file_offset": "0x210",
+        "size": 4,
+        "before": "007a090d",
+        "after": "00000000",
+        "reason": "data directory 4 RVA"
+      },
+      {
+        "file_offset": "0x214",
+        "size": 4,
+        "before": "282c0000",
+        "after": "00000000",
+        "reason": "data directory 4 size"
+      },
+      {
+        "file_offset": "0x1c0",
+        "size": 4,
+        "before": "465f0a0d",
+        "after": "00000000",
+        "reason": "recompute image checksum"
+      },
+      {
+        "file_offset": "0x1c0",
+        "size": 4,
+        "before": "00000000",
+        "after": "5aaa4a0d",
+        "reason": "image checksum"
+      }
+    ],
+    "debug_raw_pointer_updates": [
+      {
+        "original_file_offset": 132035036,
+        "old": 141347780,
+        "new": 141348292
+      },
+      {
+        "original_file_offset": 132035064,
+        "old": 141347848,
+        "new": 141348360
+      },
+      {
+        "original_file_offset": 132035092,
+        "old": 141347868,
+        "new": 141348380
+      }
+    ],
+    "checksum": "0xd4aaa5a",
+    "security_directory_cleared": true,
+    "authenticode": "The derived executable is unsigned; original certificate bytes are inert with a cleared SECURITY directory.",
+    "original_file_unchanged": true,
+    "original_section_rvas_unchanged": true,
+    "original_section_content_verified_except_hook_and_debug_pointer_changes": true,
+    "imports_added": false,
+    "entrypoint_changed": true,
+    "new_entrypoint_rva": "0xe423479",
+    "deployed": false,
+    "native_image_validation": {
+      "ntstatus": "0x0",
+      "win32_error": 0,
+      "sec_image_created": true,
+      "image_code_executed": false
+    },
+    "source_sha256": {
+      "payload.c": "398315b100c48bf3e23fe57d8fc0191c30f894cb3635319dffd1c78a9377d78c",
+      "hooks.S": "8cbb07a3fa1437ed423472592691004254ddb5198dda3b4261c7255c4f5c9500",
+      "hooks.json": "5f3b0c86429490e57d2be32dfdc6e89cf8588f1846889796436c439c7f487274",
+      "blacklist.h": "8413f828b121eaa1051b1618f132b8272daae85faed431f8bc5e838b8a26062b",
+      "menu.h": "17634aaea556ec20b0d9db30b07b9a6467791e8a7b0779058edd5facce9bd8b3"
+    },
+    "validation": "PE structure, exact input/callsite hashes, section preservation, checksum, unwind table, ASLR relocation equality, and Windows SEC_IMAGE acceptance without code execution. App runtime behavior is not validated by this builder."
   },
-  "real_ui_not_yet_verified": [
-    "content blocking menu",
-    "undo",
-    "rule persistence after another restart"
-  ],
-  "bundle_builder_tests": 14,
-  "powershell_bundle_checks": 24,
-  "bundle_bytes": 7338,
-  "bundle_sha256": "dab78abe33ce24b4bf80c0ea2ef41e233a5e0f9a313b7b83d3222b8819c78422",
-  "real_bundle_reconstruction": "matched verified output SHA256 with Windows PowerShell 5.1",
-  "isolated_manager_checks": 92,
-  "real_manager_installed": true,
-  "real_manager_checks": [
-    "current-user startup shortcut created",
-    "hidden monitor running",
-    "current exact r4 recognized as Patched"
-  ],
-  "real_manager_future_official_update_observed": false
+  "menu_and_exact_search": {
+    "status": "passed",
+    "kind": "actual compiled Windows x64 under Unicorn with synthetic Qt/WinAPI",
+    "executable_sha256": "8a5fc166834e3e927547b2ad90c88f3578f65d2bce47cd8a522ec270daa0a0f3",
+    "payload_sha256": "6fd6952e4dbe8532279cb4c73587a315c0222ecc02e2e8f37e4b7c3b400a563b",
+    "bases": [
+      {
+        "base": "0x140000000",
+        "passed": [
+          "menu bridge: RSI->RDX, all nonvolatile registers/stack, search+preview row identity, Chinese labels",
+          "native QAction/UiMenu ABI, nine connect arguments, queued bool type data, owned 72-byte slots",
+          "slot hash+length snapshot survives menuRow clearing, compare and destruction, temporary DB cleanup",
+          "native failed connect consumes initial slot reference without producer double-free",
+          "queued Block Call persists full UTF-16 hash; duplicate removal across histories/search/preview, near-text retained",
+          "native replacement rebuilds new FakeRows/indexes, consumes snapshot buffers, old-row poison guard, counts/mouse/loading preserved",
+          "loading flag raised during first native rebuild survives second rebuild clearing it",
+          "Undo label/operation snapshot removes latest record and invokes native instant repeat-search with inner+0x860",
+          "future-page blacklist exact whole-text filtering in global and scoped search, blocked inject rejected, vector capacity intact",
+          "corrupt DB mutation reports Chinese error, preserves DB/results and closes all temporary resources",
+          "non-message, missing-context, unfiltered and empty-text guards retain original connection destruction",
+          "AND whitespace-separated exact message keywords: 18 Unicode/order/missing/broken/case cases plus blacklist integration",
+          "junction launch C path and D target do not affect the Known Documents rule store; CREATE_NEW in launch directory avoided",
+          "fully keyword-rejected page checks channel rules first, then avoids content DB and crypto calls",
+          "300-key collision cluster: equal-length hit/miss full-digest check, impossible lengths skip crypto, duplicate-key Undo preserves order",
+          "single five-byte timer literal changes 900 to 300 ms; native callee/RCX/R8/R9 and register/stack ABI preserved"
+        ],
+        "original_exact_search_regression": [
+          "literal UTF-16: 23 cases",
+          "message compaction, injected mismatch, scoped passthrough, allocation ownership",
+          "empty filtered message page reaches original receiver",
+          "peers, aliases, channels, sponsored stable ownership partition",
+          "local full-list scan, interior match, aliases, original Row pointers, assembly capture bridge",
+          "local scoped native ABI passthrough",
+          "query preparation retains whole raw string including punctuation/space/case; empty native fallback"
+        ]
+      },
+      {
+        "base": "0x7ff400000000",
+        "passed": [
+          "menu bridge: RSI->RDX, all nonvolatile registers/stack, search+preview row identity, Chinese labels",
+          "native QAction/UiMenu ABI, nine connect arguments, queued bool type data, owned 72-byte slots",
+          "slot hash+length snapshot survives menuRow clearing, compare and destruction, temporary DB cleanup",
+          "native failed connect consumes initial slot reference without producer double-free",
+          "queued Block Call persists full UTF-16 hash; duplicate removal across histories/search/preview, near-text retained",
+          "native replacement rebuilds new FakeRows/indexes, consumes snapshot buffers, old-row poison guard, counts/mouse/loading preserved",
+          "loading flag raised during first native rebuild survives second rebuild clearing it",
+          "Undo label/operation snapshot removes latest record and invokes native instant repeat-search with inner+0x860",
+          "future-page blacklist exact whole-text filtering in global and scoped search, blocked inject rejected, vector capacity intact",
+          "corrupt DB mutation reports Chinese error, preserves DB/results and closes all temporary resources",
+          "non-message, missing-context, unfiltered and empty-text guards retain original connection destruction",
+          "AND whitespace-separated exact message keywords: 18 Unicode/order/missing/broken/case cases plus blacklist integration",
+          "junction launch C path and D target do not affect the Known Documents rule store; CREATE_NEW in launch directory avoided",
+          "fully keyword-rejected page checks channel rules first, then avoids content DB and crypto calls",
+          "300-key collision cluster: equal-length hit/miss full-digest check, impossible lengths skip crypto, duplicate-key Undo preserves order",
+          "single five-byte timer literal changes 900 to 300 ms; native callee/RCX/R8/R9 and register/stack ABI preserved"
+        ],
+        "original_exact_search_regression": [
+          "literal UTF-16: 23 cases",
+          "message compaction, injected mismatch, scoped passthrough, allocation ownership",
+          "empty filtered message page reaches original receiver",
+          "peers, aliases, channels, sponsored stable ownership partition",
+          "local full-list scan, interior match, aliases, original Row pointers, assembly capture bridge",
+          "local scoped native ABI passthrough",
+          "query preparation retains whole raw string including punctuation/space/case; empty native fallback"
+        ]
+      }
+    ],
+    "limits": [
+      "No real Telegram UI/account data used.",
+      "Native Qt/WinAPI callees are instrumented ABI stubs."
+    ]
+  },
+  "channel_and_startup": {
+    "status": "passed",
+    "kind": "compiled Windows x64 under Unicorn; synthetic Qt/Windows ABI",
+    "sha256": "8a5fc166834e3e927547b2ad90c88f3578f65d2bce47cd8a522ec270daa0a0f3",
+    "default_updates": "false; native gate, enable setter and saved preference parser unchanged",
+    "bases": [
+      {
+        "base": "0x140000000",
+        "passed": [
+          "broadcast-only menu eligibility; user/group IDs excluded; original content action retained",
+          "queued stable ID survives menu clearing and rename; normal/preview variants removed; counts/selection/loading preserved; content bytes unchanged",
+          "future/scoped pages and injected spam filtered by typed ID before text; 40 varying long messages; same-name other channel and same-bare-ID user survive",
+          "remote/my/sponsored peer results and local History rows filtered; sponsored destructor ownership remains exact",
+          "new process loads persisted IDs; undo removes only most recent channel and repeats search; content DB remains unchanged",
+          "bad magic, truncated/oversized file, invalid typed IDs, nonzero reserved bytes rejected without overwrite",
+          "startup bridge reaches native entry with arguments/stack/nonvolatile registers; clean/Unicode/redirected folder creation; legacy migration idempotent; existing/corrupt rules preserved; denied Documents does not block startup"
+        ]
+      },
+      {
+        "base": "0x7ff400000000",
+        "passed": [
+          "broadcast-only menu eligibility; user/group IDs excluded; original content action retained",
+          "queued stable ID survives menu clearing and rename; normal/preview variants removed; counts/selection/loading preserved; content bytes unchanged",
+          "future/scoped pages and injected spam filtered by typed ID before text; 40 varying long messages; same-name other channel and same-bare-ID user survive",
+          "remote/my/sponsored peer results and local History rows filtered; sponsored destructor ownership remains exact",
+          "new process loads persisted IDs; undo removes only most recent channel and repeats search; content DB remains unchanged",
+          "bad magic, truncated/oversized file, invalid typed IDs, nonzero reserved bytes rejected without overwrite",
+          "startup bridge reaches native entry with arguments/stack/nonvolatile registers; clean/Unicode/redirected folder creation; legacy migration idempotent; existing/corrupt rules preserved; denied Documents does not block startup"
+        ]
+      }
+    ],
+    "limits": [
+      "No real Telegram account/network/menu click in this suite."
+    ]
+  },
+  "languages": {
+    "status": "passed",
+    "case_count_per_base": 86,
+    "hashes": {
+      "Telegram.exact.exe": "8a5fc166834e3e927547b2ad90c88f3578f65d2bce47cd8a522ec270daa0a0f3",
+      "payload.exe": "6fd6952e4dbe8532279cb4c73587a315c0222ecc02e2e8f37e4b7c3b400a563b"
+    },
+    "bases": [
+      {
+        "base": "0x140000000",
+        "all_keywords_cases": [
+          {
+            "group": "好人完整连续",
+            "text": "好人",
+            "query": "好人",
+            "matched": true
+          },
+          {
+            "group": "好人完整连续",
+            "text": "他是个好人",
+            "query": "好人",
+            "matched": true
+          },
+          {
+            "group": "好人完整连续",
+            "text": "好人好事",
+            "query": "好人",
+            "matched": true
+          },
+          {
+            "group": "好人不拆单字",
+            "text": "好",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人不拆单字",
+            "text": "人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人不拆单字",
+            "text": "真好",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人顺序连续",
+            "text": "人好",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略空格",
+            "text": "好 人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略换行",
+            "text": "好\n人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略标点",
+            "text": "好，人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略其他字",
+            "text": "好的人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略零宽字符",
+            "text": "好​人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略Emoji",
+            "text": "好👍人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "简体中文",
+            "text": "重庆有很多好人",
+            "query": "好人 重庆",
+            "matched": true
+          },
+          {
+            "group": "简体中文",
+            "text": "好人住在重庆",
+            "query": "重庆 好人",
+            "matched": true
+          },
+          {
+            "group": "简体中文",
+            "text": "重庆只有风景",
+            "query": "好人 重庆",
+            "matched": false
+          },
+          {
+            "group": "词内连续",
+            "text": "好 人住在重庆",
+            "query": "好人 重庆",
+            "matched": false
+          },
+          {
+            "group": "跨行AND",
+            "text": "好人\n跨行描述\n重庆",
+            "query": "好人 重庆",
+            "matched": true
+          },
+          {
+            "group": "繁体中文",
+            "text": "臺北的咖啡店很好",
+            "query": "臺北 咖啡",
+            "matched": true
+          },
+          {
+            "group": "繁简不转换",
+            "text": "臺北的咖啡店很好",
+            "query": "台北 咖啡",
+            "matched": false
+          },
+          {
+            "group": "繁简不转换",
+            "text": "重慶有好人",
+            "query": "重庆 好人",
+            "matched": false
+          },
+          {
+            "group": "英语",
+            "text": "Python tutorial for beginners",
+            "query": "Python tutorial",
+            "matched": true
+          },
+          {
+            "group": "英语顺序不限",
+            "text": "A tutorial introduces Python",
+            "query": "Python tutorial",
+            "matched": true
+          },
+          {
+            "group": "英语缺词",
+            "text": "Python reference guide",
+            "query": "Python tutorial",
+            "matched": false
+          },
+          {
+            "group": "大小写",
+            "text": "Python tutorial",
+            "query": "python tutorial",
+            "matched": false
+          },
+          {
+            "group": "大小写",
+            "text": "python tutorial",
+            "query": "Python tutorial",
+            "matched": false
+          },
+          {
+            "group": "大小写",
+            "text": "python tutorial",
+            "query": "python tutorial",
+            "matched": true
+          },
+          {
+            "group": "日语",
+            "text": "東京で日本語を勉強しています",
+            "query": "東京 日本語",
+            "matched": true
+          },
+          {
+            "group": "日语缺词",
+            "text": "大阪で日本語を勉強しています",
+            "query": "東京 日本語",
+            "matched": false
+          },
+          {
+            "group": "韩语",
+            "text": "서울에서 한국어를 공부합니다",
+            "query": "서울 한국어",
+            "matched": true
+          },
+          {
+            "group": "韩语缺词",
+            "text": "부산에서 한국어를 공부합니다",
+            "query": "서울 한국어",
+            "matched": false
+          },
+          {
+            "group": "俄语",
+            "text": "Москва: изучаем русский язык",
+            "query": "Москва русский",
+            "matched": true
+          },
+          {
+            "group": "俄语大小写",
+            "text": "Москва: изучаем русский язык",
+            "query": "москва русский",
+            "matched": false
+          },
+          {
+            "group": "阿拉伯语",
+            "text": "تعلم اللغة العربية في القاهرة",
+            "query": "العربية القاهرة",
+            "matched": true
+          },
+          {
+            "group": "阿拉伯语缺词",
+            "text": "تعلم اللغة العربية في دبي",
+            "query": "العربية القاهرة",
+            "matched": false
+          },
+          {
+            "group": "阿拉伯语附标不消除",
+            "text": "كِتاب جديد",
+            "query": "كتاب",
+            "matched": false
+          },
+          {
+            "group": "西语",
+            "text": "Aprende español en Madrid",
+            "query": "español Madrid",
+            "matched": true
+          },
+          {
+            "group": "西语附标不消除",
+            "text": "Aprende español en Madrid",
+            "query": "espanol Madrid",
+            "matched": false
+          },
+          {
+            "group": "西语大小写",
+            "text": "Aprende español en Madrid",
+            "query": "español madrid",
+            "matched": false
+          },
+          {
+            "group": "混合语言",
+            "text": "上海 Python 入门 tutorial",
+            "query": "上海 Python tutorial",
+            "matched": true
+          },
+          {
+            "group": "混合语言缺词",
+            "text": "北京 Python 入门 tutorial",
+            "query": "上海 Python tutorial",
+            "matched": false
+          },
+          {
+            "group": "Emoji混合",
+            "text": "花🌸在東京",
+            "query": "🌸 東京",
+            "matched": true
+          },
+          {
+            "group": "Emoji缺失",
+            "text": "花在東京",
+            "query": "🌸 東京",
+            "matched": false
+          },
+          {
+            "group": "子串非整词",
+            "text": "cats",
+            "query": "cat",
+            "matched": true
+          },
+          {
+            "group": "子串非整词",
+            "text": "concatenate",
+            "query": "cat",
+            "matched": true
+          },
+          {
+            "group": "子串长度",
+            "text": "cat",
+            "query": "cats",
+            "matched": false
+          },
+          {
+            "group": "不做词形转换",
+            "text": "mice",
+            "query": "mouse",
+            "matched": false
+          },
+          {
+            "group": "不做词形转换",
+            "text": "went",
+            "query": "go",
+            "matched": false
+          },
+          {
+            "group": "重音字面",
+            "text": "café",
+            "query": "café",
+            "matched": true
+          },
+          {
+            "group": "重音不消除",
+            "text": "café",
+            "query": "cafe",
+            "matched": false
+          },
+          {
+            "group": "NFC不转NFD",
+            "text": "café",
+            "query": "café",
+            "matched": false
+          },
+          {
+            "group": "NFD不转NFC",
+            "text": "café",
+            "query": "café",
+            "matched": false
+          },
+          {
+            "group": "相同NFD",
+            "text": "café",
+            "query": "café",
+            "matched": true
+          },
+          {
+            "group": "全角不折叠",
+            "text": "Ｐｙｔｈｏｎ",
+            "query": "Python",
+            "matched": false
+          },
+          {
+            "group": "全角相同",
+            "text": "Ｐｙｔｈｏｎ",
+            "query": "Ｐｙｔｈｏｎ",
+            "matched": true
+          },
+          {
+            "group": "空格AND",
+            "text": "blue comes before red",
+            "query": "red blue",
+            "matched": true
+          },
+          {
+            "group": "多空格AND",
+            "text": "blue comes before red",
+            "query": "  red   blue  ",
+            "matched": true
+          },
+          {
+            "group": "换行制表AND",
+            "text": "blue comes before red",
+            "query": "\tred\nblue\r",
+            "matched": true
+          },
+          {
+            "group": "全角空格AND",
+            "text": "blue comes before red",
+            "query": "red　blue",
+            "matched": true
+          },
+          {
+            "group": "不换行空格AND",
+            "text": "blue comes before red",
+            "query": "red blue",
+            "matched": true
+          },
+          {
+            "group": "窄不换行空格AND",
+            "text": "blue comes before red",
+            "query": "red blue",
+            "matched": true
+          },
+          {
+            "group": "零宽空格不分词",
+            "text": "red blue",
+            "query": "red​blue",
+            "matched": false
+          },
+          {
+            "group": "零宽空格字面",
+            "text": "red​blue",
+            "query": "red​blue",
+            "matched": true
+          },
+          {
+            "group": "重复词不计次数",
+            "text": "cat",
+            "query": "cat cat",
+            "matched": true
+          },
+          {
+            "group": "两个词可重叠",
+            "text": "foobar",
+            "query": "foo oob",
+            "matched": true
+          },
+          {
+            "group": "空格不要求文本分词",
+            "text": "猫狗",
+            "query": "猫 狗",
+            "matched": true
+          },
+          {
+            "group": "空查询匹配器",
+            "text": "anything",
+            "query": "",
+            "matched": true
+          },
+          {
+            "group": "全空白匹配器",
+            "text": "anything",
+            "query": " \t　",
+            "matched": true
+          },
+          {
+            "group": "空消息",
+            "text": "",
+            "query": "cat",
+            "matched": false
+          },
+          {
+            "group": "引号不是短语语法",
+            "text": "red blue",
+            "query": "\"red blue\"",
+            "matched": false
+          },
+          {
+            "group": "引号仍按空白分词",
+            "text": "\"red and blue\"",
+            "query": "\"red blue\"",
+            "matched": true
+          },
+          {
+            "group": "OR不是运算符",
+            "text": "red",
+            "query": "red OR blue",
+            "matched": false
+          },
+          {
+            "group": "OR作为普通文本",
+            "text": "blue OR red",
+            "query": "red OR blue",
+            "matched": true
+          },
+          {
+            "group": "OR甚至不是整词",
+            "text": "red WORD blue",
+            "query": "red OR blue",
+            "matched": true
+          },
+          {
+            "group": "减号不是排除",
+            "text": "red dog",
+            "query": "red -cat",
+            "matched": false
+          },
+          {
+            "group": "减号普通字符",
+            "text": "red -cat",
+            "query": "red -cat",
+            "matched": true
+          },
+          {
+            "group": "星号不是通配",
+            "text": "python",
+            "query": "py*",
+            "matched": false
+          },
+          {
+            "group": "星号普通字符",
+            "text": "literal py* text",
+            "query": "py*",
+            "matched": true
+          },
+          {
+            "group": "问号不是通配",
+            "text": "cat",
+            "query": "c?t",
+            "matched": false
+          },
+          {
+            "group": "问号普通字符",
+            "text": "literal c?t text",
+            "query": "c?t",
+            "matched": true
+          },
+          {
+            "group": "括号不分组",
+            "text": "red",
+            "query": "(red)",
+            "matched": false
+          },
+          {
+            "group": "竖线不是或",
+            "text": "red blue",
+            "query": "red|blue",
+            "matched": false
+          },
+          {
+            "group": "正则无特殊意义",
+            "text": "red red",
+            "query": "r.*d",
+            "matched": false
+          },
+          {
+            "group": "网址字面",
+            "text": "说明见 https://example.com/docs",
+            "query": "example.com docs",
+            "matched": true
+          },
+          {
+            "group": "标点不移除",
+            "text": "hello, world",
+            "query": "hello world",
+            "matched": true
+          },
+          {
+            "group": "标点必须存在",
+            "text": "hello world",
+            "query": "hello, world",
+            "matched": false
+          }
+        ],
+        "peer_query": "Python 教程",
+        "peer_names": [
+          "Python 教程",
+          "教程 Python",
+          "Python 入门教程",
+          "Python  教程",
+          "Python\n教程"
+        ],
+        "peer_retained": [
+          "Python 教程"
+        ],
+        "local_retained": [
+          "Python 教程"
+        ],
+        "message_scope_checks": [
+          {
+            "scope_offset": "0x0",
+            "retained": [
+              "Python 教程",
+              "教程 Python",
+              "Python 入门教程"
+            ]
+          },
+          {
+            "scope_offset": "0x5e0",
+            "retained": [
+              "Python 教程",
+              "教程 Python",
+              "Python 入门教程",
+              "只有 Python"
+            ]
+          },
+          {
+            "scope_offset": "0x98",
+            "retained": [
+              "Python 教程",
+              "教程 Python",
+              "Python 入门教程",
+              "只有 Python"
+            ]
+          },
+          {
+            "scope_offset": "0xb8",
+            "retained": [
+              "Python 教程",
+              "教程 Python",
+              "Python 入门教程",
+              "只有 Python"
+            ]
+          }
+        ],
+        "haoren_contract": {
+          "query": "好人",
+          "candidates": [
+            "好",
+            "人",
+            "真好",
+            "好 人",
+            "好\n人",
+            "人好",
+            "好，人",
+            "好的人",
+            "好​人",
+            "好👍人",
+            "好人",
+            "他是个好人",
+            "好人好事"
+          ],
+          "public_peer_lists_retained": [
+            [
+              "好人",
+              "他是个好人",
+              "好人好事"
+            ],
+            [
+              "好人",
+              "他是个好人",
+              "好人好事"
+            ]
+          ],
+          "local_names_retained": [
+            "好人",
+            "他是个好人",
+            "好人好事"
+          ],
+          "message_scope_checks": [
+            {
+              "scope_offset": "0x0",
+              "retained": [
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好",
+              "injected_retained": false
+            },
+            {
+              "scope_offset": "0x0",
+              "retained": [
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好人",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0x5e0",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0x5e0",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好人",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0x98",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0x98",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好人",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0xb8",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0xb8",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好人",
+              "injected_retained": true
+            }
+          ]
+        }
+      },
+      {
+        "base": "0x7ff400000000",
+        "all_keywords_cases": [
+          {
+            "group": "好人完整连续",
+            "text": "好人",
+            "query": "好人",
+            "matched": true
+          },
+          {
+            "group": "好人完整连续",
+            "text": "他是个好人",
+            "query": "好人",
+            "matched": true
+          },
+          {
+            "group": "好人完整连续",
+            "text": "好人好事",
+            "query": "好人",
+            "matched": true
+          },
+          {
+            "group": "好人不拆单字",
+            "text": "好",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人不拆单字",
+            "text": "人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人不拆单字",
+            "text": "真好",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人顺序连续",
+            "text": "人好",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略空格",
+            "text": "好 人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略换行",
+            "text": "好\n人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略标点",
+            "text": "好，人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略其他字",
+            "text": "好的人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略零宽字符",
+            "text": "好​人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "好人词内不忽略Emoji",
+            "text": "好👍人",
+            "query": "好人",
+            "matched": false
+          },
+          {
+            "group": "简体中文",
+            "text": "重庆有很多好人",
+            "query": "好人 重庆",
+            "matched": true
+          },
+          {
+            "group": "简体中文",
+            "text": "好人住在重庆",
+            "query": "重庆 好人",
+            "matched": true
+          },
+          {
+            "group": "简体中文",
+            "text": "重庆只有风景",
+            "query": "好人 重庆",
+            "matched": false
+          },
+          {
+            "group": "词内连续",
+            "text": "好 人住在重庆",
+            "query": "好人 重庆",
+            "matched": false
+          },
+          {
+            "group": "跨行AND",
+            "text": "好人\n跨行描述\n重庆",
+            "query": "好人 重庆",
+            "matched": true
+          },
+          {
+            "group": "繁体中文",
+            "text": "臺北的咖啡店很好",
+            "query": "臺北 咖啡",
+            "matched": true
+          },
+          {
+            "group": "繁简不转换",
+            "text": "臺北的咖啡店很好",
+            "query": "台北 咖啡",
+            "matched": false
+          },
+          {
+            "group": "繁简不转换",
+            "text": "重慶有好人",
+            "query": "重庆 好人",
+            "matched": false
+          },
+          {
+            "group": "英语",
+            "text": "Python tutorial for beginners",
+            "query": "Python tutorial",
+            "matched": true
+          },
+          {
+            "group": "英语顺序不限",
+            "text": "A tutorial introduces Python",
+            "query": "Python tutorial",
+            "matched": true
+          },
+          {
+            "group": "英语缺词",
+            "text": "Python reference guide",
+            "query": "Python tutorial",
+            "matched": false
+          },
+          {
+            "group": "大小写",
+            "text": "Python tutorial",
+            "query": "python tutorial",
+            "matched": false
+          },
+          {
+            "group": "大小写",
+            "text": "python tutorial",
+            "query": "Python tutorial",
+            "matched": false
+          },
+          {
+            "group": "大小写",
+            "text": "python tutorial",
+            "query": "python tutorial",
+            "matched": true
+          },
+          {
+            "group": "日语",
+            "text": "東京で日本語を勉強しています",
+            "query": "東京 日本語",
+            "matched": true
+          },
+          {
+            "group": "日语缺词",
+            "text": "大阪で日本語を勉強しています",
+            "query": "東京 日本語",
+            "matched": false
+          },
+          {
+            "group": "韩语",
+            "text": "서울에서 한국어를 공부합니다",
+            "query": "서울 한국어",
+            "matched": true
+          },
+          {
+            "group": "韩语缺词",
+            "text": "부산에서 한국어를 공부합니다",
+            "query": "서울 한국어",
+            "matched": false
+          },
+          {
+            "group": "俄语",
+            "text": "Москва: изучаем русский язык",
+            "query": "Москва русский",
+            "matched": true
+          },
+          {
+            "group": "俄语大小写",
+            "text": "Москва: изучаем русский язык",
+            "query": "москва русский",
+            "matched": false
+          },
+          {
+            "group": "阿拉伯语",
+            "text": "تعلم اللغة العربية في القاهرة",
+            "query": "العربية القاهرة",
+            "matched": true
+          },
+          {
+            "group": "阿拉伯语缺词",
+            "text": "تعلم اللغة العربية في دبي",
+            "query": "العربية القاهرة",
+            "matched": false
+          },
+          {
+            "group": "阿拉伯语附标不消除",
+            "text": "كِتاب جديد",
+            "query": "كتاب",
+            "matched": false
+          },
+          {
+            "group": "西语",
+            "text": "Aprende español en Madrid",
+            "query": "español Madrid",
+            "matched": true
+          },
+          {
+            "group": "西语附标不消除",
+            "text": "Aprende español en Madrid",
+            "query": "espanol Madrid",
+            "matched": false
+          },
+          {
+            "group": "西语大小写",
+            "text": "Aprende español en Madrid",
+            "query": "español madrid",
+            "matched": false
+          },
+          {
+            "group": "混合语言",
+            "text": "上海 Python 入门 tutorial",
+            "query": "上海 Python tutorial",
+            "matched": true
+          },
+          {
+            "group": "混合语言缺词",
+            "text": "北京 Python 入门 tutorial",
+            "query": "上海 Python tutorial",
+            "matched": false
+          },
+          {
+            "group": "Emoji混合",
+            "text": "花🌸在東京",
+            "query": "🌸 東京",
+            "matched": true
+          },
+          {
+            "group": "Emoji缺失",
+            "text": "花在東京",
+            "query": "🌸 東京",
+            "matched": false
+          },
+          {
+            "group": "子串非整词",
+            "text": "cats",
+            "query": "cat",
+            "matched": true
+          },
+          {
+            "group": "子串非整词",
+            "text": "concatenate",
+            "query": "cat",
+            "matched": true
+          },
+          {
+            "group": "子串长度",
+            "text": "cat",
+            "query": "cats",
+            "matched": false
+          },
+          {
+            "group": "不做词形转换",
+            "text": "mice",
+            "query": "mouse",
+            "matched": false
+          },
+          {
+            "group": "不做词形转换",
+            "text": "went",
+            "query": "go",
+            "matched": false
+          },
+          {
+            "group": "重音字面",
+            "text": "café",
+            "query": "café",
+            "matched": true
+          },
+          {
+            "group": "重音不消除",
+            "text": "café",
+            "query": "cafe",
+            "matched": false
+          },
+          {
+            "group": "NFC不转NFD",
+            "text": "café",
+            "query": "café",
+            "matched": false
+          },
+          {
+            "group": "NFD不转NFC",
+            "text": "café",
+            "query": "café",
+            "matched": false
+          },
+          {
+            "group": "相同NFD",
+            "text": "café",
+            "query": "café",
+            "matched": true
+          },
+          {
+            "group": "全角不折叠",
+            "text": "Ｐｙｔｈｏｎ",
+            "query": "Python",
+            "matched": false
+          },
+          {
+            "group": "全角相同",
+            "text": "Ｐｙｔｈｏｎ",
+            "query": "Ｐｙｔｈｏｎ",
+            "matched": true
+          },
+          {
+            "group": "空格AND",
+            "text": "blue comes before red",
+            "query": "red blue",
+            "matched": true
+          },
+          {
+            "group": "多空格AND",
+            "text": "blue comes before red",
+            "query": "  red   blue  ",
+            "matched": true
+          },
+          {
+            "group": "换行制表AND",
+            "text": "blue comes before red",
+            "query": "\tred\nblue\r",
+            "matched": true
+          },
+          {
+            "group": "全角空格AND",
+            "text": "blue comes before red",
+            "query": "red　blue",
+            "matched": true
+          },
+          {
+            "group": "不换行空格AND",
+            "text": "blue comes before red",
+            "query": "red blue",
+            "matched": true
+          },
+          {
+            "group": "窄不换行空格AND",
+            "text": "blue comes before red",
+            "query": "red blue",
+            "matched": true
+          },
+          {
+            "group": "零宽空格不分词",
+            "text": "red blue",
+            "query": "red​blue",
+            "matched": false
+          },
+          {
+            "group": "零宽空格字面",
+            "text": "red​blue",
+            "query": "red​blue",
+            "matched": true
+          },
+          {
+            "group": "重复词不计次数",
+            "text": "cat",
+            "query": "cat cat",
+            "matched": true
+          },
+          {
+            "group": "两个词可重叠",
+            "text": "foobar",
+            "query": "foo oob",
+            "matched": true
+          },
+          {
+            "group": "空格不要求文本分词",
+            "text": "猫狗",
+            "query": "猫 狗",
+            "matched": true
+          },
+          {
+            "group": "空查询匹配器",
+            "text": "anything",
+            "query": "",
+            "matched": true
+          },
+          {
+            "group": "全空白匹配器",
+            "text": "anything",
+            "query": " \t　",
+            "matched": true
+          },
+          {
+            "group": "空消息",
+            "text": "",
+            "query": "cat",
+            "matched": false
+          },
+          {
+            "group": "引号不是短语语法",
+            "text": "red blue",
+            "query": "\"red blue\"",
+            "matched": false
+          },
+          {
+            "group": "引号仍按空白分词",
+            "text": "\"red and blue\"",
+            "query": "\"red blue\"",
+            "matched": true
+          },
+          {
+            "group": "OR不是运算符",
+            "text": "red",
+            "query": "red OR blue",
+            "matched": false
+          },
+          {
+            "group": "OR作为普通文本",
+            "text": "blue OR red",
+            "query": "red OR blue",
+            "matched": true
+          },
+          {
+            "group": "OR甚至不是整词",
+            "text": "red WORD blue",
+            "query": "red OR blue",
+            "matched": true
+          },
+          {
+            "group": "减号不是排除",
+            "text": "red dog",
+            "query": "red -cat",
+            "matched": false
+          },
+          {
+            "group": "减号普通字符",
+            "text": "red -cat",
+            "query": "red -cat",
+            "matched": true
+          },
+          {
+            "group": "星号不是通配",
+            "text": "python",
+            "query": "py*",
+            "matched": false
+          },
+          {
+            "group": "星号普通字符",
+            "text": "literal py* text",
+            "query": "py*",
+            "matched": true
+          },
+          {
+            "group": "问号不是通配",
+            "text": "cat",
+            "query": "c?t",
+            "matched": false
+          },
+          {
+            "group": "问号普通字符",
+            "text": "literal c?t text",
+            "query": "c?t",
+            "matched": true
+          },
+          {
+            "group": "括号不分组",
+            "text": "red",
+            "query": "(red)",
+            "matched": false
+          },
+          {
+            "group": "竖线不是或",
+            "text": "red blue",
+            "query": "red|blue",
+            "matched": false
+          },
+          {
+            "group": "正则无特殊意义",
+            "text": "red red",
+            "query": "r.*d",
+            "matched": false
+          },
+          {
+            "group": "网址字面",
+            "text": "说明见 https://example.com/docs",
+            "query": "example.com docs",
+            "matched": true
+          },
+          {
+            "group": "标点不移除",
+            "text": "hello, world",
+            "query": "hello world",
+            "matched": true
+          },
+          {
+            "group": "标点必须存在",
+            "text": "hello world",
+            "query": "hello, world",
+            "matched": false
+          }
+        ],
+        "peer_query": "Python 教程",
+        "peer_names": [
+          "Python 教程",
+          "教程 Python",
+          "Python 入门教程",
+          "Python  教程",
+          "Python\n教程"
+        ],
+        "peer_retained": [
+          "Python 教程"
+        ],
+        "local_retained": [
+          "Python 教程"
+        ],
+        "message_scope_checks": [
+          {
+            "scope_offset": "0x0",
+            "retained": [
+              "Python 教程",
+              "教程 Python",
+              "Python 入门教程"
+            ]
+          },
+          {
+            "scope_offset": "0x5e0",
+            "retained": [
+              "Python 教程",
+              "教程 Python",
+              "Python 入门教程",
+              "只有 Python"
+            ]
+          },
+          {
+            "scope_offset": "0x98",
+            "retained": [
+              "Python 教程",
+              "教程 Python",
+              "Python 入门教程",
+              "只有 Python"
+            ]
+          },
+          {
+            "scope_offset": "0xb8",
+            "retained": [
+              "Python 教程",
+              "教程 Python",
+              "Python 入门教程",
+              "只有 Python"
+            ]
+          }
+        ],
+        "haoren_contract": {
+          "query": "好人",
+          "candidates": [
+            "好",
+            "人",
+            "真好",
+            "好 人",
+            "好\n人",
+            "人好",
+            "好，人",
+            "好的人",
+            "好​人",
+            "好👍人",
+            "好人",
+            "他是个好人",
+            "好人好事"
+          ],
+          "public_peer_lists_retained": [
+            [
+              "好人",
+              "他是个好人",
+              "好人好事"
+            ],
+            [
+              "好人",
+              "他是个好人",
+              "好人好事"
+            ]
+          ],
+          "local_names_retained": [
+            "好人",
+            "他是个好人",
+            "好人好事"
+          ],
+          "message_scope_checks": [
+            {
+              "scope_offset": "0x0",
+              "retained": [
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好",
+              "injected_retained": false
+            },
+            {
+              "scope_offset": "0x0",
+              "retained": [
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好人",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0x5e0",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0x5e0",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好人",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0x98",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0x98",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好人",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0xb8",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好",
+              "injected_retained": true
+            },
+            {
+              "scope_offset": "0xb8",
+              "retained": [
+                "好",
+                "人",
+                "真好",
+                "好 人",
+                "好\n人",
+                "人好",
+                "好，人",
+                "好的人",
+                "好​人",
+                "好👍人",
+                "好人",
+                "他是个好人",
+                "好人好事"
+              ],
+              "injected_text": "好人",
+              "injected_retained": true
+            }
+          ]
+        }
+      }
+    ],
+    "limits": [
+      "Compiled x64 matcher and hooks with synthetic Qt/WinAPI objects only.",
+      "Does not verify server retrieval or native UI query preprocessing.",
+      "Literal query filtering is active for global search only; scoped message results and injections retain native passthrough."
+    ]
+  },
+  "other_checks": {
+    "manager": 94,
+    "install_restore": 40,
+    "powershell_bundle": 24,
+    "python_bundle": 14,
+    "unknown_version_rejection": "passed",
+    "rule_manager_real_powershell": "passed"
+  },
+  "native_smoke": {
+    "patched_installed_and_started": true,
+    "legacy_rules_migrated_byte_identical": true,
+    "clean_portable_welcome_screen_seen": true,
+    "clean_profile_auto_update_byte": 0,
+    "clean_profile_normal_quit": true,
+    "language_switch_chinese_english_chinese": "passed in same process",
+    "reported_exit": "Matched our explicit -quit request at 23:59:42; no corresponding Windows crash event"
+  },
+  "limits": [
+    "Native Qt and Windows services are instrumented in the x64 simulation suites.",
+    "Live account search results and channel menu clicks have not been manually exercised for this release.",
+    "Server-side search recall, load and arbitrary future-version compatibility are not changed or guaranteed."
+  ]
 }

@@ -46,7 +46,12 @@ class Machine(old.Machine):
         self.dialogs=[]
         self.module_path=r'C:\Synthetic Telegram\Telegram.exe'
         self.final_module_path=r'\\?\C:\Synthetic Telegram\Telegram.exe'
-        self.db_path=r'\\?\C:\Synthetic Telegram\exact-search-blacklist.v1.bin'
+        self.documents_path=r'C:\Synthetic Documents'
+        self.db_path=self.documents_path+r'\Telegram\blacklists\exact-search-blacklist.v1.bin'
+        self.directories={self.documents_path}
+        self.directory_creates=[]
+        self.reject_directory_prefix=None
+        self.task_paths=set()
         self.reject_new_prefix=None
         self.file_creates=[]
         self.final_path_calls=[]
@@ -60,24 +65,24 @@ class Machine(old.Machine):
         self.research_calls=[]
         self.receive_loading=[]
         self.crypto_hash_calls=0
-        self.native(0x1c88390,self.original_text)
-        self.native(0x5d6e61c,self.native_alloc)
-        self.native(0x5b5b2c0,self.native_free)
-        self.native(0x4a3690,self.native_alloc)
-        self.native(0x5917620,self.construct_qstring)
-        self.native(0x4a4820,self.destroy_qstring)
-        self.native(0x5466720,self.construct_action)
-        self.native(0x5960740,self.connect)
-        self.native(0x595e130,self.connection_dtor)
-        self.native(0x3c95c80,self.add_action)
-        self.native(0x1631740,lambda a:self.mouse_calls.append(('searched',a[:2])))
-        self.native(0x16316d0,lambda a:self.mouse_calls.append(('preview',a[:2])))
-        self.native(0x163da10,lambda a:self.mouse_calls.append(('clear',a[:2])))
-        self.native(0x163b7a0,lambda a:self.refresh_calls.append(a[:2]))
-        self.native(0x4f7a90,self.research)
-        self.native(0x163a810,self.receive)
-        self.map(base+0x8ecd4d0,8)
-        self.u.mem_write(base+0x8ecd4d0,struct.pack('<II',1,0))
+        self.native(0x1c95050,self.original_text)
+        self.native(0x5d819cc,self.native_alloc)
+        self.native(0x5b6e670,self.native_free)
+        self.native(0x4a8690,self.native_alloc)
+        self.native(0x592a9c0,self.construct_qstring)
+        self.native(0x4a9820,self.destroy_qstring)
+        self.native(0x5479ac0,self.construct_action)
+        self.native(0x5973af0,self.connect)
+        self.native(0x59714e0,self.connection_dtor)
+        self.native(0x3ca8990,self.add_action)
+        self.native(0x163b1e0,lambda a:self.mouse_calls.append(('searched',a[:2])))
+        self.native(0x163b170,lambda a:self.mouse_calls.append(('preview',a[:2])))
+        self.native(0x16474b0,lambda a:self.mouse_calls.append(('clear',a[:2])))
+        self.native(0x1645240,lambda a:self.refresh_calls.append(a[:2]))
+        self.native(0x4fca90,self.research)
+        self.native(0x16442b0,self.receive)
+        self.map(base+0x8ee6610,8)
+        self.u.mem_write(base+0x8ee6610,struct.pack('<II',1,0))
         self.install_windows()
         self.u.hook_add(UC_HOOK_MEM_READ,self.guard_dead_rows)
 
@@ -155,11 +160,11 @@ class Machine(old.Machine):
         return a[0]
 
     def connect(self,a):
-        assert self.get(a[2])==self.base+0x5468760,('signal',a)
+        assert self.get(a[2])==self.base+0x547bb00,('signal',a)
         assert a[4]==0 and (a[6]&0xffffffff)==2,('functor/queued arguments',a)
-        assert a[7]==self.base+0x8ecd4d0
+        assert a[7]==self.base+0x8ee6610
         assert bytes(self.u.mem_read(a[7],8))==struct.pack('<II',1,0)
-        assert a[8]==self.base+0x64ec2c0
+        assert a[8]==self.base+0x65003b0
         slot=a[5]
         assert self.i32(slot)==1
         assert self.get(slot+8)==self.exports['BlacklistSlotImpl']
@@ -219,7 +224,7 @@ class Machine(old.Machine):
             self.native_free([pointer,self.native_live[pointer]])
 
     def install_windows(self):
-        self.iat(0x5fec348,'GetProcessHeap',lambda a:0x4444)
+        self.iat(0x6000350,'GetProcessHeap',lambda a:0x4444)
         def heap_alloc(a):
             assert a[0]==0x4444 and a[1]==8
             p=self.alloc(a[2]);self.heap_live[p]=a[2];return p
@@ -227,16 +232,16 @@ class Machine(old.Machine):
             assert a[0]==0x4444 and a[1]==0
             assert a[2] in self.heap_live,('heap double free',hex(a[2]))
             del self.heap_live[a[2]];return 1
-        self.iat(0x5fec3c8,'HeapAlloc',heap_alloc)
-        self.iat(0x5fec350,'HeapFree',heap_free)
+        self.iat(0x60003d0,'HeapAlloc',heap_alloc)
+        self.iat(0x6000358,'HeapFree',heap_free)
         def module_name(a):
             encoded=self.module_path.encode('utf-16-le')+b'\0\0'
             assert a[2]>len(encoded)//2
             self.u.mem_write(a[1],encoded);return len(encoded)//2-1
-        self.iat(0x5fec118,'GetModuleFileNameW',module_name)
-        self.iat(0x5fec078,'GetLastError',lambda a:self.last_error)
-        self.iat(0x5fec100,'GetCurrentProcessId',lambda a:12345)
-        self.iat(0x5fec220,'GetTickCount64',lambda a:987654321)
+        self.iat(0x6000110,'GetModuleFileNameW',module_name)
+        self.iat(0x6000070,'GetLastError',lambda a:self.last_error)
+        self.iat(0x60000f8,'GetCurrentProcessId',lambda a:12345)
+        self.iat(0x6000218,'GetTickCount64',lambda a:987654321)
         def create(a):
             path=self.wide(a[0]);mode=a[4]&0xffffffff
             self.file_creates.append((path,a[1]&0xffffffff,a[2]&0xffffffff,mode))
@@ -250,33 +255,35 @@ class Machine(old.Machine):
             if mode in (1,4):self.files.setdefault(path,b'')
             handle=self.next_handle;self.next_handle+=1
             self.handles[handle]={'path':path,'position':0,'access':a[1]};return handle
-        self.iat(0x5fec098,'CreateFileW',create)
+        self.iat(0x6000090,'CreateFileW',create)
         def read(a):
             f=self.handles[a[0]];raw=self.files[f['path']]
             data=raw[f['position']:f['position']+a[2]]
             if data:self.u.mem_write(a[1],data)
             f['position']+=len(data);self.u32(a[3],len(data));return 1
-        self.iat(0x5fec1e0,'ReadFile',read)
+        self.iat(0x60001d8,'ReadFile',read)
         def write(a):
             f=self.handles[a[0]];raw=self.files[f['path']]
             chunk=bytes(self.u.mem_read(a[1],a[2]));at=f['position']
             self.files[f['path']]=raw[:at]+chunk+raw[at+len(chunk):]
             f['position']+=len(chunk);self.u32(a[3],len(chunk));return 1
-        self.iat(0x5fec0a0,'WriteFile',write)
+        self.iat(0x6000098,'WriteFile',write)
         def close(a):assert a[0] in self.handles;del self.handles[a[0]];return 1
-        self.iat(0x5fec0a8,'CloseHandle',close)
+        self.iat(0x60000a0,'CloseHandle',close)
         def size(a):self.put(a[1],len(self.files[self.handles[a[0]]['path']]));return 1
-        self.iat(0x5fec038,'GetFileSizeEx',size)
-        self.iat(0x5fec288,'FlushFileBuffers',lambda a:1)
+        self.iat(0x6000038,'GetFileSizeEx',size)
+        self.iat(0x6000280,'FlushFileBuffers',lambda a:1)
         def move(a):
             assert a[2]==9
             self.files[self.wide(a[1])]=self.files.pop(self.wide(a[0]));return 1
-        self.iat(0x5fec280,'MoveFileExW',move)
+        self.iat(0x6000278,'MoveFileExW',move)
         def delete(a):self.files.pop(self.wide(a[0]),None);return 1
-        self.iat(0x5fec080,'DeleteFileW',delete)
-        def load(a):assert self.wide(a[0]).lower()=='bcrypt.dll' and a[2]==0x800;return 0x5555
-        self.iat(0x5fec428,'LoadLibraryExW',load)
-        self.iat(0x5fec1c8,'FreeLibrary',lambda a:1)
+        self.iat(0x6000078,'DeleteFileW',delete)
+        def load(a):
+            assert self.wide(a[0]).lower() in ('bcrypt.dll','shell32.dll','ole32.dll') and a[2]==0x800
+            return {'bcrypt.dll':0x5555,'shell32.dll':0x5556,'ole32.dll':0x5557}[self.wide(a[0]).lower()]
+        self.iat(0x6000430,'LoadLibraryExW',load)
+        self.iat(0x60001c0,'FreeLibrary',lambda a:1)
         def crypto_open(a):assert self.wide(a[1])=='SHA256';self.put(a[0],0x6666);return 0
         def crypto_hash(a):
             self.crypto_hash_calls+=1
@@ -296,10 +303,27 @@ class Machine(old.Machine):
             if len(raw)//2>a[2]:return len(raw)//2
             self.u.mem_write(a[1],raw);return len(raw)//2-1
         names['GetFinalPathNameByHandleW']=self.stub('final_path',final_path)
+        def known_folder(a):
+            assert bytes(self.u.mem_read(a[0],16))==bytes.fromhex('d09ad3fd8f23af46adb46c85480369c7')
+            assert a[1]==0x8000 and a[2]==0
+            raw=self.documents_path.encode('utf-16-le')+b'\0\0';p=self.alloc(len(raw))
+            self.u.mem_write(p,raw);self.put(a[3],p);self.task_paths.add(p);return 0
+        def task_free(a):self.task_paths.remove(a[0])
+        def mkdir(a):
+            path=self.wide(a[0]);self.directory_creates.append(path)
+            if self.reject_directory_prefix and path.startswith(self.reject_directory_prefix):self.last_error=5;return 0
+            if path in self.files or path in self.directories:self.last_error=183;return 0
+            self.directories.add(path);return 1
+        def attributes(a):
+            path=self.wide(a[0]);return 0x10 if path in self.directories else 0x80 if path in self.files else 0xffffffff
+        names['SHGetKnownFolderPath']=self.stub('known_folder',known_folder)
+        names['CoTaskMemFree']=self.stub('task_free',task_free)
+        names['CreateDirectoryW']=self.stub('mkdir',mkdir)
+        names['GetFileAttributesW']=self.stub('attributes',attributes)
         self.dynamic_names=names
         modules={'user32.dll':0x7777,'kernel32.dll':0x8888}
-        self.iat(0x5fec148,'GetModuleHandleW',lambda a:modules.get(self.wide(a[0]).lower(),0))
-        self.iat(0x5fec1c0,'GetProcAddress',lambda a:names.get(self.narrow(a[1]),0))
+        self.iat(0x6000140,'GetModuleHandleW',lambda a:modules.get(self.wide(a[0]).lower(),0))
+        self.iat(0x60001b8,'GetProcAddress',lambda a:names.get(self.narrow(a[1]),0))
 
     def seed_blacklist(self,values):
         self.files[self.db_path]=b'TGEXBL1\0'+struct.pack('<II',1,len(values))+b''.join(
@@ -382,10 +406,10 @@ class Machine(old.Machine):
             return trace('MoveFileExW',[src,dst,flags],move(src,dst,flags))
         def call_delete(a):
             filename=path(a[0]);return trace('DeleteFileW',[filename],delete(filename))
-        for rva,name,fn in [(0x5fec098,'CreateFileW',call_create),(0x5fec1e0,'ReadFile',call_read),
-            (0x5fec0a0,'WriteFile',call_write),(0x5fec0a8,'CloseHandle',call_close),
-            (0x5fec038,'GetFileSizeEx',call_size),(0x5fec288,'FlushFileBuffers',call_flush),
-            (0x5fec280,'MoveFileExW',call_move),(0x5fec080,'DeleteFileW',call_delete)]:self.iat(rva,name,fn)
+        for rva,name,fn in [(0x6000090,'CreateFileW',call_create),(0x60001d8,'ReadFile',call_read),
+            (0x6000098,'WriteFile',call_write),(0x60000a0,'CloseHandle',call_close),
+            (0x6000038,'GetFileSizeEx',call_size),(0x6000280,'FlushFileBuffers',call_flush),
+            (0x6000278,'MoveFileExW',call_move),(0x6000078,'DeleteFileW',call_delete)]:self.iat(rva,name,fn)
 
     def guard_dead_rows(self,u,access,address,size,value,data):
         for lo,hi in self.dead_rows:
@@ -565,7 +589,7 @@ def suite(m):
     m.call('BlacklistSlotImpl',1,block,inner,0,0)
     assert m.files[m.db_path]==b'corrupt' and m.values(inner+0x3c8)==before
     assert len(m.receive_calls)==receive_start and len(m.dialogs)==dialog_start+1
-    assert m.dialogs[-1][1]=='搜索内容屏蔽'
+    assert m.dialogs[-1][1]=='搜索屏蔽'
     assert not m.heap_live and not m.handles
     m.destroy_connections()
     passed.append('corrupt DB mutation reports Chinese error, preserves DB/results and closes all temporary resources')
@@ -622,7 +646,6 @@ def suite(m):
     m.files.clear();m.actions.clear();m.connections.clear();m.file_creates.clear();m.final_path_calls.clear()
     m.module_path=r'C:\Synthetic Telegram Link\Telegram.exe'
     m.final_module_path=r'\\?\D:\Synthetic Telegram Target\Telegram.exe'
-    m.db_path=r'\\?\D:\Synthetic Telegram Target\exact-search-blacklist.v1.bin'
     m.reject_new_prefix=r'C:\Synthetic Telegram Link'
     inner,handle,item,value=m.menu_scene(value='迁移目录内的内容🌸')
     m.call(bridge,handle,extra={UC_X86_REG_RSI:inner})
@@ -633,17 +656,18 @@ def suite(m):
     canonical_directory=m.db_path.rsplit('\\',1)[0]+'\\'
     assert sidecars and all(r[0].startswith(canonical_directory) for r in sidecars)
     assert any(r[3]==1 for r in sidecars),'atomic temporary file was never created'
-    assert m.final_path_calls and not m.heap_live and not m.handles
+    assert m.directory_creates and not m.heap_live and not m.handles and not m.task_paths
     m.destroy_connections()
-    passed.append('junction launch C path resolves via EXE metadata handle to extended D path before sidecar/temp writes; CREATE_NEW C failure avoided')
+    passed.append('junction launch C path and D target do not affect the Known Documents rule store; CREATE_NEW in launch directory avoided')
 
     m.files.clear();m.file_creates.clear();m.crypto_hash_calls=0
     inner=m.inner('好人 重庆');vector=m.vector([m.item('只有好人'),m.item('重庆缺另一词')])
     before=len(m.receive_calls)
     m.call('PatchMessages',inner,vector,m.item('无关注入'),4,123)
     assert m.receive_calls[before][1]==[] and m.receive_calls[before][2]==0
-    assert not m.file_creates and not m.crypto_hash_calls and not m.heap_live
-    passed.append('fully keyword-rejected page/inject avoids all DB file opens and crypto calls')
+    assert all(r[0]==m.module_path or r[0].endswith('exact-search-channels.v1.bin') for r in m.file_creates)
+    assert not m.crypto_hash_calls and not m.heap_live and not m.handles
+    passed.append('fully keyword-rejected page checks channel rules first, then avoids content DB and crypto calls')
 
     # A deliberately pathological bucket cluster checks full digest comparison,
     # probe termination and original-order Undo despite duplicate on-disk keys.
@@ -677,14 +701,14 @@ def suite(m):
 
 def timer_patch_suite(m,original):
     with old.pefile.PE(str(original),fast_load=True) as old_pe:
-        original_bytes=old_pe.get_data(0x16ac306,0x13)
+        original_bytes=old_pe.get_data(0x16b6026,0x13)
     with old.pefile.PE(str(BUILD/'Telegram.exact.exe'),fast_load=True) as new_pe:
-        patched_bytes=new_pe.get_data(0x16ac306,0x13)
+        patched_bytes=new_pe.get_data(0x16b6026,0x13)
     assert original_bytes[6:11]==bytes.fromhex('ba84030000')
     assert patched_bytes[6:11]==bytes.fromhex('ba2c010000')
     assert patched_bytes[:6]==original_bytes[:6] and patched_bytes[11:]==original_bytes[11:]
-    capture=[];m.native(0x3a94250,lambda a:capture.append(a[:4]))
-    address=m.base+0x16ac302;m.map(address,64)
+    capture=[];m.native(0x3aa7050,lambda a:capture.append(a[:4]))
+    address=m.base+0x16b6022;m.map(address,64)
     m.u.mem_write(address,bytes.fromhex('4883ec28')+patched_bytes+bytes.fromhex('4883c428c3'))
     m.exports['TimerPatchBlock']=address
     timer=m.alloc(128);m.call('TimerPatchBlock',timer)

@@ -1,29 +1,15 @@
-# License scope and upstream notices
+# Source, license scope and upstream notices
 
-The MIT license in this repository covers the original contributions made for
-this patch project: patch implementation, build and management scripts, tests,
-and documentation. It does not relicense third-party software.
+This is an independent community modification of Telegram Desktop, not an official Telegram release. Names and marks belong to their respective owners.
 
-Telegram Desktop is a separate upstream project. The compatibility baseline is
-[v7.2.7, commit 29873e942b15c4320bf349799542f0cfa95e9049](https://github.com/telegramdesktop/tdesktop/tree/29873e942b15c4320bf349799542f0cfa95e9049).
-Its [license](https://github.com/telegramdesktop/tdesktop/blob/v7.2.7/LICENSE)
-is GNU GPL version 3; see the upstream repository for its OpenSSL exception and
-third-party notices. Telegram names and marks belong to their respective owners.
-This project is not affiliated with or endorsed by Telegram.
+The MIT LICENSE covers this project's original patch implementation, scripts, tests and documentation. It does not relicense the combined Telegram executable or third-party components. The combined program remains subject to Telegram Desktop's GNU GPL version 3 or later and the upstream OpenSSL exception. See licenses/Telegram-LICENSE.txt and licenses/Telegram-LEGAL.txt.
 
-No complete Telegram executable, upstream source snapshot, modified upstream
-source diff, personal blacklist, or account data is distributed in this repository
-or its source release. Users provide their own compatible upstream executable.
-Hook manifests describe version-specific addresses and instruction checks needed
-for interoperability; they are not a replacement for Telegram's source code.
+Baseline: [Telegram Desktop v7.2.8, commit 272f6f5c2d29d8cdb3aec15907d616b87451a3ca](https://github.com/telegramdesktop/tdesktop/tree/272f6f5c2d29d8cdb3aec15907d616b87451a3ca).
 
-Applying the patch creates a modified Telegram program. The MIT license for our
-contributions does not make that combined program MIT-only. Redistribution of
-the combined executable must respect Telegram's GPL requirements, including
-corresponding source and applicable dependency notices. The official version's
-[full source archive](https://github.com/telegramdesktop/tdesktop/releases/download/v7.2.7/tdesktop-7.2.7-full.tar.gz)
-is available upstream; this source-only release makes no claim to be a complete
-redistribution package for the combined client.
+The v1.3.0 release provides the upstream full source archive **tdesktop-7.2.8-full.tar.gz**, copied unchanged from [the official release](https://github.com/telegramdesktop/tdesktop/releases/tag/v7.2.8), alongside this project's patch source and build scripts. Its complete dependency sources, build preparation scripts and license notices are retained. Follow the upstream docs/building-win-x64.md and Telegram/build/prepare instructions when building the upstream source. The fixed binary adapter is designed for the official binary hash, not for arbitrary independently compiled layouts.
 
-Python packages and the compiler are installed separately and retain their own
-licenses. They are not vendored into this repository.
+To reproduce the distributed modified binary, use the official td-portable-win-x64-7.2.8.zip (source release URL above), verify Telegram.exe against compatibility.json, install requirements-dev.txt and MinGW-w64 GCC, and run src/build_patch.py as documented in README.md. All modification sources are in src/: the channel/content filters, native menu bridge, Known Documents rule storage, startup bridge, and auto-update default are included. src/hooks.json enumerates every original instruction/data edit. The builder verifies preservation of all other original section bytes and never writes to the input. src/build_bundle.py creates a hash-bound, data-only reconstruction recipe.
+
+The portable ZIP includes the official d3dcompiler_47.dll unchanged and license notices collected from the full upstream source. Microsoft and other dependency copyrights/licenses remain applicable. Source and build tools downloaded separately retain their own licenses.
+
+The release is assembled from an explicit allowlist. No account files, personal rules, logs, settings, local executable backups or developer environment are shipped. Build and test reports published here omit local filesystem paths.

@@ -7,7 +7,15 @@ $script:ManagerCatalogUrl = 'https://raw.githubusercontent.com/' + $script:Manag
 . (Join-Path $PSScriptRoot 'Patch.Bundle.ps1')
 
 function Get-ManagerSha256([string] $Path) {
-    return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
+    $stream = $null
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try {
+        $stream = [IO.File]::Open($Path, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::Read)
+        return [BitConverter]::ToString($sha.ComputeHash($stream)).Replace('-', '').ToLowerInvariant()
+    } finally {
+        if ($null -ne $stream) { $stream.Dispose() }
+        $sha.Dispose()
+    }
 }
 
 function Write-ManagerJson([string] $Path, $Value) {
@@ -116,6 +124,28 @@ function Get-ManagerProfile($Catalog, [string] $CurrentHash) {
     $candidates = @($Catalog.profiles | Where-Object { $_.input_sha256 -ceq $inputs[0] } |
         Sort-Object -Property @{Expression={ [version]$_.patch_version }; Descending=$true})
     return $candidates[0]
+}
+
+function Get-ManagerEffectiveProfile([string] $Root, $Catalog, [string] $CurrentHash) {
+    # An older remote catalog must not hide a locally installed adapter.
+    $included = Read-ManagerCatalog (Join-Path $Root 'catalog.json')
+    $known = @()
+    foreach ($source in @($Catalog, $included)) {
+        $candidate = Get-ManagerProfile $source $CurrentHash
+        if ($null -ne $candidate) { $known += $candidate }
+    }
+    if (-not $known.Count) { return $null }
+    $inputs = @($known | ForEach-Object { $_.input_sha256 } | Select-Object -Unique)
+    if ($inputs.Count -ne 1) { throw 'Conflicting local and remote input profiles.' }
+    $candidates = @()
+    foreach ($source in @($Catalog, $included)) {
+        $candidate = Get-ManagerProfile $source $inputs[0]
+        if ($null -ne $candidate) { $candidates += $candidate }
+    }
+    $ordered = @($candidates | Sort-Object -Property @{Expression={ [version]$_.patch_version }; Descending=$true})
+    if ($ordered.Count -gt 1 -and $ordered[0].patch_version -ceq $ordered[1].patch_version -and
+        $ordered[0].output_sha256 -cne $ordered[1].output_sha256) { throw 'Conflicting output profiles for the same patch version.' }
+    return $ordered[0]
 }
 
 function Update-ManagerCatalog([string] $Root, [bool] $Force = $false) {
@@ -229,7 +259,7 @@ function Invoke-ManagerCycle([string] $Root, [switch] $Repair, [switch] $ForceCa
         if ($reuse) { $hash=$previous.hash; $checked=$previous.hash_checked_utc }
         else { $hash=Get-ManagerSha256 $config.telegram_exe }
         $catalog = Update-ManagerCatalog $Root ([bool]$ForceCatalog -or ($null -ne $previous -and $previous.hash -cne $hash))
-        $profile = Get-ManagerProfile $catalog $hash
+        $profile = Get-ManagerEffectiveProfile $Root $catalog $hash
         $status='WaitingForAdapter'; $version=''; $bundle=''
         if ($null -ne $profile) {
             $version=$profile.telegram_version

@@ -204,11 +204,12 @@ def recipe_from_build(source, patched, report):
             old_offset = old.get_offset_from_rva(site)
             new_offset = new.get_offset_from_rva(site)
             before, after = bytes.fromhex(hook['original_bytes']), bytes.fromhex(hook['patched_bytes'])
-            require(len(before) == len(after) == 5 and new_offset == old_offset + shift,
+            size = 1 if hook.get('kind') == 'data' else 5
+            require(len(before) == len(after) == size and new_offset == old_offset + shift,
                     'Hook relocation mismatch')
-            require(source[old_offset:old_offset + 5] == before and
-                    patched[new_offset:new_offset + 5] == after, 'Hook bytes mismatch')
-            changes.append((new_offset, 5))
+            require(source[old_offset:old_offset + size] == before and
+                    patched[new_offset:new_offset + size] == after, 'Hook bytes mismatch')
+            changes.append((new_offset, size))
         for debug in report['debug_raw_pointer_updates']:
             old_offset = debug['original_file_offset']
             new_offset = old_offset + shift

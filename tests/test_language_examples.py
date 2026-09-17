@@ -123,7 +123,7 @@ for base in (0x140000000, 0x7ff400000000):
     def receive_peers(args):
         peer_receive_calls.append((args[0], args[1], machine.values(args[1] + 8),
                                    machine.values(args[1] + 0x20)))
-    machine.native(0x163af50, receive_peers)
+    machine.native(0x16449f0, receive_peers)
     examples = []
     for group, text, query, expected in CASES:
         actual = bool(machine.call('AllKeywordsMatch', machine.qstring(text), machine.qstring(query)))
