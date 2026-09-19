@@ -513,5 +513,14 @@
     "field_offsets_changed": false,
     "QAction_metadata": "100 bytes identical with class name QAction; types array int[2]={1,0}.",
     "ambiguities": []
+  },
+  "keyword_dialog_guard": {
+    "QObject_destroyed_signal_rva": "0x5974e60",
+    "QObject_staticMetaObject_rva": "0x6624120",
+    "native_reference": "0x163e1fa..0x163e26b constructs a QObject::destroyed direct self connection for the original popup",
+    "connection_type": 1,
+    "guard_capture_size": 32,
+    "menu_capture_size": 328,
+    "validation": "compiled x64 lifetime simulation at two ASLR bases; native isolated Win32 dialog separately exercised"
   }
 }

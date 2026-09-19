@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
 Exercise the external patch manager with synthetic clients and mocked OS/network actions.
@@ -458,10 +458,11 @@ function Start-ManagerMonitor {
 $installSource=Join-Path $fixtureRoot 'installer package'
 [void](New-Item -ItemType Directory -Path (Join-Path $installSource 'tools') -Force)
 [void](New-Item -ItemType Directory -Path (Join-Path $installSource 'bundles') -Force)
-foreach ($name in @('Manage-Patch.ps1','Install-Manager.ps1','Patch.Manager.ps1','Patch.Manager.Install.ps1','Patch.Bundle.ps1','Manage-Blacklist.ps1')) {
+foreach ($name in @('Manage-Patch.ps1','Install-Manager.ps1','Patch.Manager.ps1','Patch.Manager.Install.ps1','Patch.Bundle.ps1','Manage-Blacklist.ps1','Manage-Keywords.ps1')) {
     Copy-Item -LiteralPath (Join-Path $repository ('tools\'+$name)) -Destination (Join-Path $installSource ('tools\'+$name))
 }
 Save-FixtureJson (Join-Path $installSource 'catalog.json') $catalog
+Copy-Item -LiteralPath (Join-Path $repository 'Manage-Keywords.cmd') -Destination $installSource
 Copy-Item -LiteralPath $bundlePath -Destination (Join-Path $installSource ('bundles\'+$profile.asset_name))
 [IO.File]::WriteAllText((Join-Path $installSource 'private.fixture'),'not on runtime whitelist')
 [IO.File]::WriteAllText((Join-Path $installSource 'bundles\foreign.fixture'),'not a listed release bundle')
@@ -474,7 +475,8 @@ $result=Install-ManagerRuntime -SourceRoot $installSource -TelegramExe $fixture.
 Assert-ManagerCheck (-not $result.StartupEnabled -and -not $result.MonitorStarted -and
     -not (Test-Path -LiteralPath $shortcutPath) -and $script:MonitorStarts.Count -eq 0) 'Installation requires separate opt-in for startup and immediate monitor launch'
 Assert-ManagerCheck ((Get-FixtureHash $fixture.Exe) -ceq $targetBefore -and (Get-FixtureHash $fixture.Marker) -ceq $markerBefore) 'Manager installation leaves Telegram and synthetic account marker untouched'
-Assert-ManagerCheck (@(Get-ChildItem -LiteralPath (Join-Path $fixture.Runtime 'tools') -File).Count -eq 6 -and
+Assert-ManagerCheck (@(Get-ChildItem -LiteralPath (Join-Path $fixture.Runtime 'tools') -File).Count -eq 7 -and
+    (Test-Path -LiteralPath (Join-Path $fixture.Runtime 'Manage-Keywords.cmd')) -and
     -not (Test-Path -LiteralPath (Join-Path $fixture.Runtime 'private.fixture')) -and
     -not (Test-Path -LiteralPath (Join-Path $fixture.Runtime 'bundles\foreign.fixture'))) 'Runtime installation copies only required local tools and listed bundles'
 Assert-ManagerCheck ((Read-ManagerConfig $fixture.Runtime).telegram_exe -ceq $fixture.Exe -and

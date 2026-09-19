@@ -1,3 +1,12 @@
+# v1.4.0 — Telegram 7.2.8 r6
+
+- 屏蔽整个频道后，提供可跳过、可编辑的关键词建议。
+- 新增跨广播频道的正文包含规则，以及频道名称包含规则。建议片段只在用户保存后生效。
+- 新增关键词管理窗口及独立 Manage-Keywords.cmd 入口，支持删除误加规则。
+- 规则保存在 Windows 我的文档/Telegram/blacklists，独立格式校验、文件锁和原子保存；私有规则不进入发布包。
+- 用线性匹配处理高度重复文字，避免长重复前缀造成多次回溯；不额外批量请求服务器搜索页。
+- 对弹窗期间的搜索页面销毁增加 QObject 生命周期保护。
+
 # v1.3.0 — telegram 重庆好人版 7.2.8 + 精确搜索
 
 - Adapt exact search and existing content blocking to official Telegram 7.2.8 x64.

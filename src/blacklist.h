@@ -346,22 +346,12 @@ static int bl_write_all(void *file,const u8 *bytes,unsigned int size) {
     }
     return 1;
 }
-static int bl_save(BlockDb *db,unsigned int count,const BlockKey *added) {
-    unsigned int bytes=16+count*36;
-    u8 *buffer=(u8 *)bl_alloc(db,bytes);
+static int bl_atomic_write(BlockDb *db,const u8 *buffer,unsigned int bytes) {
     u16 *temporary=(u16 *)bl_alloc(db,BL_PATH_CAP*2);
     int result=-1;
     void *file=BL_INVALID;
     int created=0;
     if(!buffer || !temporary) goto done;
-    bl_copy(buffer,db->channels ? "TGEXCH1" : "TGEXBL1",8);
-    bl_put32(buffer+8,1); bl_put32(buffer+12,count);
-    for(unsigned int i=0;i<count;++i) {
-        const BlockKey *key=i<db->count ? db->keys+i : added;
-        if(!key) goto done;
-        bl_put32(buffer+16+i*36,key->length);
-        bl_copy(buffer+20+i*36,key->digest,32);
-    }
     if(!bl_suffix(temporary,db->path,(const u16 *)L".tmp.")) goto done;
     unsigned int at=bl_path_len(temporary);
     if(at+8+1+16+1+2>=BL_PATH_CAP) goto done;
@@ -387,7 +377,22 @@ static int bl_save(BlockDb *db,unsigned int count,const BlockKey *added) {
 done:
     if(file!=BL_INVALID) BL_IAT(0x60000a0,BlCloseHandle)(file);
     if(created) BL_IAT(0x6000078,BlDelete)(temporary);
-    bl_free(db,temporary); bl_free(db,buffer); return result;
+    bl_free(db,temporary); return result;
+}
+static int bl_save(BlockDb *db,unsigned int count,const BlockKey *added) {
+    unsigned int bytes=16+count*36;
+    u8 *buffer=(u8 *)bl_alloc(db,bytes);
+    if(!buffer) return -1;
+    bl_copy(buffer,db->channels ? "TGEXCH1" : "TGEXBL1",8);
+    bl_put32(buffer+8,1); bl_put32(buffer+12,count);
+    for(unsigned int i=0;i<count;++i) {
+        const BlockKey *key=i<db->count ? db->keys+i : added;
+        if(!key) { bl_free(db,buffer); return -1; }
+        bl_put32(buffer+16+i*36,key->length);
+        bl_copy(buffer+20+i*36,key->digest,32);
+    }
+    int result=bl_atomic_write(db,buffer,bytes);
+    bl_free(db,buffer); return result;
 }
 /* 1=changed; 0=no-op; -1=I/O/format/memory; -2=invalid key/crypto; -3=limit. */
 static int bl_change_type(int op,const BlockKey *key,int channels) {
@@ -428,9 +433,4 @@ done:
 }
 static int bl_change(int op,const BlockKey *key) { return bl_change_type(op,key,0); }
 static int ch_change(int op,const BlockKey *key) { return bl_change_type(op,key,1); }
-EXPORT void InitRuleStore(void) {
-    /* Optional patch storage must never prevent the native client starting. */
-    (void)bl_change_type(0,0,0);
-    (void)bl_change_type(0,0,1);
-}
 #endif

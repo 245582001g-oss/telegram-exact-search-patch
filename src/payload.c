@@ -44,6 +44,12 @@ static int contains(Text haystack, Text needle) {
 EXPORT int ExactContains(const void *haystack, const void *needle) {
     return contains(text(haystack),text(needle));
 }
+#include "keywords.h"
+EXPORT void InitRuleStore(void) {
+    (void)bl_change_type(0,0,0);
+    (void)bl_change_type(0,0,1);
+    (void)KeywordChange(0,0);
+}
 static int query_space(u16 c) {
     return (c>=9 && c<=13) || c==0x20 || c==0x85 || c==0xa0
         || c==0x1680 || (c>=0x2000 && c<=0x200a) || c==0x2028
@@ -118,6 +124,18 @@ EXPORT void PatchMessages(void *inner, PtrVector *items, void *inject,
         }
         bl_close(&channels);
     }
+    if (items->end!=items->begin || inject) {
+        KeywordDb keywords; kw_open(&keywords);
+        if(keywords.valid && keywords.count) {
+            filtering=1;
+            void **out=items->begin;
+            for(void **p=items->begin;p!=items->end;++p)
+                if(!kw_item(&keywords,*p)) *out++=*p;
+            items->end=out;
+            if(inject && kw_item(&keywords,inject)) inject=0;
+        }
+        kw_close(&keywords);
+    }
     if (exact) {
         Text query=text((u8 *)inner+0x618);
         void **out=items->begin;
@@ -152,10 +170,10 @@ EXPORT void PatchMessages(void *inner, PtrVector *items, void *inject,
         AT(inner,0x3b0,int)=(int)((AT(inner,0x3a0,uptr)-AT(inner,0x398,uptr))/8);
     }
 }
-static void filter_peers(PtrVector *peers, Text query, BlockDb *channels) {
+static void filter_peers(PtrVector *peers, Text query, BlockDb *channels,KeywordDb *keywords) {
     void **out=peers->begin;
     for (void **p=peers->begin; p!=peers->end; ++p)
-        if (!ch_contains_peer(channels,*p) && peer_matches(*p,query)) *out++=*p;
+        if (!ch_contains_peer(channels,*p) && !kw_peer(keywords,*p) && peer_matches(*p,query)) *out++=*p;
     peers->end=out;
 }
 EXPORT void PatchPeers(void *inner, void *result) {
@@ -164,15 +182,17 @@ EXPORT void PatchPeers(void *inner, void *result) {
     if (active(inner)) {
         BlockDb channels;
         ch_open(&channels);
+        KeywordDb keywords; kw_open(&keywords);
         Text query=text((u8 *)inner+0x618);
-        filter_peers((PtrVector *)((u8 *)result+8),query,&channels);
-        filter_peers((PtrVector *)((u8 *)result+0x20),query,&channels);
+        filter_peers((PtrVector *)((u8 *)result+8),query,&channels,&keywords);
+        filter_peers((PtrVector *)((u8 *)result+0x20),query,&channels,&keywords);
         /* Move entire ownership-bearing sponsored objects by swapping all bytes.
          * Accepted order stays stable. Destroy rejected tail objects exactly once. */
         u8 *out=AT(result,0x38,u8 *);
         u8 *end=AT(result,0x40,u8 *);
         for (u8 *p=out; p!=end; p+=0x30) {
             if (ch_contains_peer(&channels,AT(p,0,void *))
+                || kw_peer(&keywords,AT(p,0,void *))
                 || !peer_matches(AT(p,0,void *),query)) continue;
             if (p!=out) for (unsigned int i=0; i<0x30; ++i) {
                 u8 tmp=out[i]; out[i]=p[i]; p[i]=tmp;
@@ -182,6 +202,7 @@ EXPORT void PatchPeers(void *inner, void *result) {
         for (u8 *p=out; p!=end; p+=0x30) FN(0x5c5750,Destroy)(p);
         AT(result,0x40,u8 *)=out;
         bl_close(&channels);
+        kw_close(&keywords);
     }
     FN(0x16449f0,Receive)(inner,result);
 }
@@ -209,18 +230,22 @@ EXPORT PtrVector *PatchLocal(void *list, PtrVector *result, void *words, void *i
     Text query=text((u8 *)inner+0x618);
     BlockDb channels;
     ch_open(&channels);
+    KeywordDb keywords; kw_open(&keywords);
     void **begin=AT(list,0x30,void **), **end=AT(list,0x38,void **);
     uptr count=0;
     for (void **p=begin; p!=end; ++p)
         if (!ch_contains_entry(&channels,AT(*p,0x60,void *))
+            && !kw_entry(&keywords,AT(*p,0x60,void *))
             && entry_matches(AT(*p,0x60,void *),query)) ++count;
     result->begin=(void **)FN(0x4a8690,Allocate)(count*8);
     result->end=result->begin;
     result->capacity=result->begin+count;
     for (void **p=begin; p!=end; ++p)
         if (!ch_contains_entry(&channels,AT(*p,0x60,void *))
+            && !kw_entry(&keywords,AT(*p,0x60,void *))
             && entry_matches(AT(*p,0x60,void *),query)) *result->end++=*p;
     bl_close(&channels);
+    kw_close(&keywords);
     return result;
 }
 EXPORT void *PatchWords(void *out, const void *query, int flags, void *inner) {

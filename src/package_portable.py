@@ -26,6 +26,7 @@ def package(official,patched,full_source,output):
         files={'Telegram/Telegram.exe':data,
                'Telegram/modules/x64/d3d/d3dcompiler_47.dll':z.read('Telegram/modules/x64/d3d/d3dcompiler_47.dll')}
     for name in ('README.md','NOTICE.md','LICENSE','tools/Manage-Blacklist.ps1',
+                 'tools/Manage-Keywords.ps1','Manage-Keywords.cmd',
                  'docs/search-guide.md','docs/verification.md','docs/verification.json',
                  'docs/update-persistence.md','docs/abi-7.2.8.json',
                  'licenses/Telegram-LICENSE.txt','licenses/Telegram-LEGAL.txt'):

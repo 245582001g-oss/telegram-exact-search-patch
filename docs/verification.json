@@ -1,20 +1,20 @@
 {
-  "release": "v1.3.0",
+  "release": "v1.4.0",
   "telegram": "7.2.8",
   "build": {
     "telegram_version": "7.2.8",
     "input_sha256": "4de51db14afe0aace6b38665e1110f0eecb1112c387d44f380236b33d963c13d",
-    "output_sha256": "8a5fc166834e3e927547b2ad90c88f3578f65d2bce47cd8a522ec270daa0a0f3",
-    "payload_sha256": "6fd6952e4dbe8532279cb4c73587a315c0222ecc02e2e8f37e4b7c3b400a563b",
+    "output_sha256": "db476169f5df59dee811632b144bf1acd88746e125aa3b6d9154bd4da169b64c",
+    "payload_sha256": "d0c52ff7fd807e23c701b5bd2252468c1693eb184c9395fc2df0ba44932b497f",
     "image_base": "0x140000000",
     "original_image_size": "0xe421000",
-    "image_size": "0xe82a000",
+    "image_size": "0xe82b000",
     "original_entrypoint_rva": "0x5d828ac",
     "new_section": {
       "name": ".exact",
       "rva": "0xe421000",
-      "virtual_size": 4228876,
-      "raw_size": 4229120,
+      "virtual_size": 4233284,
+      "raw_size": 4233728,
       "raw_offset": "0xd09aa00",
       "characteristics": "0xe0000060"
     },
@@ -25,68 +25,73 @@
       "reason": "Original section table ends exactly at first raw section; expand by one file alignment unit."
     },
     "exports": {
-      "AllKeywordsMatch": "0xe4228d4",
-      "BlacklistSlotImpl": "0xe4230bc",
-      "ExactContains": "0xe42289c",
-      "InitRuleStore": "0xe422879",
-      "PatchApplyWordsBridge": "0xe4234d9",
-      "PatchLocal": "0xe422d0e",
-      "PatchLocalBridge": "0xe423470",
-      "PatchMenu": "0xe4231f3",
-      "PatchMenuBridge": "0xe4234d1",
-      "PatchMessages": "0xe42290c",
-      "PatchPeers": "0xe422be5",
-      "PatchRefreshWordsBridge": "0xe4234e1",
-      "PatchStartupBridge": "0xe423479",
-      "PatchWords": "0xe422e56",
-      "RefreshBlocked": "0xe422ebf"
+      "AllKeywordsMatch": "0xe423b15",
+      "BlacklistSlotImpl": "0xe42490b",
+      "ExactContains": "0xe4233d8",
+      "InitRuleStore": "0xe423ae9",
+      "KeywordChange": "0xe423410",
+      "KeywordDialogProc": "0xe4236eb",
+      "KeywordSuggest": "0xe4239ad",
+      "PatchApplyWordsBridge": "0xe424df9",
+      "PatchLocal": "0xe424019",
+      "PatchLocalBridge": "0xe424d90",
+      "PatchMenu": "0xe424a83",
+      "PatchMenuBridge": "0xe424df1",
+      "PatchMessages": "0xe423b4d",
+      "PatchPeers": "0xe423eba",
+      "PatchRefreshWordsBridge": "0xe424e01",
+      "PatchStartupBridge": "0xe424d99",
+      "PatchWords": "0xe4241d4",
+      "RefreshBlocked": "0xe4246d7",
+      "RuleGuardImpl": "0xe4221a7",
+      "ShowKeywordDialog": "0xe42423d"
     },
     "payload_sections": [
       {
         "name": ".text",
         "rva": "0xe421000",
-        "virtual_size": 9456,
-        "raw_size": 9728,
+        "virtual_size": 15888,
+        "raw_size": 16384,
         "characteristics": "0x60000020"
       },
       {
         "name": ".rdata",
-        "rva": "0xe424000",
-        "virtual_size": 864,
-        "raw_size": 1024,
+        "rva": "0xe425000",
+        "virtual_size": 2000,
+        "raw_size": 2048,
         "characteristics": "0x40000040"
       },
       {
         "name": ".pdata",
-        "rva": "0xe425000",
-        "virtual_size": 636,
+        "rva": "0xe426000",
+        "virtual_size": 948,
         "raw_size": 1024,
         "characteristics": "0x40000040"
       },
       {
         "name": ".xdata",
-        "rva": "0xe426000",
-        "virtual_size": 576,
+        "rva": "0xe427000",
+        "virtual_size": 896,
         "raw_size": 1024,
         "characteristics": "0x40000040"
       },
       {
         "name": ".bss",
-        "rva": "0xe427000",
-        "virtual_size": 2048,
+        "rva": "0xe428000",
+        "virtual_size": 2080,
         "raw_size": 0,
         "characteristics": "0xc0000080"
       },
       {
         "name": ".edata",
-        "rva": "0xe428000",
-        "virtual_size": 435,
-        "raw_size": 512,
+        "rva": "0xe429000",
+        "virtual_size": 564,
+        "raw_size": 1024,
         "characteristics": "0x40000040"
       },
       {
         "name": ".idata",
-        "rva": "0xe429000",
+        "rva": "0xe42a000",
         "virtual_size": 24,
         "raw_size": 512,
         "characteristics": "0x40000040"
@@ -94,10 +99,10 @@
     ],
     "exceptions": {
       "original_count": 349580,
-      "payload_count": 53,
-      "merged_count": 349633,
-      "rva": "0xe429200",
-      "size": 4195596
+      "payload_count": 79,
+      "merged_count": 349659,
+      "rva": "0xe42a200",
+      "size": 4195908
     },
     "relocations": {
       "original_nonpadding_count": 618384,
@@ -111,55 +116,55 @@
       {
         "site_rva": "0x16b89e5",
         "original_target_rva": "0x16442b0",
-        "new_target_rva": "0xe42290c",
+        "new_target_rva": "0xe423b4d",
         "target_export": "PatchMessages",
         "original_bytes": "e8c6b8f8ff",
-        "patched_bytes": "e8229fd60c",
+        "patched_bytes": "e863b1d60c",
         "file_offset": "0x16b7fe5"
       },
       {
         "site_rva": "0x16b9464",
         "original_target_rva": "0x16449f0",
-        "new_target_rva": "0xe422be5",
+        "new_target_rva": "0xe423eba",
         "target_export": "PatchPeers",
         "original_bytes": "e887b5f8ff",
-        "patched_bytes": "e87c97d60c",
+        "patched_bytes": "e851aad60c",
         "file_offset": "0x16b8a64"
       },
       {
         "site_rva": "0x164085b",
         "original_target_rva": "0x1628730",
-        "new_target_rva": "0xe423470",
+        "new_target_rva": "0xe424d90",
         "target_export": "PatchLocalBridge",
         "original_bytes": "e8d07efeff",
-        "patched_bytes": "e8102cde0c",
+        "patched_bytes": "e83045de0c",
         "file_offset": "0x163fe5b"
       },
       {
         "site_rva": "0x163f69e",
         "original_target_rva": "0x3b0dbc0",
-        "new_target_rva": "0xe4234d9",
+        "new_target_rva": "0xe424df9",
         "target_export": "PatchApplyWordsBridge",
         "original_bytes": "e81de54c02",
-        "patched_bytes": "e8363ede0c",
+        "patched_bytes": "e85657de0c",
         "file_offset": "0x163ec9e"
       },
       {
         "site_rva": "0x16403b7",
         "original_target_rva": "0x3b0dbc0",
-        "new_target_rva": "0xe4234e1",
+        "new_target_rva": "0xe424e01",
         "target_export": "PatchRefreshWordsBridge",
         "original_bytes": "e804d84c02",
-        "patched_bytes": "e82531de0c",
+        "patched_bytes": "e8454ade0c",
         "file_offset": "0x163f9b7"
       },
       {
         "site_rva": "0x163e26b",
         "original_target_rva": "0x59714e0",
-        "new_target_rva": "0xe4234d1",
+        "new_target_rva": "0xe424df1",
         "target_export": "PatchMenuBridge",
         "original_bytes": "e870323304",
-        "patched_bytes": "e86152de0c",
+        "patched_bytes": "e8816bde0c",
         "file_offset": "0x163d86b"
       },
       {
@@ -289,42 +294,42 @@
         "file_offset": "0x190",
         "size": 4,
         "before": "ac28d805",
-        "after": "7934420e",
+        "after": "994d420e",
         "reason": "initialize optional Documents rule storage before native startup"
       },
       {
         "file_offset": "0x1b8",
         "size": 4,
         "before": "0010420e",
-        "after": "00a0820e",
+        "after": "00b0820e",
         "reason": "extend image for .exact"
       },
       {
         "file_offset": "0x184",
         "size": 4,
         "before": "00f0ff05",
-        "after": "00784006",
+        "after": "008a4006",
         "reason": "account for added code section"
       },
       {
         "file_offset": "0x188",
         "size": 4,
         "before": "00bc4108",
-        "after": "00448208",
+        "after": "00568208",
         "reason": "account for added initialized section"
       },
       {
         "file_offset": "0x208",
         "size": 4,
         "before": "0030eb0d",
-        "after": "0092420e",
+        "after": "00a2420e",
         "reason": "data directory 3 RVA"
       },
       {
         "file_offset": "0x20c",
         "size": 4,
         "before": "90024000",
-        "after": "0c054000",
+        "after": "44064000",
         "reason": "data directory 3 size"
       },
       {
@@ -352,7 +357,7 @@
         "file_offset": "0x1c0",
         "size": 4,
         "before": "00000000",
-        "after": "5aaa4a0d",
+        "after": "e1614a0d",
         "reason": "image checksum"
       }
     ],
@@ -373,7 +378,7 @@
         "new": 141348380
       }
     ],
-    "checksum": "0xd4aaa5a",
+    "checksum": "0xd4a61e1",
     "security_directory_cleared": true,
     "authenticode": "The derived executable is unsigned; original certificate bytes are inert with a cleared SECURITY directory.",
     "original_file_unchanged": true,
@@ -381,7 +386,7 @@
     "original_section_content_verified_except_hook_and_debug_pointer_changes": true,
     "imports_added": false,
     "entrypoint_changed": true,
-    "new_entrypoint_rva": "0xe423479",
+    "new_entrypoint_rva": "0xe424d99",
     "deployed": false,
     "native_image_validation": {
       "ntstatus": "0x0",
@@ -390,25 +395,27 @@
       "image_code_executed": false
     },
     "source_sha256": {
-      "payload.c": "398315b100c48bf3e23fe57d8fc0191c30f894cb3635319dffd1c78a9377d78c",
+      "payload.c": "d2f065f367b66c8b4fe72260d3063aec48849b1977cb5cf921d68051616f5e26",
       "hooks.S": "8cbb07a3fa1437ed423472592691004254ddb5198dda3b4261c7255c4f5c9500",
       "hooks.json": "5f3b0c86429490e57d2be32dfdc6e89cf8588f1846889796436c439c7f487274",
-      "blacklist.h": "8413f828b121eaa1051b1618f132b8272daae85faed431f8bc5e838b8a26062b",
-      "menu.h": "17634aaea556ec20b0d9db30b07b9a6467791e8a7b0779058edd5facce9bd8b3"
+      "blacklist.h": "b97333b626c84ac16c2b87ec6063bf356ed1b87743cdcfb079387a8aa624aaf6",
+      "menu.h": "88c386c01173770b51083dc8e1342dbf1a1387343d3368c2ae214b06906fa6af",
+      "keywords.h": "3537bf7c52f2ad83bcf0a37ded4d9d483da6dc71b39780ae7ff1ee672c507fa9",
+      "rule_ui.h": "7a55771ebbdda14ced677ea77c1e8fbbcdbd6c140f99ccc8ee33bd1805cc45b3"
     },
     "validation": "PE structure, exact input/callsite hashes, section preservation, checksum, unwind table, ASLR relocation equality, and Windows SEC_IMAGE acceptance without code execution. App runtime behavior is not validated by this builder."
   },
-  "menu_and_exact_search": {
+  "menu": {
     "status": "passed",
     "kind": "actual compiled Windows x64 under Unicorn with synthetic Qt/WinAPI",
-    "executable_sha256": "8a5fc166834e3e927547b2ad90c88f3578f65d2bce47cd8a522ec270daa0a0f3",
-    "payload_sha256": "6fd6952e4dbe8532279cb4c73587a315c0222ecc02e2e8f37e4b7c3b400a563b",
+    "executable_sha256": "db476169f5df59dee811632b144bf1acd88746e125aa3b6d9154bd4da169b64c",
+    "payload_sha256": "d0c52ff7fd807e23c701b5bd2252468c1693eb184c9395fc2df0ba44932b497f",
     "bases": [
       {
         "base": "0x140000000",
         "passed": [
           "menu bridge: RSI->RDX, all nonvolatile registers/stack, search+preview row identity, Chinese labels",
-          "native QAction/UiMenu ABI, nine connect arguments, queued bool type data, owned 72-byte slots",
+          "native QAction/UiMenu ABI, nine connect arguments, queued bool type data, owned 328-byte slots",
           "slot hash+length snapshot survives menuRow clearing, compare and destruction, temporary DB cleanup",
           "native failed connect consumes initial slot reference without producer double-free",
           "queued Block Call persists full UTF-16 hash; duplicate removal across histories/search/preview, near-text retained",
@@ -438,7 +445,7 @@
         "base": "0x7ff400000000",
         "passed": [
           "menu bridge: RSI->RDX, all nonvolatile registers/stack, search+preview row identity, Chinese labels",
-          "native QAction/UiMenu ABI, nine connect arguments, queued bool type data, owned 72-byte slots",
+          "native QAction/UiMenu ABI, nine connect arguments, queued bool type data, owned 328-byte slots",
           "slot hash+length snapshot survives menuRow clearing, compare and destruction, temporary DB cleanup",
           "native failed connect consumes initial slot reference without producer double-free",
           "queued Block Call persists full UTF-16 hash; duplicate removal across histories/search/preview, near-text retained",
@@ -470,10 +477,10 @@
       "Native Qt/WinAPI callees are instrumented ABI stubs."
     ]
   },
-  "channel_and_startup": {
+  "channel": {
     "status": "passed",
     "kind": "compiled Windows x64 under Unicorn; synthetic Qt/Windows ABI",
-    "sha256": "8a5fc166834e3e927547b2ad90c88f3578f65d2bce47cd8a522ec270daa0a0f3",
+    "sha256": "db476169f5df59dee811632b144bf1acd88746e125aa3b6d9154bd4da169b64c",
     "default_updates": "false; native gate, enable setter and saved preference parser unchanged",
     "bases": [
       {
@@ -505,12 +512,47 @@
       "No real Telegram account/network/menu click in this suite."
     ]
   },
-  "languages": {
+  "keyword": {
+    "status": "passed",
+    "kind": "compiled x64 under Unicorn; synthetic Telegram/Windows objects",
+    "sha256": "db476169f5df59dee811632b144bf1acd88746e125aa3b6d9154bd4da169b64c",
+    "bases": [
+      {
+        "base": "0x140000000",
+        "passed": [
+          "atomic bootstrap/add/deduplicate/delete, typed UTF-16 rules, other records preserved",
+          "91 different broadcast channels filtered across global/scoped/injected pages; changed filler irrelevant; nonmatching messages/private users/groups survive",
+          "newly added keyword removes already loaded search rows",
+          "channel-name keyword filters remote/my peers without affecting user or group names",
+          "literal matching; invalid/empty/invisible/surrogate/control/scope records rejected",
+          "malformed/oversized/versioned databases fail open without overwrite; rule cap; temp-write failure atomic",
+          "128-unit near-repeat keyword against 12000-unit adversarial body uses linear matching, with positive/negative cases",
+          "channel commit before optional prompt; copied suggestion survives menu/message change; skipping saves no keyword; manager reachable; guard reused and destroyed",
+          "actual x64 guard callback during modal dialog prevents post-destruction refresh/use-after-free"
+        ]
+      },
+      {
+        "base": "0x7ff400000000",
+        "passed": [
+          "atomic bootstrap/add/deduplicate/delete, typed UTF-16 rules, other records preserved",
+          "91 different broadcast channels filtered across global/scoped/injected pages; changed filler irrelevant; nonmatching messages/private users/groups survive",
+          "newly added keyword removes already loaded search rows",
+          "channel-name keyword filters remote/my peers without affecting user or group names",
+          "literal matching; invalid/empty/invisible/surrogate/control/scope records rejected",
+          "malformed/oversized/versioned databases fail open without overwrite; rule cap; temp-write failure atomic",
+          "128-unit near-repeat keyword against 12000-unit adversarial body uses linear matching, with positive/negative cases",
+          "channel commit before optional prompt; copied suggestion survives menu/message change; skipping saves no keyword; manager reachable; guard reused and destroyed",
+          "actual x64 guard callback during modal dialog prevents post-destruction refresh/use-after-free"
+        ]
+      }
+    ]
+  },
+  "language": {
     "status": "passed",
     "case_count_per_base": 86,
     "hashes": {
-      "Telegram.exact.exe": "8a5fc166834e3e927547b2ad90c88f3578f65d2bce47cd8a522ec270daa0a0f3",
-      "payload.exe": "6fd6952e4dbe8532279cb4c73587a315c0222ecc02e2e8f37e4b7c3b400a563b"
+      "Telegram.exact.exe": "db476169f5df59dee811632b144bf1acd88746e125aa3b6d9154bd4da169b64c",
+      "payload.exe": "d0c52ff7fd807e23c701b5bd2252468c1693eb184c9395fc2df0ba44932b497f"
     },
     "bases": [
       {
@@ -2018,26 +2060,43 @@
       "Literal query filtering is active for global search only; scoped message results and injections retain native passthrough."
     ]
   },
+  "native_keyword_dialog": {
+    "status": "passed",
+    "kind": "real Win32 dialogs + real scratch filesystem + PowerShell 5.1",
+    "checks": [
+      "suggestion prefill",
+      "custom body keyword persisted",
+      "skip is a no-op",
+      "manager list",
+      "name-scope radio switch",
+      "multiple rules",
+      "delete exact selected rule",
+      "PowerShell interoperability"
+    ],
+    "account_data_accessed": false,
+    "runs": [
+      "dialog_result=1\r\nvalid=1 count=1\r\n",
+      "dialog_result=0\r\nvalid=1 count=1\r\n",
+      "dialog_result=3\r\nvalid=1 count=1\r\n"
+    ]
+  },
   "other_checks": {
     "manager": 94,
     "install_restore": 40,
     "powershell_bundle": 24,
     "python_bundle": 14,
-    "unknown_version_rejection": "passed",
-    "rule_manager_real_powershell": "passed"
+    "unsupported_image": "rejected before writes"
   },
   "native_smoke": {
-    "patched_installed_and_started": true,
-    "legacy_rules_migrated_byte_identical": true,
-    "clean_portable_welcome_screen_seen": true,
-    "clean_profile_auto_update_byte": 0,
-    "clean_profile_normal_quit": true,
-    "language_switch_chinese_english_chinese": "passed in same process",
-    "reported_exit": "Matched our explicit -quit request at 23:59:42; no corresponding Windows crash event"
+    "fresh_profile_welcome": true,
+    "responsive": true,
+    "auto_update_byte": 0,
+    "simplified_chinese_switch_same_process": true
   },
   "limits": [
-    "Native Qt and Windows services are instrumented in the x64 simulation suites.",
-    "Live account search results and channel menu clicks have not been manually exercised for this release.",
-    "Server-side search recall, load and arbitrary future-version compatibility are not changed or guaranteed."
+    "Win32 dialog tested in isolated native harness; real account context-menu interaction not manually accepted.",
+    "Qt/Telegram calls in compiled x64 regression suites use instrumented synthetic ABI objects.",
+    "Keyword suggestions quote source fragments and are not trained spam classification.",
+    "Server search indexing, recall and future-version compatibility are not changed."
   ]
 }

@@ -115,7 +115,7 @@ def compile_payload(gcc: Path, output: Path):
     build.mkdir(parents=True, exist_ok=True)
     require(gcc.is_file(), f'Compiler missing: {gcc}')
     source_hashes = {}
-    for name in ('payload.c', 'hooks.S', 'hooks.json', 'blacklist.h', 'menu.h'):
+    for name in ('payload.c', 'hooks.S', 'hooks.json', 'blacklist.h', 'menu.h', 'keywords.h', 'rule_ui.h'):
         require((HERE/name).is_file(), f'Missing {name}')
         source = (HERE/name).read_bytes()
         source_hashes[name] = digest(source)

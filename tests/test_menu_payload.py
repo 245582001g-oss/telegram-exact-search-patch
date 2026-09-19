@@ -42,6 +42,7 @@ class Machine(old.Machine):
         self.stub_next=0x900000000
         self.actions=[]
         self.connections=[]
+        self.guard_connections=[]
         self.connection_dtors=[]
         self.dialogs=[]
         self.module_path=r'C:\Synthetic Telegram\Telegram.exe'
@@ -160,6 +161,10 @@ class Machine(old.Machine):
         return a[0]
 
     def connect(self,a):
+        if self.get(a[2])==self.base+0x5974e60:
+            assert a[1]==a[3] and a[4]==0 and a[6]==1 and a[7]==0 and a[8]==self.base+0x6624120
+            assert self.get(a[5]+8)==self.exports['RuleGuardImpl']
+            self.guard_connections.append(a[5]); self.put(a[0],self.alloc(8)); return a[0]
         assert self.get(a[2])==self.base+0x547bb00,('signal',a)
         assert a[4]==0 and (a[6]&0xffffffff)==2,('functor/queued arguments',a)
         assert a[7]==self.base+0x8ee6610
@@ -177,7 +182,7 @@ class Machine(old.Machine):
         if not self.accept_connection:
             # Qt connectImpl consumes the transferred initial reference even on
             # failure. Its native failure cleanup destroys this slot immediately.
-            self.native_free([slot,72])
+            self.native_free([slot,328])
         self.put(a[0],handle)
         return a[0]
 
@@ -342,6 +347,9 @@ class Machine(old.Machine):
         for c in self.connections:
             if c['slot'] in self.native_live:self.call('BlacklistSlotImpl',0,c['slot'],0,0,0)
         self.connections.clear()
+        for slot in self.guard_connections:
+            if slot in self.native_live:self.call('RuleGuardImpl',0,slot,0,0,0)
+        self.guard_connections.clear()
 
     def row_items(self,inner,offset):return [self.get(p+0x60) for p in self.values(inner+offset)]
 
@@ -469,7 +477,7 @@ def suite(m):
         blocking=[c for c in m.connections if c['label']=='屏蔽相同内容']
         assert len(blocking)==1,[x['label'] for x in m.actions]
         slot=blocking[0]['slot']
-        assert m.native_live[slot]==72
+        assert m.native_live[slot]==328
         assert m.i32(slot+24)==1
         assert m.i32(slot+32)==len(value.encode('utf-16-le'))//2
         assert bytes(m.u.mem_read(slot+36,32))==hashlib.sha256(value.encode('utf-16-le')).digest()
@@ -486,13 +494,13 @@ def suite(m):
             m.call('BlacklistSlotImpl',0,c['slot'],0,0,0)
             assert c['slot'] not in m.native_live
     passed.append('menu bridge: RSI->RDX, all nonvolatile registers/stack, search+preview row identity, Chinese labels')
-    passed.append('native QAction/UiMenu ABI, nine connect arguments, queued bool type data, owned 72-byte slots')
+    passed.append('native QAction/UiMenu ABI, nine connect arguments, queued bool type data, owned 328-byte slots')
     passed.append('slot hash+length snapshot survives menuRow clearing, compare and destruction, temporary DB cleanup')
     m.actions.clear();m.connections.clear();m.accept_connection=False
     inner,handle,item,value=m.menu_scene()
     m.call(bridge,handle,extra={UC_X86_REG_RSI:inner})
-    assert len(m.connections)==1 and not m.connections[0]['accepted']
-    assert m.connections[0]['slot'] not in m.native_live
+    assert len(m.connections)==2 and all(not c['accepted'] for c in m.connections)
+    assert all(c['slot'] not in m.native_live for c in m.connections)
     assert m.actions[0]['inserted'] and not m.heap_live and not m.handles
     m.connections.clear();m.accept_connection=True
     passed.append('native failed connect consumes initial slot reference without producer double-free')
@@ -535,7 +543,7 @@ def suite(m):
             assert [m.get(row+0x70) for row in m.values(inner+offset)]==list(range(len(m.values(inner+offset))))
         assert slot in m.native_live,'Call prematurely destroyed slot'
         assert not m.heap_live and not m.handles
-        assert all(size in (16,72) for size in m.native_live.values()),'snapshot vector ownership leak'
+        assert all(size in (16,328) for size in m.native_live.values()),'snapshot vector ownership leak'
         m.destroy_connections()
     passed.append('queued Block Call persists full UTF-16 hash; duplicate removal across histories/search/preview, near-text retained')
     passed.append('native replacement rebuilds new FakeRows/indexes, consumes snapshot buffers, old-row poison guard, counts/mouse/loading preserved')
@@ -604,7 +612,7 @@ def suite(m):
         if kind=='missing_history':m.put(inner+0x6a8,0)
         if kind=='missing_item':m.put(inner+0x6b8,9000)
         m.call(bridge,handle,extra={UC_X86_REG_RSI:inner})
-        assert not m.actions and handle in m.connection_dtors
+        assert [a['label'] for a in m.actions]==(['管理关键词屏蔽…'] if kind=='empty_text' else []) and handle in m.connection_dtors
         assert not m.heap_live and not m.handles
     passed.append('non-message, missing-context, unfiltered and empty-text guards retain original connection destruction')
 
@@ -665,7 +673,7 @@ def suite(m):
     before=len(m.receive_calls)
     m.call('PatchMessages',inner,vector,m.item('无关注入'),4,123)
     assert m.receive_calls[before][1]==[] and m.receive_calls[before][2]==0
-    assert all(r[0]==m.module_path or r[0].endswith('exact-search-channels.v1.bin') for r in m.file_creates)
+    assert all(r[0]==m.module_path or r[0].endswith(('exact-search-channels.v1.bin','exact-search-keywords.v1.bin')) for r in m.file_creates)
     assert not m.crypto_hash_calls and not m.heap_live and not m.handles
     passed.append('fully keyword-rejected page checks channel rules first, then avoids content DB and crypto calls')
 

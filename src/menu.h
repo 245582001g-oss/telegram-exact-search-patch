@@ -10,8 +10,42 @@ struct BlacklistSlot {
     int operation;
     unsigned int reserved;
     BlockKey key;
+    u16 suggestion[KW_CAP+1];
 };
-_Static_assert(sizeof(BlacklistSlot)==72,"Qt slot capture layout");
+_Static_assert(sizeof(BlacklistSlot)==328,"Qt slot capture layout");
+#include "rule_ui.h"
+/* Match the native popup's QObject::destroyed self-connection ABI. A direct
+ * heap-owned guard outlives modal message loops without retaining a stack or
+ * widget pointer after destruction. Reused for repeated dialogs on one widget. */
+typedef struct { int refs,padding; SlotImpl impl; void *inner; uptr epoch; } RuleGuard;
+static void *guarded_inner;
+static uptr guard_epoch;
+EXPORT void RuleGuardImpl(int which,BlacklistSlot *raw,void *receiver,void **args,u8 *equal) {
+    (void)receiver; (void)args;
+    RuleGuard *slot=(RuleGuard *)raw;
+    if(which==0 || which==1) {
+        if(guarded_inner==slot->inner && guard_epoch==slot->epoch) guarded_inner=0;
+        if(which==0) {
+            typedef void (*Free)(void *,uptr);
+            FN(0x5b6e670,Free)(slot,sizeof(*slot));
+        }
+    } else if(which==2 && equal) *equal=0;
+}
+static uptr guard_inner(void *inner) {
+    if(guarded_inner==inner) return guard_epoch;
+    typedef void *(*Allocate)(uptr);
+    typedef void *(*Connect)(void *,void *,const void *,void *,void *,void *,int,const void *,const void *);
+    typedef void (*Destroy)(void *);
+    RuleGuard *slot=(RuleGuard *)FN(0x5d819cc,Allocate)(sizeof(RuleGuard));
+    slot->refs=1; slot->padding=0; slot->impl=RuleGuardImpl; slot->inner=inner;
+    slot->epoch=++guard_epoch; guarded_inner=0;
+    uptr signal=base()+0x5974e60; void *connection=0;
+    FN(0x5973af0,Connect)(&connection,inner,&signal,inner,0,slot,1,0,(void *)(base()+0x6624120));
+    int ok=connection!=0;
+    FN(0x59714e0,Destroy)(&connection);
+    if(ok) { guarded_inner=inner; return guard_epoch; }
+    return 0;
+}
 
 static void operation_error(void) {
     typedef void *(*GetModule)(const u16 *);
@@ -26,7 +60,7 @@ static void operation_error(void) {
                          u"搜索屏蔽",0x10);
 }
 
-static PtrVector snapshot_survivors(void *inner,unsigned int vector_offset,BlockDb *blocked,BlockDb *channels) {
+static PtrVector snapshot_survivors(void *inner,unsigned int vector_offset,BlockDb *blocked,BlockDb *channels,KeywordDb *keywords) {
     typedef const void *(*OriginalText)(void *);
     typedef void *(*Allocate)(uptr);
     void **begin=AT(inner,vector_offset,void **);
@@ -40,6 +74,7 @@ static PtrVector snapshot_survivors(void *inner,unsigned int vector_offset,Block
     for (void **p=begin;p!=end;++p) {
         void *item=AT(*p,0x60,void *);
         if (!ch_contains_item(channels,item)
+            && !kw_item(keywords,item)
             && (!blocked->valid || !blocked->count
                 || !bl_contains(blocked,text(FN(0x1c95050,OriginalText)(item)))))
             *result.end++=item;
@@ -56,14 +91,16 @@ EXPORT void RefreshBlocked(void *inner) {
     BlockDb blocked,channels;
     bl_open(&blocked);
     ch_open(&channels);
-    if (!blocked.valid && !channels.valid) { bl_close(&blocked); bl_close(&channels); return; }
+    KeywordDb keywords; kw_open(&keywords);
+    if (!blocked.valid && !channels.valid && !keywords.valid) { bl_close(&blocked); bl_close(&channels); kw_close(&keywords); return; }
     /* Snapshot both before either native receive can destroy old FakeRows. */
-    PtrVector normal=snapshot_survivors(inner,0x3c8,&blocked,&channels);
+    PtrVector normal=snapshot_survivors(inner,0x3c8,&blocked,&channels,&keywords);
     int preview_mode=AT(inner,0x621,u8)!=0;
     PtrVector preview={0,0,0};
-    if (preview_mode) preview=snapshot_survivors(inner,0x398,&blocked,&channels);
+    if (preview_mode) preview=snapshot_survivors(inner,0x398,&blocked,&channels,&keywords);
     bl_close(&blocked);
     bl_close(&channels);
+    kw_close(&keywords);
     u16 loading=AT(inner,0xa40,u16);
     FN(0x163b1e0,SetPressed)(inner,-1);
     FN(0x163b170,SetPressed)(inner,-1);
@@ -100,19 +137,34 @@ EXPORT void BlacklistSlotImpl(int which,BlacklistSlot *slot,void *receiver,void 
     if (which==0) {
         FN(0x5b6e670,Free)(slot,sizeof(*slot));
     } else if (which==1) {
+        if(slot->operation==6 || slot->operation==7) {
+            void *inner=slot->inner; uptr epoch=guard_inner(inner);
+            int changed=ShowKeywordDialog(slot->operation==7 ? 3 : 2,slot->suggestion);
+            if(changed>0 && epoch && guarded_inner==inner && guard_epoch==epoch) {
+                RefreshBlocked(inner); repeat_search(inner);
+            }
+            return;
+        }
         int result=(slot->operation==4 || slot->operation==5)
             ? ch_change(slot->operation-3,&slot->key)
             : bl_change(slot->operation,&slot->key);
         if (result<0) { operation_error(); return; }
         if (slot->operation==1 || slot->operation==4) RefreshBlocked(slot->inner);
         else if (result) repeat_search(slot->inner);
+        if(slot->operation==4) {
+            void *inner=slot->inner; uptr epoch=guard_inner(inner);
+            int changed=ShowKeywordDialog(1,slot->suggestion);
+            if(changed>0 && epoch && guarded_inner==inner && guard_epoch==epoch) {
+                RefreshBlocked(inner); repeat_search(inner);
+            }
+        }
     } else if (which==2 && equal) {
         *equal=0;
     }
 }
 
 static void add_blacklist_action(void *menu,void *inner,const u16 *label,int length,
-                                 int operation,const BlockKey *key) {
+                                 int operation,const BlockKey *key,const u16 *suggestion) {
     typedef void *(*Allocate)(uptr);
     typedef void *(*StringCtor)(void *,const u16 *,int);
     typedef void (*Destroy)(void *);
@@ -131,6 +183,8 @@ static void add_blacklist_action(void *menu,void *inner,const u16 *label,int len
     slot->inner=inner;
     slot->operation=operation;
     slot->reserved=0;
+    bl_zero(slot->suggestion,sizeof(slot->suggestion));
+    if(suggestion) for(unsigned int i=0;i<KW_CAP && suggestion[i];++i) slot->suggestion[i]=suggestion[i];
     if (key) slot->key=*key;
     else { slot->key.length=0; for (unsigned int i=0;i<32;++i)slot->key.digest[i]=0; }
     uptr signal=base()+0x547bb00;
@@ -172,20 +226,24 @@ EXPORT void PatchMenu(void *old_connection,void *inner) {
     BlockKey key;
     Text value=text(FN(0x1c95050,OriginalText)(item));
     int usable=value.size && blocked.valid && bl_key(&blocked,value,&key);
-    if (usable) add_blacklist_action(menu,inner,u"屏蔽相同内容",6,1,&key);
+    if (usable) add_blacklist_action(menu,inner,u"屏蔽相同内容",6,1,&key,0);
     if (blocked.valid && blocked.count)
-        add_blacklist_action(menu,inner,u"撤销上次屏蔽",6,2,0);
+        add_blacklist_action(menu,inner,u"撤销上次屏蔽",6,2,0,0);
     bl_close(&blocked);
     BlockDb channels;
     ch_open(&channels);
     void *peer=ch_item_peer(item);
     uptr channel=ch_peer_id(peer);
+    u16 suggestion[KW_CAP+1]; KeywordSuggest(value.data,value.size,suggestion);
     /* Broadcast flag is 1<<10 at ChannelData+0x1a8. Do not offer this action
      * for users or groups; capture only the stable ID, never a live pointer. */
     if (channels.valid && channel && (AT(peer,0x1a8,uptr)&0x400)
         && !ch_contains_peer(&channels,peer) && ch_make_key(channel,&key))
-        add_blacklist_action(menu,inner,u"屏蔽整个频道",6,4,&key);
+        add_blacklist_action(menu,inner,u"屏蔽整个频道",6,4,&key,suggestion);
     if (channels.valid && channels.count)
-        add_blacklist_action(menu,inner,u"撤销上次频道屏蔽",8,5,0);
+        add_blacklist_action(menu,inner,u"撤销上次频道屏蔽",8,5,0,0);
+    if(kw_broadcast(peer))
+        add_blacklist_action(menu,inner,u"添加关键词屏蔽…",8,6,0,suggestion);
+    add_blacklist_action(menu,inner,u"管理关键词屏蔽…",8,7,0,0);
     bl_close(&channels);
 }
