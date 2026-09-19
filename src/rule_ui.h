@@ -15,6 +15,7 @@ typedef struct {
     void *(*active)(void);
     void *(*item)(void *,int);
     int (*length)(void *);
+    void *(*ancestor)(void *,unsigned int);
 } RuleApi;
 typedef struct {
     RuleApi api;
@@ -23,6 +24,7 @@ typedef struct {
     u16 suggestion[KW_CAP+1];
 } RuleUi;
 static int rule_ui_busy;
+static void *rule_ui_window;
 static int rule_api(RuleApi *a) {
     void *module=BL_IAT(0x6000140,BlGetModule)(u"user32.dll");
     if(!module) return 0;
@@ -35,8 +37,69 @@ static int rule_api(RuleApi *a) {
     RULE_API(checked,"IsDlgButtonChecked"); RULE_API(message,"MessageBoxW");
     RULE_API(active,"GetActiveWindow"); RULE_API(item,"GetDlgItem");
     RULE_API(length,"GetWindowTextLengthW");
+    RULE_API(ancestor,"GetAncestor");
 #undef RULE_API
     return 1;
+}
+typedef struct {
+    RuleApi *api;
+    void *best;
+    uptr area;
+    int (*visible)(void *);
+    void *(*owner)(void *,unsigned int);
+    int (*rect)(void *,void *);
+} RuleOwnerSearch;
+static int rule_owner_window(void *w,iptr value) {
+    RuleOwnerSearch *s=(RuleOwnerSearch *)value;
+    if(!s->visible(w) || s->owner(w,4) || (s->api->getlong(w,-20)&0x8000080)
+        || (s->api->getlong(w,-16)&0x40000000)) return 1;
+    struct { int left,top,right,bottom; } r;
+    if(s->rect(w,&r) && r.right>r.left && r.bottom>r.top) {
+        uptr area=(uptr)(r.right-r.left)*(uptr)(r.bottom-r.top);
+        if(area>s->area) { s->best=w; s->area=area; }
+    }
+    return 1;
+}
+/* Telegram's fading menu is an UNOWNED tool HWND, so GA_ROOTOWNER alone does
+ * not find the main window. Enumerate only this UI thread's visible, unowned,
+ * non-tool windows and prefer its largest stable application window. */
+static void *rule_owner(RuleApi *a) {
+    void *active=a->active();
+    void *owner=active ? a->ancestor(active,3) : 0; /* GA_ROOTOWNER */
+    if(owner && !(a->getlong(owner,-20)&0x8000080)) return owner;
+    BlGetProc get=BL_IAT(0x60001b8,BlGetProc);
+    void *user=BL_IAT(0x6000140,BlGetModule)(u"user32.dll");
+    void *kernel=BL_IAT(0x6000140,BlGetModule)(u"kernel32.dll");
+    typedef unsigned int (*ThreadId)(void);
+    typedef int (*EnumThread)(unsigned int,int (*)(void *,iptr),iptr);
+    ThreadId thread=kernel ? (ThreadId)get(kernel,"GetCurrentThreadId") : 0;
+    EnumThread enumerate=user ? (EnumThread)get(user,"EnumThreadWindows") : 0;
+    RuleOwnerSearch search; bl_zero(&search,sizeof(search)); search.api=a;
+    search.visible=user ? (void *)get(user,"IsWindowVisible") : 0;
+    search.owner=user ? (void *)get(user,"GetWindow") : 0;
+    search.rect=user ? (void *)get(user,"GetWindowRect") : 0;
+    if(!thread || !enumerate || !search.visible || !search.owner || !search.rect) return 0;
+    enumerate(thread(),rule_owner_window,(iptr)&search);
+    return search.best;
+}
+static void rule_ui_raise(void) {
+    if(!rule_ui_window) return;
+    void *user=BL_IAT(0x6000140,BlGetModule)(u"user32.dll");
+    if(!user) return;
+    BlGetProc get=BL_IAT(0x60001b8,BlGetProc);
+    typedef int (*WindowCall)(void *);
+    typedef int (*Show)(void *,int);
+    WindowCall valid=(WindowCall)get(user,"IsWindow");
+    Show show=(Show)get(user,"ShowWindow");
+    WindowCall top=(WindowCall)get(user,"BringWindowToTop");
+    WindowCall foreground=(WindowCall)get(user,"SetForegroundWindow");
+    typedef void *(*Activate)(void *);
+    Activate active=(Activate)get(user,"SetActiveWindow");
+    if(!valid || !valid(rule_ui_window)) return;
+    if(show) show(rule_ui_window,9);
+    if(top) top(rule_ui_window);
+    if(active) active(rule_ui_window);
+    if(foreground) foreground(rule_ui_window);
 }
 static void rule_ui_error(RuleUi *s,void *w,int result) {
     s->api.message(w,result==-3 ? u"关键词规则已达到 256 条。请先删除不需要的规则。"
@@ -58,6 +121,7 @@ static void rule_ui_list(RuleUi *s,void *w) {
 EXPORT iptr KeywordDialogProc(void *window,unsigned int message,uptr wp,iptr lp) {
     RuleUi *s;
     if(message==0x110) { /* WM_INITDIALOG */
+        rule_ui_window=window;
         s=(RuleUi *)lp; s->api.setlong(window,16,(iptr)s); /* DWLP_USER */
         s->api.settext(window,100,s->suggestion);
         s->api.send(window,100,0xc5,4096,0); /* EM_LIMITTEXT */
@@ -67,6 +131,7 @@ EXPORT iptr KeywordDialogProc(void *window,unsigned int message,uptr wp,iptr lp)
     }
     RuleApi a; if(!rule_api(&a)) return 0;
     s=(RuleUi *)a.getlong(window,16); if(!s) return 0;
+    if(message==0x82 && rule_ui_window==window) rule_ui_window=0;
     if(message==0x10 || (message==0x111 && (wp&0xffff)==2)) {
         s->api.end(window,s->changed); return 1;
     }
@@ -114,7 +179,7 @@ static void ui_control(u8 **p,unsigned int style,unsigned int x,unsigned int y,
     ui_word(p,0xffff); ui_word(p,cls); ui_string(p,title); ui_word(p,0);
 }
 EXPORT int ShowKeywordDialog(int mode,const u16 *suggestion) {
-    if(rule_ui_busy) return 0;
+    if(rule_ui_busy) { rule_ui_raise(); return 0; }
     BlockDb memory; bl_zero(&memory,sizeof(memory));
     memory.heap=BL_IAT(0x6000350,BlGetHeap)(); if(!memory.heap) return -1;
     RuleUi *s=(RuleUi *)bl_alloc(&memory,sizeof(RuleUi));
@@ -143,8 +208,8 @@ EXPORT int ShowKeywordDialog(int mode,const u16 *suggestion) {
         ui_control(&p,0x10000,12,252,100,18,105,0x80,u"删除选中的规则");
     }
     rule_ui_busy=1;
-    result=(int)s->api.dialog((void *)base(),template,s->api.active(),KeywordDialogProc,(iptr)s);
-    rule_ui_busy=0;
+    result=(int)s->api.dialog((void *)base(),template,rule_owner(&s->api),KeywordDialogProc,(iptr)s);
+    rule_ui_busy=0; rule_ui_window=0;
 done:
     if(s) kw_close(&s->db);
     bl_free(&memory,template); bl_free(&memory,s); return result;

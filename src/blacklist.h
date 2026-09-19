@@ -433,4 +433,38 @@ done:
 }
 static int bl_change(int op,const BlockKey *key) { return bl_change_type(op,key,0); }
 static int ch_change(int op,const BlockKey *key) { return bl_change_type(op,key,1); }
+/* Merge a selection under one lock and replace once. A failed batch never
+ * leaves a partially blocked selection. Existing rule order is preserved. */
+EXPORT int ChannelBatch(const uptr *ids,unsigned int count) {
+    BlockDb db,merged; bl_zero(&merged,sizeof(merged));
+    void *lock=BL_INVALID; u16 *lockpath=0; int result=-1;
+    if(!ids || !count || count>BL_LIMIT) return -2;
+    if(!bl_initialize_type(&db,1)) goto done;
+    lockpath=(u16 *)bl_alloc(&db,BL_PATH_CAP*2);
+    if(!lockpath || !bl_suffix(lockpath,db.path,u".lock")) goto done;
+    lock=BL_IAT(0x6000090,BlCreateFile)(lockpath,0xc0000000u,0,0,4,0x80,0);
+    if(lock==BL_INVALID || !bl_load(&db)) goto done;
+    merged.heap=db.heap; merged.channels=1; merged.path=db.path;
+    merged.keys=(BlockKey *)bl_alloc(&db,(uptr)(db.count+count)*sizeof(BlockKey));
+    unsigned int capacity=512; while(capacity<(db.count+count)*2) capacity*=2;
+    merged.buckets=(unsigned int *)bl_alloc(&db,(uptr)capacity*4);
+    if(!merged.keys || !merged.buckets) goto done;
+    merged.bucket_mask=capacity-1;
+    for(unsigned int i=0;i<db.count+count;++i) {
+        BlockKey key;
+        if(i<db.count) key=db.keys[i];
+        else if(!ch_make_key(ids[i-db.count],&key)) { result=-2; goto done; }
+        unsigned int slot=bl_bucket_hash(&key)&merged.bucket_mask;
+        while(merged.buckets[slot] && !bl_same(merged.keys+merged.buckets[slot]-1,&key))
+            slot=(slot+1)&merged.bucket_mask;
+        if(merged.buckets[slot]) continue;
+        if(merged.count==BL_LIMIT) { result=-3; goto done; }
+        merged.keys[merged.count]=key; merged.buckets[slot]=++merged.count;
+    }
+    result=merged.count==db.count ? 0 : bl_save(&merged,merged.count,0);
+done:
+    if(lock!=BL_INVALID) BL_IAT(0x60000a0,BlCloseHandle)(lock);
+    bl_free(&db,lockpath); bl_free(&db,merged.keys); bl_free(&db,merged.buckets);
+    bl_close(&db); return result;
+}
 #endif

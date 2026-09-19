@@ -4,6 +4,32 @@
   "profiles": [
     {
       "telegram_version": "7.2.8",
+      "patch_version": "1.4.2",
+      "patch_revision": "r8",
+      "release_tag": "v1.4.2",
+      "asset_name": "telegram-exact-search-7.2.8-r8.tgpatch",
+      "input_sha256": "4de51db14afe0aace6b38665e1110f0eecb1112c387d44f380236b33d963c13d",
+      "output_sha256": "b955fe3cc84fd0c65086658f549ea6d03d561273a574783ad70db297d8acf337",
+      "bundle_sha256": "218a08f3fcfbcf7c02fcef20ca987caec7622528b003b5f06bb61dbc2a359820",
+      "input_size": 218736168,
+      "output_size": 222979072,
+      "bundle_size": 18499
+    },
+    {
+      "telegram_version": "7.2.8",
+      "patch_version": "1.4.1",
+      "patch_revision": "r7",
+      "release_tag": "v1.4.1",
+      "asset_name": "telegram-exact-search-7.2.8-r7.tgpatch",
+      "input_sha256": "4de51db14afe0aace6b38665e1110f0eecb1112c387d44f380236b33d963c13d",
+      "output_sha256": "1c4fe5eb8e2bbc6183373172ab8a350337bf34b276dae999a6044f81a7b9674e",
+      "bundle_sha256": "e53d2c792170fe459643615057b9b1e9ccd93e5ea2a973ec4af991480bb31cde",
+      "input_size": 218736168,
+      "output_size": 222979072,
+      "bundle_size": 17956
+    },
+    {
+      "telegram_version": "7.2.8",
       "patch_version": "1.4.0",
       "patch_revision": "r6",
       "release_tag": "v1.4.0",

@@ -1,8 +1,8 @@
 # telegram 重庆好人版 7.2.8 + 精确搜索
 
-基于 **Telegram Desktop 7.2.8 · Windows x64** 的社区修改版。补丁版本 **v1.4.0 / r6**，与 Telegram 官方无隶属关系。
+基于 **Telegram Desktop 7.2.8 · Windows x64** 的社区修改版。补丁版本 **v1.4.2 / r8**，与 Telegram 官方无隶属关系。
 
-[下载完整便携版](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.4.0) · [搜索示例](docs/search-guide.md) · [验证说明](docs/verification.md) · [构建与许可](NOTICE.md)
+[下载完整便携版](https://github.com/245582001g-oss/telegram-exact-search-patch/releases/tag/v1.4.1) · [搜索示例](docs/search-guide.md) · [验证说明](docs/verification.md) · [构建与许可](NOTICE.md)
 
 ## 直接使用
 
@@ -25,6 +25,17 @@
 频道操作只对广播频道显示，不对普通用户或群组显示。过滤针对消息所在频道，不依据转发署名。它隐藏本机搜索结果，不是退订、举报或 Telegram 账号级封禁；频道正常聊天页面不受影响。
 
 补丁处理 Telegram 已返回的候选结果，不能改变服务器索引、召回量或服务器负载。搜索结果为空时可调整关键词继续搜索。全局消息支持空白分隔的 AND 组合；全局名称按整个输入连续匹配；聊天内关键词保持原生行为，但屏蔽规则仍生效。
+
+## 多选与右键滑动
+
+在一条消息搜索结果上右键 → **进入多选屏蔽…**，打开批量选择窗口。同一频道的多条结果按固定 ID 合并；同名但不同 ID 的频道仍分别列出。显示频道名称、已加载结果数和消息示例。
+
+- 勾选复选框，或按住右键上下滑过多行；从未选项开始会连续选中，从已选项开始会连续取消。
+- 按住右键拖到列表上/下边缘会自动滚动；滚动后选择保留，也可全选或取消全选。
+- 点击 **屏蔽所选频道** 后一次性保存，然后可编辑关键词继续跨频道过滤。取消窗口不增加任何规则。
+- 这是独立批量列表，只包含进入时已加载的广播频道，不自动抓取服务器上的其余页。保存失败时整批不写入，避免只屏蔽一部分却显示成功。
+
+v1.4.2 修正右键菜单关闭时连带销毁关键词弹窗，以及弹窗被主窗口遮挡的问题。弹窗绑定当前界面的稳定主窗口；再次调用时恢复同一窗口并保留未提交的勾选或关键词编辑。取消后可以重新打开。
 
 ## 黑名单存放位置
 
@@ -62,6 +73,7 @@ python src/build_patch.py --input C:\TelegramOriginal\Telegram.exe --output-dir 
 python tests/test_menu_payload.py --build-dir build --original C:\TelegramOriginal\Telegram.exe
 python tests/test_channel_payload.py --build-dir build --original C:\TelegramOriginal\Telegram.exe
 python tests/test_keyword_payload.py --build-dir build
+python tests/test_selection_payload.py --build-dir build
 python tests/test_language_examples.py --build-dir build
 ```
 

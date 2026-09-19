@@ -499,7 +499,7 @@ def suite(m):
     m.actions.clear();m.connections.clear();m.accept_connection=False
     inner,handle,item,value=m.menu_scene()
     m.call(bridge,handle,extra={UC_X86_REG_RSI:inner})
-    assert len(m.connections)==2 and all(not c['accepted'] for c in m.connections)
+    assert len(m.connections)==3 and all(not c['accepted'] for c in m.connections)
     assert all(c['slot'] not in m.native_live for c in m.connections)
     assert m.actions[0]['inserted'] and not m.heap_live and not m.handles
     m.connections.clear();m.accept_connection=True
@@ -612,7 +612,7 @@ def suite(m):
         if kind=='missing_history':m.put(inner+0x6a8,0)
         if kind=='missing_item':m.put(inner+0x6b8,9000)
         m.call(bridge,handle,extra={UC_X86_REG_RSI:inner})
-        assert [a['label'] for a in m.actions]==(['管理关键词屏蔽…'] if kind=='empty_text' else []) and handle in m.connection_dtors
+        assert [a['label'] for a in m.actions]==(['管理关键词屏蔽…','进入多选屏蔽…'] if kind=='empty_text' else []) and handle in m.connection_dtors
         assert not m.heap_live and not m.handles
     passed.append('non-message, missing-context, unfiltered and empty-text guards retain original connection destruction')
 

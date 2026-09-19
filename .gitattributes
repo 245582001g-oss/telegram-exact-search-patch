@@ -12,5 +12,6 @@ src/blacklist.h -text
 src/menu.h -text
 src/keywords.h -text
 src/rule_ui.h -text
+src/selection.h -text
 src/hooks.S -text
 src/hooks.json -text

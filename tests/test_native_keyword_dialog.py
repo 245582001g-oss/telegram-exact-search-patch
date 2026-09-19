@@ -33,7 +33,7 @@ def window(proc):
             if pid.value==proc.pid and name.value=='#32770':found.append(hwnd)
             return True
         enum(visit,0)
-        if found and item(found[0],100) and read(item(found[0],100)):return found[0]
+        if found and ((item(found[0],100) and read(item(found[0],100))) or item(found[0],200)):return found[0]
         if proc.poll() is not None:raise AssertionError(proc.communicate())
         time.sleep(.05)
     raise AssertionError('isolated dialog did not open')
@@ -92,9 +92,23 @@ def main():
         r=subprocess.run(['powershell.exe','-NoProfile','-File',str(script),'-Action',operation,'-Scope','Body','-Text','外部管理测试🌹','-Path',str(db)],capture_output=True)
         assert r.returncode==0,(operation,r.stdout,r.stderr)
     assert db.read_bytes()==raw
+    # Previously this dialog vanished together with a delayed context-menu HWND.
+    for mode in (11,14):
+        proc,hwnd=run(a.exe.resolve(),folder,mode);time.sleep(.8)
+        assert proc.poll() is None and read(item(hwnd,100))=='✅固定广告模板🌹'
+        owner=api(u,'GetWindow',[w.HWND,w.UINT],w.HWND)(hwnd,4)
+        assert owner and not api(u,'IsWindowEnabled',[w.HWND],w.BOOL)(owner)
+        settext(item(hwnd,100),'正在编辑但尚未保存')
+        send(hwnd,0x8002,0,0)
+        assert window(proc)==hwnd and read(item(hwnd,100))=='正在编辑但尚未保存'
+        send(hwnd,0x111,2,0);output=finish(proc);assert 'main_reenabled=1' in output
+        reports.append(output);assert db.read_bytes()==raw
     result={'status':'passed','kind':'real Win32 dialogs + real scratch filesystem + PowerShell 5.1',
             'checks':['suggestion prefill','custom body keyword persisted','skip is a no-op','manager list',
-                      'name-scope radio switch','multiple rules','delete exact selected rule','PowerShell interoperability'],
+                      'name-scope radio switch','multiple rules','delete exact selected rule','PowerShell interoperability',
+                      'dialog survives destruction of owned and unowned active transient menus',
+                      'unowned Qt-style menu resolves stable main owner; modality and re-enable',
+                      'repeat-open raises same keyword dialog without losing unsaved edits'],
             'account_data_accessed':False,'runs':reports}
     (a.output/'native-keyword-test-report.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(result,ensure_ascii=False,indent=2))

@@ -14,6 +14,7 @@ struct BlacklistSlot {
 };
 _Static_assert(sizeof(BlacklistSlot)==328,"Qt slot capture layout");
 #include "rule_ui.h"
+#include "selection.h"
 /* Match the native popup's QObject::destroyed self-connection ABI. A direct
  * heap-owned guard outlives modal message loops without retaining a stack or
  * widget pointer after destruction. Reused for repeated dialogs on one widget. */
@@ -137,6 +138,19 @@ EXPORT void BlacklistSlotImpl(int which,BlacklistSlot *slot,void *receiver,void 
     if (which==0) {
         FN(0x5b6e670,Free)(slot,sizeof(*slot));
     } else if (which==1) {
+        if(slot->operation==8) {
+            void *inner=slot->inner; uptr epoch=guard_inner(inner);
+            u16 suggestion[KW_CAP+1]; bl_zero(suggestion,sizeof(suggestion));
+            int saved=ShowSelectionDialog(inner,suggestion);
+            if(saved>0) {
+                if(epoch && guarded_inner==inner && guard_epoch==epoch) RefreshBlocked(inner);
+                int changed=ShowKeywordDialog(1,suggestion);
+                if(changed>0 && epoch && guarded_inner==inner && guard_epoch==epoch) {
+                    RefreshBlocked(inner); repeat_search(inner);
+                }
+            }
+            return;
+        }
         if(slot->operation==6 || slot->operation==7) {
             void *inner=slot->inner; uptr epoch=guard_inner(inner);
             int changed=ShowKeywordDialog(slot->operation==7 ? 3 : 2,slot->suggestion);
@@ -245,5 +259,6 @@ EXPORT void PatchMenu(void *old_connection,void *inner) {
     if(kw_broadcast(peer))
         add_blacklist_action(menu,inner,u"添加关键词屏蔽…",8,6,0,suggestion);
     add_blacklist_action(menu,inner,u"管理关键词屏蔽…",8,7,0,0);
+    add_blacklist_action(menu,inner,u"进入多选屏蔽…",7,8,0,0);
     bl_close(&channels);
 }
